@@ -61,6 +61,74 @@
                                             <outlet property="labelTitle" destination="Kxb-Iu-rro" id="xQG-Oi-Qss"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellButton" id="ls0-vp-rHr" customClass="CellButton" customModule="FlowDemoApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="105" width="375" height="77"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ls0-vp-rHr" id="c4Y-kT-eEg">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="76.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dHU-Ma-nIE">
+                                                    <rect key="frame" x="15" y="15.5" width="345" height="45"/>
+                                                    <color key="backgroundColor" red="0.00013524740640000001" green="0.77353423830000001" blue="0.81920063499999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="45" id="jNt-L8-nrL"/>
+                                                    </constraints>
+                                                    <state key="normal" title="BUTTON TITLE"/>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="dHU-Ma-nIE" firstAttribute="leading" secondItem="c4Y-kT-eEg" secondAttribute="leading" constant="15" id="XjK-rS-EDE"/>
+                                                <constraint firstAttribute="trailing" secondItem="dHU-Ma-nIE" secondAttribute="trailing" constant="15" id="lMn-L3-LqZ"/>
+                                                <constraint firstItem="dHU-Ma-nIE" firstAttribute="centerY" secondItem="c4Y-kT-eEg" secondAttribute="centerY" id="sXk-hp-ck8"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="button" destination="dHU-Ma-nIE" id="5Q5-fK-MXf"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellExpandable" rowHeight="137" id="P5G-mf-p3m" customClass="CellExpandable" customModule="FlowDemoApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="182" width="375" height="137"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="P5G-mf-p3m" id="fPI-rA-Jbf">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="136.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More Info" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uNt-mS-IAx">
+                                                    <rect key="frame" x="15" y="15" width="345" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text here" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9JI-wj-eKl">
+                                                    <rect key="frame" x="15" y="51" width="345" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BuT-85-vdd">
+                                                    <rect key="frame" x="87" y="87" width="200" height="34"/>
+                                                    <color key="backgroundColor" red="0.01115019433" green="0.54083764550000002" blue="0.85923486950000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="200" id="DTD-VC-VkO"/>
+                                                    </constraints>
+                                                    <state key="normal" title="REVEALED BUTTON">
+                                                        <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </state>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="9JI-wj-eKl" firstAttribute="top" secondItem="uNt-mS-IAx" secondAttribute="bottom" constant="15" id="MYG-mh-NdY"/>
+                                                <constraint firstItem="BuT-85-vdd" firstAttribute="centerX" secondItem="fPI-rA-Jbf" secondAttribute="centerX" id="NAt-Jc-Swz"/>
+                                                <constraint firstAttribute="trailing" secondItem="uNt-mS-IAx" secondAttribute="trailing" constant="15" id="TaF-qF-zIN"/>
+                                                <constraint firstItem="uNt-mS-IAx" firstAttribute="leading" secondItem="fPI-rA-Jbf" secondAttribute="leading" constant="15" id="VcO-Ku-yce"/>
+                                                <constraint firstAttribute="trailing" secondItem="9JI-wj-eKl" secondAttribute="trailing" constant="15" id="cSg-ua-3HA"/>
+                                                <constraint firstItem="9JI-wj-eKl" firstAttribute="leading" secondItem="fPI-rA-Jbf" secondAttribute="leading" constant="15" id="o9k-mC-ZQw"/>
+                                                <constraint firstItem="BuT-85-vdd" firstAttribute="top" secondItem="9JI-wj-eKl" secondAttribute="bottom" constant="15" id="qAN-Hq-N4E"/>
+                                                <constraint firstItem="uNt-mS-IAx" firstAttribute="top" secondItem="fPI-rA-Jbf" secondAttribute="top" constant="15" id="rGV-dl-ozu"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>

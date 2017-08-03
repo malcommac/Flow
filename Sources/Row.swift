@@ -83,7 +83,7 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// Message received when user tap on a cell at specified path. You must provide a default behaviour
 	/// by returning one of the `RowTapBehaviour` options. If `nil` is provided the default
 	/// behaviour is `deselect` with animation.
-	public var onTap: ((RowProtocol.RowInfo) -> (RowTapBehaviour))? = nil
+	public var onTap: ((RowProtocol.RowInfo) -> (RowTapBehaviour?))? = nil
 	
 	/// Message received when a selection has been made. Selection still active only if
 	/// `onTap` returned `.keepSelection` option.

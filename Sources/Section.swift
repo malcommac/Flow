@@ -72,7 +72,6 @@ open class Section {
 		}
 	}
 	
-	
 	/// Initialize a new section with a list of rows and optionally a standard header
 	/// and/or footer string.
 	///
@@ -85,7 +84,6 @@ open class Section {
 		self.headerTitle = header
 		self.footerTitle = footer
 	}
-	
 	
 	/// Initialize a new section with a list of rows and optionally an header/footer as a custom
 	/// UIView subclass.
@@ -118,7 +116,6 @@ open class Section {
 		}
 	}
 	
-	
 	/// Add an array of rows into the section optionally specifying index of the first item to add
 	///
 	/// - Parameters:
@@ -132,7 +129,6 @@ open class Section {
 		}
 	}
 	
-	
 	/// Replace a row at specified row
 	///
 	/// - Parameters:
@@ -142,7 +138,6 @@ open class Section {
 		guard index < self.rows.count else { return }
 		self.rows[index] = row
 	}
-	
 	
 	/// Remove a row at specified index
 	///

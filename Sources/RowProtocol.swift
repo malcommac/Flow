@@ -89,7 +89,7 @@ public protocol RowProtocol {
 	/// Message received when user tap on a cell at specified path. You must provide a default behaviour
 	/// by returning one of the `RowTapBehaviour` options. If `nil` is provided the default
 	/// behaviour is `deselect` with animation.
-	var onTap: ((RowInfo) -> (RowTapBehaviour))? { get set }
+	var onTap: ((RowInfo) -> (RowTapBehaviour?))? { get set }
 	
 	/// Message received when a selection has been made. Selection still active only if
 	/// `onTap` returned `.keepSelection` option.

@@ -222,7 +222,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///
 	/// - Parameters:
 	///   - rows: rows to add
-	///   - section: destination section, `nil` create and append a new section at the end of the table
+	///   - section: destination section, `nil` create and added a new section at the end of the table
 	/// - Returns: self
 	@discardableResult
 	public func add(rows: [RowProtocol], in section: Section? = nil) -> Self {
@@ -230,6 +230,24 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			section.rows.append(contentsOf: rows)
 		} else {
 			self.sections.append(Section(rows: rows))
+		}
+		return self
+	}
+	
+	
+	/// Add a new row into a section; if section is `nil` a new section is created and added at the end
+	/// of table.
+	///
+	/// - Parameters:
+	///   - row: row to add
+	///   - section: destination section, `nil` create and added a new section at the end of the table
+	/// - Returns: self
+	@discardableResult
+	public func add(row: RowProtocol, in section: Section? = nil) -> Self {
+		if let section = section {
+			section.rows.append(row)
+		} else {
+			self.sections.append(Section(rows: [row]))
 		}
 		return self
 	}
