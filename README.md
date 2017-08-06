@@ -10,15 +10,13 @@ Say goodbye to the mess of `UITableViewDataSource` and `UITableViewDelegate` imp
 This is the code required to create a table with some football players (belive me, it's inside the project example):
 
 ```swift
-if let (team,players) = PlayerModel.load("RealMadrid") {
- let rows = Row<PlayerCell>.create(players, { row in // create rows
- row.onTap = { _,path in // reponds to tap
-   print("Tap on '\(row.item.fullName)'")
-   return nil
- }
- })
- self.tableManager?.add(rows: rows)
+let players = PlayerModel.load("RealMadrid") // load models
+let rows = Row<PlayerCell>.create(players, { row in // create rows
+row.onTap = { _,path in // reponds to tap
+ print("Tap on '\(row.item.fullName)'")
+ return nil
 }
+self.tableManager?.add(rows: rows)
 ```
 
 **Feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
