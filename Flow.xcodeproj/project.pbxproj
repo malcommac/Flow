@@ -27,6 +27,10 @@
 		376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D61F37059C00D48EAE /* SectionView.swift */; };
 		376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4D91F3726C700D48EAE /* TeamSectionView.xib */; };
 		376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */; };
+		376DF4E01F372FC100D48EAE /* TeamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4DF1F372FC100D48EAE /* TeamCell.swift */; };
+		376DF4E21F3730C600D48EAE /* TeamCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4E11F3730C600D48EAE /* TeamCell.xib */; };
+		376DF4E41F37418D00D48EAE /* Barcelona.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4E31F37418D00D48EAE /* Barcelona.plist */; };
+		376DF4E61F374FDB00D48EAE /* MultilineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */; };
 		52D6D9871BEFF229002C0205 /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
 		8933C7901EB5B82D000D00A4 /* FlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* FlowTests.swift */; };
 /* End PBXBuildFile section */
@@ -83,6 +87,10 @@
 		376DF4D61F37059C00D48EAE /* SectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		376DF4D91F3726C700D48EAE /* TeamSectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeamSectionView.xib; sourceTree = "<group>"; };
 		376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamSectionView.swift; sourceTree = "<group>"; };
+		376DF4DF1F372FC100D48EAE /* TeamCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCell.swift; sourceTree = "<group>"; };
+		376DF4E11F3730C600D48EAE /* TeamCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeamCell.xib; sourceTree = "<group>"; };
+		376DF4E31F37418D00D48EAE /* Barcelona.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Barcelona.plist; sourceTree = "<group>"; };
+		376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineTextCell.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* Flow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Flow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* Flow-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flow-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8933C7891EB5B82A000D00A4 /* FlowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTests.swift; sourceTree = "<group>"; };
@@ -129,6 +137,7 @@
 				376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */,
 				376DF4C91F33A1AF00D48EAE /* Models */,
 				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
+				376DF4E31F37418D00D48EAE /* Barcelona.plist */,
 				376DF4D41F3604D800D48EAE /* Shared.swift */,
 			);
 			path = FlowDemoApp;
@@ -138,6 +147,9 @@
 			isa = PBXGroup;
 			children = (
 				376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */,
+				376DF4E11F3730C600D48EAE /* TeamCell.xib */,
+				376DF4DF1F372FC100D48EAE /* TeamCell.swift */,
+				376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */,
 			);
 			name = "Table's Cells";
 			sourceTree = "<group>";
@@ -317,6 +329,7 @@
 				TargetAttributes = {
 					376DF4A81F335DC900D48EAE = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = E5DU3FA699;
 						ProvisioningStyle = Automatic;
 					};
 					52D6D97B1BEFF229002C0205 = {
@@ -358,6 +371,8 @@
 				376DF4B31F335DC900D48EAE /* Assets.xcassets in Resources */,
 				376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */,
 				376DF4B11F335DC900D48EAE /* Main.storyboard in Resources */,
+				376DF4E41F37418D00D48EAE /* Barcelona.plist in Resources */,
+				376DF4E21F3730C600D48EAE /* TeamCell.xib in Resources */,
 				376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,8 +398,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				376DF4E01F372FC100D48EAE /* TeamCell.swift in Sources */,
 				376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */,
 				376DF4D51F3604D800D48EAE /* Shared.swift in Sources */,
+				376DF4E61F374FDB00D48EAE /* MultilineTextCell.swift in Sources */,
 				376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */,
 				376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */,
 				376DF4AE1F335DC900D48EAE /* ViewController.swift in Sources */,
@@ -456,6 +473,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				DEVELOPMENT_TEAM = E5DU3FA699;
 				INFOPLIST_FILE = FlowDemoApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -473,6 +491,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				DEVELOPMENT_TEAM = E5DU3FA699;
 				INFOPLIST_FILE = FlowDemoApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

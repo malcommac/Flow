@@ -89,7 +89,7 @@ open class Section {
 	///   - rows: rows to allocate in this section
 	///   - header: header title string
 	///   - footer: footer title string
-	public convenience init(rows: [RowProtocol]? = nil, header: String?, footer: String?) {
+	public convenience init(_ rows: [RowProtocol]? = nil, header: String? = nil, footer: String? = nil) {
 		self.init(rows: rows)
 		self.headerTitle = header
 		self.footerTitle = footer
@@ -102,10 +102,10 @@ open class Section {
 	///   - rows: rows to allocate in this section
 	///   - header: header view
 	///   - footer: footer view
-	public convenience init(rows: [RowProtocol]? = nil, header: SectionProtocol, footer: SectionProtocol) {
+	public convenience init(_ rows: [RowProtocol]? = nil, headerView: SectionProtocol? = nil, footerView: SectionProtocol? = nil) {
 		self.init(rows: rows)
-		self.headerView = header
-		self.footerView = footer
+		self.headerView = headerView
+		self.footerView = footerView
 	}
 	
 	/// Remove all rows from the section
@@ -118,12 +118,14 @@ open class Section {
 	/// - Parameters:
 	///   - row: row to add
 	///   - index: destination index, if `nil` or not specified the row is append at the end
-	open func add(_ row: RowProtocol, at index: Int? = nil) {
+	@discardableResult
+	open func add(_ row: RowProtocol, at index: Int? = nil) -> RowProtocol {
 		if let index = index {
 			self.rows.insert(row, at: index)
 		} else {
 			self.rows.append(row)
 		}
+		return row
 	}
 	
 	/// Add an array of rows into the section optionally specifying index of the first item to add
@@ -131,12 +133,14 @@ open class Section {
 	/// - Parameters:
 	///   - rows: rows to append
 	///   - index: destination index, `nil` to append at the end
-	open func add(_ rows: [RowProtocol], at index: Int? = nil) {
+	@discardableResult
+	open func add(_ rows: [RowProtocol], at index: Int? = nil) -> [RowProtocol] {
 		if let index = index {
 			self.rows.insert(contentsOf: rows, at: index)
 		} else {
 			self.rows.append(contentsOf: rows)
 		}
+		return rows
 	}
 	
 	/// Replace a row at specified row
@@ -144,9 +148,11 @@ open class Section {
 	/// - Parameters:
 	///   - index: index of row to replace
 	///   - row: new row
-	open func replace(rowAt index: Int, with row: RowProtocol) {
-		guard index < self.rows.count else { return }
+	@discardableResult
+	open func replace(rowAt index: Int, with row: RowProtocol) -> RowProtocol {
+		guard index < self.rows.count else { return row }
 		self.rows[index] = row
+		return row
 	}
 	
 	/// Remove a row at specified index

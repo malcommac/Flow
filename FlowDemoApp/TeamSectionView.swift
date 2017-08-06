@@ -15,12 +15,16 @@ public class TeamSectionView: UITableViewHeaderFooterView, DeclarativeView {
 	public typealias T = TeamModel
 	
 	@IBOutlet public var sectionLabel: UILabel?
+	@IBOutlet public var sectionLogo: UIImageView?
+	@IBOutlet public var sectionSubtitle: UILabel?
 	
 	public static var defaultHeight: CGFloat? {
-		return 56
+		return 100
 	}
 	
 	public func configure(_ item: TeamModel, type: SectionType, section: Int) {
 		self.sectionLabel?.text = item.name.uppercased()
+		self.sectionLogo?.downloadedFrom(url: item.shieldURL, contentMode: .scaleAspectFit)
+		self.sectionSubtitle?.text = item.subtitle ?? ""
 	}
 }

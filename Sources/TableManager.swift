@@ -979,6 +979,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		self.cachedRowHeights.removeAll()
 		self.prototypesCells.removeAll()
 	}
+
 }
 
 extension TableManager: UIScrollViewDelegate {

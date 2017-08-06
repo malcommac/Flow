@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>team</key>
+	<dict>
+		<key>name</key>
+		<string>Real Madrid C.F.</string>
+		<key>url</key>
+		<string>http://www.fotolip.com/wp-content/uploads/2016/05/Real-Madrid-Logo-2.png</string>
+		<key>subtitle</key>
+		<string>Founded on March 6 1902; 115 years ago</string>
+		<key>bio</key>
+		<string>Futbol Club Barcelona (Catalan pronunciation: [fubˈbɔɫ ˈkɫub bərsəˈɫonə] (About this sound listen)), commonly known as Barcelona and familiarly as Barça,[note 1] is a professional football club based in Barcelona, Catalonia, Spain.
+
+Founded in 1899 by a group of Swiss, English and Catalan footballers led by Joan Gamper, the club has become a symbol of Catalan culture and Catalanism, hence the motto &quot;Més que un club&quot; (English: &quot;More than a club&quot;). Unlike many other football clubs, the supporters own and operate Barcelona. It is the second most valuable sports team in the world, worth $3.56 billion, and the world&apos;s second richest football club in terms of revenue, with an annual turnover of €560.8 million.[2][3] The official Barcelona anthem is the &quot;Cant del Barça&quot;, written by Jaume Picas and Josep Maria Espinàs.[4]</string>
+	</dict>
 	<key>members</key>
 	<array>
 		<dict>
