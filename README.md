@@ -1,11 +1,12 @@
 ## Flow
-### The great way to deal with UITableViews in iOS
+#### The great way to deal with UITableViews in iOS
 
-#### What's Flow?
+### What's Flow?
 Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
+
 Say goodbye to the mess of `UITableViewDataSource` and `UITableViewDelegate` implementations: start flowing your tables!
 
-An example?
+### A real example
 This is the code required to create a table with some football players (belive me, it's inside the project example):
 
 ```swift
@@ -22,7 +23,7 @@ if let (team,players) = PlayerModel.load("RealMadrid") {
 
 **Feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
 
-#### Main Features
+### Main Features
 Main features of Flow includes:
 * **Declare the content**: Decide cell's class, the model and use array-like methods to add/remove or manage rows into the table. No more data source, no more delegate, just plain understandable methods to manage what kind of data you want to display (auto animations included!).
 * **Separation of concerns**: Let the cell do its damn job; passing represented item (model) to the cell you can add a layer of separation between your model, your view controller and the cell which represent the model itself. Stop doing cell population inside the `tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)` datasource function. Be [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)).
