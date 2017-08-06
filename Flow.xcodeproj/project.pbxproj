@@ -136,9 +136,8 @@
 				376DF4B71F335DC900D48EAE /* Info.plist */,
 				376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */,
 				376DF4C91F33A1AF00D48EAE /* Models */,
-				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
-				376DF4E31F37418D00D48EAE /* Barcelona.plist */,
-				376DF4D41F3604D800D48EAE /* Shared.swift */,
+				376DF4E71F37591200D48EAE /* Data */,
+				376DF4E81F37591600D48EAE /* Utils */,
 			);
 			path = FlowDemoApp;
 			sourceTree = "<group>";
@@ -179,6 +178,23 @@
 				376DF4C81F33A1AA00D48EAE /* Table's Cells */,
 			);
 			name = "Cells And Headers/Footers";
+			sourceTree = "<group>";
+		};
+		376DF4E71F37591200D48EAE /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
+				376DF4E31F37418D00D48EAE /* Barcelona.plist */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		376DF4E81F37591600D48EAE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4D41F3604D800D48EAE /* Shared.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		52D6D9721BEFF229002C0205 = {
