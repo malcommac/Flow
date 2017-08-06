@@ -25,6 +25,8 @@
 		376DF4D31F35F4CF00D48EAE /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */; };
 		376DF4D51F3604D800D48EAE /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D41F3604D800D48EAE /* Shared.swift */; };
 		376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D61F37059C00D48EAE /* SectionView.swift */; };
+		376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4D91F3726C700D48EAE /* TeamSectionView.xib */; };
+		376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */; };
 		52D6D9871BEFF229002C0205 /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
 		8933C7901EB5B82D000D00A4 /* FlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* FlowTests.swift */; };
 /* End PBXBuildFile section */
@@ -79,6 +81,8 @@
 		376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
 		376DF4D41F3604D800D48EAE /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		376DF4D61F37059C00D48EAE /* SectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
+		376DF4D91F3726C700D48EAE /* TeamSectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeamSectionView.xib; sourceTree = "<group>"; };
+		376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamSectionView.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* Flow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Flow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* Flow-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flow-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8933C7891EB5B82A000D00A4 /* FlowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTests.swift; sourceTree = "<group>"; };
@@ -122,7 +126,7 @@
 				376DF4B21F335DC900D48EAE /* Assets.xcassets */,
 				376DF4B41F335DC900D48EAE /* LaunchScreen.storyboard */,
 				376DF4B71F335DC900D48EAE /* Info.plist */,
-				376DF4C81F33A1AA00D48EAE /* Cell Subclasses */,
+				376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */,
 				376DF4C91F33A1AF00D48EAE /* Models */,
 				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
 				376DF4D41F3604D800D48EAE /* Shared.swift */,
@@ -130,12 +134,12 @@
 			path = FlowDemoApp;
 			sourceTree = "<group>";
 		};
-		376DF4C81F33A1AA00D48EAE /* Cell Subclasses */ = {
+		376DF4C81F33A1AA00D48EAE /* Table's Cells */ = {
 			isa = PBXGroup;
 			children = (
 				376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */,
 			);
-			name = "Cell Subclasses";
+			name = "Table's Cells";
 			sourceTree = "<group>";
 		};
 		376DF4C91F33A1AF00D48EAE /* Models */ = {
@@ -145,6 +149,24 @@
 				376DF4D01F35F3D200D48EAE /* TeamModel.swift */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		376DF4DD1F3726D300D48EAE /* Table's Headers */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4D91F3726C700D48EAE /* TeamSectionView.xib */,
+				376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */,
+			);
+			name = "Table's Headers";
+			sourceTree = "<group>";
+		};
+		376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4DD1F3726D300D48EAE /* Table's Headers */,
+				376DF4C81F33A1AA00D48EAE /* Table's Cells */,
+			);
+			name = "Cells And Headers/Footers";
 			sourceTree = "<group>";
 		};
 		52D6D9721BEFF229002C0205 = {
@@ -336,6 +358,7 @@
 				376DF4B31F335DC900D48EAE /* Assets.xcassets in Resources */,
 				376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */,
 				376DF4B11F335DC900D48EAE /* Main.storyboard in Resources */,
+				376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +383,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */,
 				376DF4D51F3604D800D48EAE /* Shared.swift in Sources */,
 				376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */,
 				376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */,

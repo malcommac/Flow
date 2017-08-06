@@ -840,7 +840,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		// so it will be available for later dequeue.
 		let sectionView: AnyClass = section.viewType
 		let sourceBundle = Bundle(for: sectionView)
-		if let _ = sourceBundle.path(forResource: reuseIdentifier, ofType: "xib") {
+		if let _ = sourceBundle.path(forResource: reuseIdentifier, ofType: "nib") {
 			let xib = UINib(nibName: reuseIdentifier, bundle: sourceBundle)
 			tableView?.register(xib, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
 		} else {
@@ -878,7 +878,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		// Clearly we are about to search in the same bundle of the class itself.
 		let cell: AnyClass = row.cellType
 		let sourceBundle = Bundle(for: cell)
-		if let _ = sourceBundle.path(forResource: reuseIdentifier, ofType: "xib") {
+		if let _ = sourceBundle.path(forResource: reuseIdentifier, ofType: "nib") {
 			let nib = UINib(nibName: reuseIdentifier, bundle: sourceBundle)
 			tableView?.register(nib, forCellReuseIdentifier: reuseIdentifier)
 		} else {

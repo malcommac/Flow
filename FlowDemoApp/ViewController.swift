@@ -18,10 +18,13 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		let team: TeamModel = TeamModel(name: "REALMADRID", shield: URL(string: "http://www.fotolip.com/wp-content/uploads/2016/05/Real-Madrid-Logo-2.png")!)
+		
 		let players_list = PlayerModel.load("RealMadrid")
 		
 		// Section 0
 		self.tableManager = TableManager(table: self.table!)
+		
 
 		let text_rows = Row<PlayerCell>.create(players_list)
 		text_rows.forEach {
@@ -33,6 +36,8 @@ class ViewController: UIViewController {
 		}
 		self.tableManager?.add(rows: text_rows)
 		
+		let header_view = SectionView<TeamSectionView>(team)
+		self.tableManager?.section(atIndex: 0)?.headerView = header_view
 
 		self.tableManager?.reloadData()
 	}
