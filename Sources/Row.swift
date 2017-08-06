@@ -1,8 +1,11 @@
 //
-//	Flow: Manage Tables Easily
-//	--------------------------------------
+//	Flow
+//	A better way to manage table contents in iOS
+//	--------------------------------------------
 //	Created by:	Daniele Margutti
-//	Email:		hello@danielemargutti.com
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
+//
 //	Twitter:	@danielemargutti
 //
 //
@@ -108,6 +111,9 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// the given row and column location before the browser displays it.
 	public var onWillDisplay: RowProtocol.RowEventCallback? = nil
 	
+	/// The cell was removed from the table
+	public var onDidEndDisplay: RowEventCallback? = nil
+
 	/// Message received when a cell at specified path is about to be selected.
 	public var onWillSelect: ((RowProtocol.RowInfo) -> (IndexPath?))? = nil
 	
@@ -115,6 +121,15 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// If `false` is returned highlight of the cell will be disabled.
 	/// If not implemented the default behaviour of the table is to allow highlights of the cell.
 	public var onShouldHighlight: ((RowProtocol.RowInfo) -> (Bool))? = nil
+	
+	/// Asks the data source whether a given row can be moved to another location in the table view.
+	/// If not implemented `false` is assumed instead.
+	public var canMove: ((RowProtocol.RowInfo) -> (Bool))? = nil
+
+	/// Asks the delegate whether the background of the specified row should be
+	/// indented while the table view is in editing mode.
+	/// If not implemented `true` is returned.
+	public var shouldIndentOnEditing: ((RowProtocol.RowInfo) -> (Bool))? = nil
 	
 	/// Initialize a new row
 	///

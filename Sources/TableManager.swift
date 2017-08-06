@@ -1,8 +1,11 @@
 //
-//	Flow: Manage Tables Easily
-//	--------------------------------------
+//	Flow
+//	A better way to manage table contents in iOS
+//	--------------------------------------------
 //	Created by:	Daniele Margutti
-//	Email:		hello@danielemargutti.com
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
+//
 //	Twitter:	@danielemargutti
 //
 //
@@ -29,6 +32,9 @@ import UIKit
 
 open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
+	/// Scroll view delegate for associated table
+	public weak var scrollViewDelegate: UIScrollViewDelegate? = nil
+	
 	/// This represent which table should be managed by this instance
 	private(set) weak var tableView: UITableView?
 	
@@ -48,6 +54,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// Registered `UITableViewCell` identifiers
 	private var registeredCellIDs: Set<String> = []
 	
+	/// Registered `UITableHeaderFooterView` identifiers
+	private var registeredViewsIDs: Set<String> = []
+
 	/// Indexes of the table
 	private var sectionsIndexes: [Int]? = nil
 	
@@ -234,7 +243,17 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self
 	}
 	
-	
+	/// Move a row in another position.
+	/// This is a composed operation: first of all row is removed from source, then is added to the new path.
+	///
+	/// - Parameters:
+	///   - indexPath: source index path
+	///   - destIndexPath: destination index path
+	public func move(row indexPath: IndexPath, to destIndexPath: IndexPath) {
+		let row = self.section(atIndex: indexPath.section)!.remove(rowAt: indexPath.row)
+		self.section(atIndex: destIndexPath.section)!.add(row, at: destIndexPath.row)
+	}
+
 	/// Add a new row into a section; if section is `nil` a new section is created and added at the end
 	/// of table.
 	///
@@ -327,6 +346,18 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return (self.sections[section]).countRows
 	}
 	
+	/// Tells the delegate that the specified cell was removed from the table.
+	///
+	/// - Parameters:
+	///   - tableView: target table
+	///   - cell: cell instance
+	///   - indexPath: index path of the cell
+	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		let row = self.sections[indexPath.section].rows[indexPath.row]
+		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+		row.onDidEndDisplay?((cell,indexPath))
+	}
+	
 	/// Cell for a particular `indexPath` in target table
 	///
 	/// - Parameters:
@@ -336,7 +367,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		// Identify the row to allocate, register if necessary
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		self.register(row: row)
 		
 		// Allocate the class
@@ -360,7 +391,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path that locates a row in tableView.
 	/// - Returns: A nonnegative floating-point value that estimates the height (in points) that row should be.
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		let height = self.rowHeight(forRow: row, at: indexPath)
 		return height
 	}
@@ -373,9 +404,38 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path that locates a row in tableView.
 	/// - Returns: A nonnegative floating-point value that estimates the height (in points) that row should be
 	public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		return self.rowHeight(forRow: row, at: indexPath, estimate: true)
 	}
+	
+	/// Tells the delegate that a header view is about to be displayed for the specified section.
+	///
+	/// - Parameters:
+	///   - tableView: target tableview
+	///   - view: view of the header
+	///   - section: section
+	public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		guard let sectionView = self.sections[section].headerView else {
+			return
+		}
+		sectionView.onWillDisplay?((view as? UITableViewHeaderFooterView,.header,section))
+	}
+	
+	/// Tells the delegate that the specified header view was removed from the table.
+	///
+	/// - Parameters:
+	///   - tableView: target tableview
+	///   - view: view of the header
+	///   - section: section
+	public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
+		guard let sectionView = self.sections[section].headerView else {
+			return
+		}
+		sectionView.didEndDisplaying?((view as? UITableViewHeaderFooterView,.header,section))
+	}
+	
+	///MARK: Footer
+	
 	
 	/// Simple header string
 	///
@@ -387,6 +447,38 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return (self.sections[section]).headerTitle
 	}
 	
+	/// Custom view to represent the header of a section
+	///
+	/// - Parameters:
+	///   - tableView: target table
+	///   - section: section
+	/// - Returns: header view to use (it overrides header string if set)
+	public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		return self.registerAndDequeueSection(at: section, .header)
+	}
+	
+	/// Asks the delegate for the estimated height of the header of a particular section.
+	///
+	/// - Parameters:
+	///   - tableView: target table
+	///   - section: section
+	/// - Returns: the estimated height of the header instance
+	public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+		return self.sectionHeight(at: section, estimated: false, .header)
+	}
+	
+	/// Height of the header for a section. It will be used only for header's custom view
+	///
+	/// - Parameters:
+	///   - tableView: target table
+	///   - section: section
+	/// - Returns: the height of the header
+	public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return self.sectionHeight(at: section, estimated: false, .header)
+	}
+	
+	///MARK: Footer
+	
 	/// Simple footer string
 	///
 	/// - Parameters:
@@ -397,16 +489,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return (self.sections[section]).footerTitle
 	}
 	
-	/// Custom view to represent the header of a section
-	///
-	/// - Parameters:
-	///   - tableView: target table
-	///   - section: section
-	/// - Returns: header view to use (it overrides header string if set)
-	public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		return (self.sections[section]).headerView?.view
-	}
-	
 	/// Custom view to represent the footer of a section
 	///
 	/// - Parameters:
@@ -414,24 +496,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - section: section
 	/// - Returns: footer view to use (it overrides footer string if set)
 	public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		return (self.sections[section]).footerView?.view
-	}
-	
-	/// Height of the header for a section. It will be used only for header's custom view
-	///
-	/// - Parameters:
-	///   - tableView: target table
-	///   - section: section
-	/// - Returns: the height of the header
-	public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		let current_section = (self.sections[section])
-		// If no header is specified we can rely to the automatic row dimension
-		guard let header_view = current_section.headerView else {
-			return UITableViewAutomaticDimension
-		}
-		// If a fixed height is specified we can use it,
-		// otherwise extract it from the instance of the header view
-		return header_view.height ?? header_view.view.frame.size.height
+		return self.registerAndDequeueSection(at: section, .footer)
 	}
 	
 	/// Height of the footer for a section. It will be used only for footer's custom view
@@ -441,16 +506,44 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - section: section
 	/// - Returns: the height of the footer instance
 	public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-		let current_section = (self.sections[section])
-		// If no footer is specified we can rely to the automatic row dimension
-		guard let footer_view = current_section.footerView else {
-			return UITableViewAutomaticDimension
-		}
-		// If a fixed height is specified we can use it,
-		// otherwise extract it from the instance of the footer view
-		return footer_view.height ?? footer_view.view.frame.size.height
+		return self.sectionHeight(at: section, estimated: false, .footer)
 	}
 	
+	/// Asks the delegate for the estimated height of the footer of a particular section.
+	///
+	/// - Parameters:
+	///   - tableView: target table
+	///   - section: section
+	/// - Returns: the estimated height of the footer instance
+	public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+		return self.sectionHeight(at: section, estimated: true, .footer)
+	}
+	
+	/// Tells the delegate that a footer view is about to be displayed for the specified section.
+	///
+	/// - Parameters:
+	///   - tableView: target tableview
+	///   - view: view of the header
+	///   - section: section
+	public func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+		guard let sectionView = self.sections[section].footerView else {
+			return
+		}
+		sectionView.onWillDisplay?((view as? UITableViewHeaderFooterView,.footer,section))
+	}
+	
+	/// Tells the delegate that the specified footer view was removed from the table.
+	///
+	/// - Parameters:
+	///   - tableView: target tableview
+	///   - view: view of the footer
+	///   - section: section
+	public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
+		guard let sectionView = self.sections[section].headerView else {
+			return
+		}
+		sectionView.didEndDisplaying?((view as? UITableViewHeaderFooterView,.footer,section))
+	}
 	
 	/// Support to show right side index like in the address book
 	///
@@ -484,7 +577,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///				to be selected. Return nil if you don't want the row selected.
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-		let row = self.row(forIndexPath: indexPath) // represented model of the row
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 
 		if let onWillSelect = row.onWillSelect {
 			return onWillSelect(cell,indexPath)
@@ -500,7 +593,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating the new selected row in tableView.
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-		let row = self.row(forIndexPath: indexPath) // represented model of the row
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		
 		let select_behaviour = row.onTap?(cell,indexPath) ?? .deselect(true)
 		switch select_behaviour {
@@ -520,7 +613,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		// Dispatch on de-select event to the represented model of the row
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath) // represented model of the row
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		row.onDeselect?(cell,indexPath)
 	}
 	
@@ -535,7 +628,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		// Dispatch display event for a particular cell to its represented model
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		row.onWillDisplay?(cell,indexPath)
 	}
 	
@@ -548,7 +641,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: `true` or `false`.
 	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		return row.onShouldHighlight?(cell,indexPath) ?? true
 	}
 	
@@ -561,7 +654,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: true if the row indicated by indexPath is editable; otherwise, false.
 	public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		// If no actions are definined cell is not editable
 		return row.onEdit?(cell,indexPath)?.count ?? 0 > 0
 	}
@@ -576,7 +669,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///            for the row. Each action you provide is used to create a button that the user can tap.
 	public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		return row.onEdit?(cell,indexPath) ?? nil
 	}
 	
@@ -590,12 +683,115 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		guard editingStyle == .delete else { return }
 		let cell = tableView.cellForRow(at: indexPath)
-		let row = self.row(forIndexPath: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
 		row.onDelete?(cell,indexPath)
+	}
+	
+	
+	/// Asks the data source whether a given row can be moved to another location in the table view.
+	///
+	/// - Parameters:
+	///   - tableView: The table-view object requesting this information.
+	///   - indexPath: An index path locating a row in tableView.
+	/// - Returns: boolean
+	public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		let cell = tableView.cellForRow(at: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
+		return row.canMove?((cell,indexPath)) ?? false
+	}
+	
+	/// Asks the delegate whether the background of the specified row should be indented
+	/// while the table view is in editing mode.
+	///
+	/// - Parameters:
+	///   - tableView: The table-view object requesting this information.
+	///   - indexPath: An index-path object locating the row in its section.
+	/// - Returns: boolean
+	public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+		let cell = tableView.cellForRow(at: indexPath)
+		let row = self.sections[indexPath.section].rows[indexPath.row]
+		return row.shouldIndentOnEditing?((cell,indexPath)) ?? true
 	}
 	
 	///MARK: Private Helper Methods
 	
+	/// This function evaluate the height of a section.
+	/// Height is evaluated in this order:
+	/// -	if the instance provide an implementation of `evaluateViewHeight()`/`evaluateEstimatedHeight` then use it
+	///		if return a non `nil` value
+	/// -	if the static var `defaultHeight`/`estimatedHeight` of the view's class return a non `nil` value use it
+	/// -	return `UITableViewAutomaticDimension`
+	///
+	/// - Parameters:
+	///   - index: section index
+	///   - type: type of view (`header` or `footer`)
+	/// - Returns: height of the section
+	private func sectionHeight(at index: Int, estimated: Bool, _ type: SectionType) -> CGFloat {
+		guard let sectionView = self.sections[index].headerView else {
+			return UITableViewAutomaticDimension
+		}
+		
+		// Has the user provided an evaluation function for view's height? If yes we can realy to it
+		if estimated == false {
+			if sectionView.evaluateViewHeight != nil {
+				if let height = sectionView.evaluateViewHeight!(type) {
+					return height
+				}
+			}
+			
+			// Had the user provided a static function which return the height of the view inside the view's class?
+			if let static_height = sectionView.defaultHeight {
+				return static_height
+			}
+			
+		} else {
+			if sectionView.evaluateEstimatedHeight != nil {
+				if let height = sectionView.evaluateEstimatedHeight!(type) {
+					return height
+				}
+			}
+			
+			// Had the user provided a static function which return the height of the view inside the view's class?
+			if let static_height = sectionView.estimatedHeight {
+				return static_height
+			}
+		}
+		
+		
+		// If no other function are provided we can return the the automatic dimension
+		return UITableViewAutomaticDimension
+	}
+	
+	/// This function is responsibile to register (if necessary) and header/footer section view and return a new instance
+	/// for a given section.
+	///
+	/// - Parameter index: index of the section
+	/// - Returns: defined header/footer instance
+	private func registerAndDequeueSection(at index: Int, _ type: SectionType) -> UIView? {
+		// Was the section's header customized with a view?
+		var sectionItem: SectionProtocol? = nil
+		if type == .header {	sectionItem = self.sections[index].headerView
+		} else {				sectionItem = self.sections[index].footerView }
+		
+		guard let sectionView = sectionItem else {
+			return nil
+		}
+		
+		// Attempt to register header/footer custom view for given reuse identifier, if necessary
+		self.register(section: sectionView)
+		
+		// instantiate custom section
+		guard let header = tableView?.dequeueReusableHeaderFooterView(withIdentifier: sectionView.reuseIdentifier) else {
+			return nil
+		}
+		// give a chance to configure the header
+		sectionView.configure(header, type: type, section: index)
+		
+		// call the on dequeue function
+		sectionView.onDequeue?((header, type, index))
+		
+		return header
+	}
 	
 	/// This function regenerate the indexes for each section in table
 	///
@@ -614,6 +810,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return ((indexes.isEmpty == false ? indexes : nil), titles)
 	}
 	
+	/// Adjust layout of the cell by setting the width to the same with of the table and calling `layoutIfNeeded()`
+	///
+	/// - Parameter cell: cell instance
 	private func adjustLayout(forCell cell: UITableViewCell) {
 		guard cell.frame.size.width != self.tableView!.frame.size.width else {
 			return
@@ -622,8 +821,33 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		cell.layoutIfNeeded()
 	}
 	
-	private func row(forIndexPath indexPath: IndexPath) -> RowProtocol {
-		return self.sections[indexPath.section].rows[indexPath.row]
+	/// This function is used internally to register a class to be used as header/footer into the table.
+	/// If the vieew is already registered for its reuseIdentifier nothing is made.
+	/// By default the `reuseIdentifier` of a view is the name of the class itself.
+	/// View must be declared in a separate xib file (this because it cannot be allocated as like cells
+	/// inside the storyboard itself) which has the same name of the class.
+	/// Xib file must contain a single top level object which is the UITableHeaderFooterView subclass
+	/// we want to use.
+	///
+	/// - Parameter section: section (header/footer) to register
+	private func register(section: SectionProtocol) {
+		let reuseIdentifier = section.reuseIdentifier
+		guard registeredViewsIDs.contains(reuseIdentifier) == false else {
+			return
+		}
+		
+		// View is not registered yet. Attempt to load xib file or register the class itself
+		// so it will be available for later dequeue.
+		let sectionView: AnyClass = section.viewType
+		let sourceBundle = Bundle(for: sectionView)
+		if let _ = sourceBundle.path(forResource: reuseIdentifier, ofType: "xib") {
+			let xib = UINib(nibName: reuseIdentifier, bundle: sourceBundle)
+			tableView?.register(xib, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
+		} else {
+			tableView?.register(sectionView, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
+		}
+		
+		self.registeredViewsIDs.insert(reuseIdentifier)
 	}
 	
 	/// This function is used internally to register a class to be used as cell into the table.
@@ -688,7 +912,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			}
 		}
 
-		// universal fallback to automatic dimenion
+		// universal fallback to automatic dimension
 		return UITableViewAutomaticDimension
 	}
 	
@@ -747,7 +971,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			return estimatedHeight
 		}
 		
-		return UITableViewAutomaticDimension
+		return self.tableView!.estimatedRowHeight
 	}
 
 	/// Clear cache's height
@@ -755,4 +979,60 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		self.cachedRowHeights.removeAll()
 		self.prototypesCells.removeAll()
 	}
+}
+
+extension TableManager: UIScrollViewDelegate {
+	
+	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewDidScroll?(scrollView)
+	}
+	
+	public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewDidZoom?(scrollView)
+	}
+	
+	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewWillBeginDragging?(scrollView)
+	}
+	
+	public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+		scrollViewDelegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+	}
+	
+	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+		scrollViewDelegate?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
+	}
+	
+	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewWillBeginDecelerating?(scrollView)
+	}
+	
+	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewDidEndDecelerating?(scrollView)
+	}
+	
+	public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewDidEndScrollingAnimation?(scrollView)
+	}
+	
+	public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+		return scrollViewDelegate?.viewForZooming?(in: scrollView)
+	}
+	
+	public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+		scrollViewDelegate?.scrollViewWillBeginZooming!(scrollView, with: view)
+	}
+	
+	public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+		scrollViewDelegate?.scrollViewDidEndZooming!(scrollView, with: view, atScale: scale)
+	}
+	
+	public func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+		return scrollViewDelegate?.scrollViewShouldScrollToTop?(scrollView) ?? true
+	}
+	
+	public func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+		scrollViewDelegate?.scrollViewDidScrollToTop?(scrollView)
+	}
+	
 }

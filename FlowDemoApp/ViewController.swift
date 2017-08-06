@@ -14,18 +14,16 @@ class ViewController: UIViewController {
 	@IBOutlet public var table: UITableView?
 
 	private var tableManager: TableManager?
-	private var textNodes: [TextNode] = []
-	
-	private var expNode: ExpandableNode = ExpandableNode()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		let players_list = PlayerModel.load("RealMadrid")
+		
 		// Section 0
-		let text_nodes = TextNode.load("Data")
 		self.tableManager = TableManager(table: self.table!)
 
-		let text_rows = Row<CellMultilineText>.create(text_nodes)
+		let text_rows = Row<PlayerCell>.create(players_list)
 		text_rows.forEach {
 			$0.onTap = { _,path in
 				let value = "Tap on cell \(String(path.row))"
@@ -35,25 +33,6 @@ class ViewController: UIViewController {
 		}
 		self.tableManager?.add(rows: text_rows)
 		
-		let button_row = Row<CellButton>("My Button")
-		self.tableManager?.add(row: button_row)
-		
-		// Section 1
-		//let section_1 = Section(header: "Header of Section 1")
-		
-		let expandable_row = Row<CellExpandable>(self.expNode)
-		expandable_row.onTap = { cell, path in
-			
-			self.tableManager?.update(animation: .top, {
-				self.expNode.isExpanded = !self.expNode.isExpanded
-			})
-			
-			return nil
-		}
-		expandable_row.evaluateRowHeight = {
-			return self.expNode.isExpanded ? 150 : 50
-		}
-		self.tableManager?.add(row: expandable_row)
 
 		self.tableManager?.reloadData()
 	}

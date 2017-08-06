@@ -1,8 +1,11 @@
 //
-//	Flow: Manage Tables Easily
-//	--------------------------------------
+//	Flow
+//	A better way to manage table contents in iOS
+//	--------------------------------------------
 //	Created by:	Daniele Margutti
-//	Email:		hello@danielemargutti.com
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
+//
 //	Twitter:	@danielemargutti
 //
 //
@@ -23,6 +26,7 @@
 //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //	THE SOFTWARE.
+
 
 
 import Foundation

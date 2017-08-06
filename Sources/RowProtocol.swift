@@ -1,8 +1,11 @@
 //
-//	Flow: Manage Tables Easily
-//	--------------------------------------
+//	Flow
+//	A better way to manage table contents in iOS
+//	--------------------------------------------
 //	Created by:	Daniele Margutti
-//	Email:		hello@danielemargutti.com
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
+//
 //	Twitter:	@danielemargutti
 //
 //
@@ -103,6 +106,9 @@ public protocol RowProtocol {
 	/// the given row and column location before the browser displays it.
 	var onWillDisplay: RowEventCallback? { get set }
 	
+	/// Tells that the specified cell was removed from the table
+	var onDidEndDisplay: RowEventCallback? { get set }
+	
 	/// Message received when a cell at specified path is about to be selected.
 	/// If `false` is returned highlight of the cell will be disabled.
 	/// If not implemented the default behaviour of the table is to allow highlights of the cell.
@@ -123,5 +129,13 @@ public protocol RowProtocol {
 	
 	/// Message received when a cell at specified path is about to be removed.
 	var onDelete: RowEventCallback? { get set }
+	
+	/// Asks the data source whether a given row can be moved to another location in the table view.
+	/// If not implemented it return `false` and user is not able to move the row.
+	var canMove: ((RowInfo) -> (Bool))? { get set }
+	
+	/// Asks the delegate whether the background of the specified row should be
+	/// indented while the table view is in editing mode.
+	var shouldIndentOnEditing: ((RowInfo) -> (Bool))? { get set }
 
 }

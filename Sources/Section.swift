@@ -1,8 +1,11 @@
 //
-//	Flow: Manage Tables Easily
-//	--------------------------------------
+//	Flow
+//	A better way to manage table contents in iOS
+//	--------------------------------------------
 //	Created by:	Daniele Margutti
-//	Email:		hello@danielemargutti.com
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
+//
 //	Twitter:	@danielemargutti
 //
 //
@@ -28,11 +31,16 @@
 import Foundation
 import UIKit
 
+/// Type of section
+///
+/// - header: section is an header
+/// - footer: section is a footer
+public enum SectionType {
+	case header
+	case footer
+}
+
 open class Section {
-	
-	/// Specify the model of the header/footer view of a section
-	/// If height is not specified the frame's height of passed view is used instead.
-	public typealias SectionView = (view: UIView, height: CGFloat?)
 	
 	/// The rows of this section
 	open internal(set) var rows: ObservableArray<RowProtocol> = []
@@ -47,11 +55,13 @@ open class Section {
 		return self.rows.isEmpty
 	}
 	
-	/// Custom header view of the section. It overrides simple header specified as String
-	open var headerView: SectionView?
+	/// Custom header view of the section.
+	/// It overrides simple header specified as String
+	open var headerView: SectionProtocol?
 	
-	/// Custom footer view of the section. It overrides simple footer specified as String
-	open var footerView: SectionView?
+	/// Custom footer view of the section.
+	/// It overrides simple footer specified as String
+	open var footerView: SectionProtocol?
 	
 	/// Simple header as String
 	open var headerTitle: String?
@@ -92,7 +102,7 @@ open class Section {
 	///   - rows: rows to allocate in this section
 	///   - header: header view
 	///   - footer: footer view
-	public convenience init(rows: [RowProtocol]? = nil, header: SectionView, footer: SectionView) {
+	public convenience init(rows: [RowProtocol]? = nil, header: SectionProtocol, footer: SectionProtocol) {
 		self.init(rows: rows)
 		self.headerView = header
 		self.footerView = footer
@@ -142,8 +152,9 @@ open class Section {
 	/// Remove a row at specified index
 	///
 	/// - Parameter index: index
-	open func remove(rowAt index: Int) {
-		self.rows.remove(at: index)
+	@discardableResult
+	open func remove(rowAt index: Int) -> RowProtocol {
+		return self.rows.remove(at: index)
 	}
 
 }

@@ -19,12 +19,12 @@
 		376DF4B61F335DC900D48EAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4B41F335DC900D48EAE /* LaunchScreen.storyboard */; };
 		376DF4BB1F335DD200D48EAE /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
 		376DF4BD1F335DF200D48EAE /* Flow.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		376DF4C11F33621B00D48EAE /* CellMultilineText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4C01F33621B00D48EAE /* CellMultilineText.swift */; };
-		376DF4C31F33626500D48EAE /* TextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4C21F33626500D48EAE /* TextNode.swift */; };
-		376DF4C51F33669500D48EAE /* Data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4C41F33669500D48EAE /* Data.plist */; };
-		376DF4C71F33A1A500D48EAE /* CellButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4C61F33A1A500D48EAE /* CellButton.swift */; };
-		376DF4CB1F33ABB900D48EAE /* CellExpandable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4CA1F33ABB900D48EAE /* CellExpandable.swift */; };
-		376DF4CD1F33ABE400D48EAE /* ExpandableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4CC1F33ABE400D48EAE /* ExpandableNode.swift */; };
+		376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4C41F33669500D48EAE /* RealMadrid.plist */; };
+		376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */; };
+		376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D01F35F3D200D48EAE /* TeamModel.swift */; };
+		376DF4D31F35F4CF00D48EAE /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */; };
+		376DF4D51F3604D800D48EAE /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D41F3604D800D48EAE /* Shared.swift */; };
+		376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D61F37059C00D48EAE /* SectionView.swift */; };
 		52D6D9871BEFF229002C0205 /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
 		8933C7901EB5B82D000D00A4 /* FlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* FlowTests.swift */; };
 /* End PBXBuildFile section */
@@ -73,12 +73,12 @@
 		376DF4B21F335DC900D48EAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		376DF4B51F335DC900D48EAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		376DF4B71F335DC900D48EAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		376DF4C01F33621B00D48EAE /* CellMultilineText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellMultilineText.swift; sourceTree = "<group>"; };
-		376DF4C21F33626500D48EAE /* TextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextNode.swift; sourceTree = "<group>"; };
-		376DF4C41F33669500D48EAE /* Data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Data.plist; sourceTree = "<group>"; };
-		376DF4C61F33A1A500D48EAE /* CellButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellButton.swift; sourceTree = "<group>"; };
-		376DF4CA1F33ABB900D48EAE /* CellExpandable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellExpandable.swift; sourceTree = "<group>"; };
-		376DF4CC1F33ABE400D48EAE /* ExpandableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableNode.swift; sourceTree = "<group>"; };
+		376DF4C41F33669500D48EAE /* RealMadrid.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = RealMadrid.plist; sourceTree = "<group>"; };
+		376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
+		376DF4D01F35F3D200D48EAE /* TeamModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamModel.swift; sourceTree = "<group>"; };
+		376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
+		376DF4D41F3604D800D48EAE /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
+		376DF4D61F37059C00D48EAE /* SectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* Flow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Flow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* Flow-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flow-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8933C7891EB5B82A000D00A4 /* FlowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTests.swift; sourceTree = "<group>"; };
@@ -124,7 +124,8 @@
 				376DF4B71F335DC900D48EAE /* Info.plist */,
 				376DF4C81F33A1AA00D48EAE /* Cell Subclasses */,
 				376DF4C91F33A1AF00D48EAE /* Models */,
-				376DF4C41F33669500D48EAE /* Data.plist */,
+				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
+				376DF4D41F3604D800D48EAE /* Shared.swift */,
 			);
 			path = FlowDemoApp;
 			sourceTree = "<group>";
@@ -132,9 +133,7 @@
 		376DF4C81F33A1AA00D48EAE /* Cell Subclasses */ = {
 			isa = PBXGroup;
 			children = (
-				376DF4C01F33621B00D48EAE /* CellMultilineText.swift */,
-				376DF4C61F33A1A500D48EAE /* CellButton.swift */,
-				376DF4CA1F33ABB900D48EAE /* CellExpandable.swift */,
+				376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */,
 			);
 			name = "Cell Subclasses";
 			sourceTree = "<group>";
@@ -142,8 +141,8 @@
 		376DF4C91F33A1AF00D48EAE /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				376DF4C21F33626500D48EAE /* TextNode.swift */,
-				376DF4CC1F33ABE400D48EAE /* ExpandableNode.swift */,
+				376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */,
+				376DF4D01F35F3D200D48EAE /* TeamModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -183,6 +182,7 @@
 			children = (
 				376DF49B1F335D7600D48EAE /* ObservableArray.swift */,
 				376DF49C1F335D7600D48EAE /* Row.swift */,
+				376DF4D61F37059C00D48EAE /* SectionView.swift */,
 				376DF49D1F335D7600D48EAE /* RowProtocol.swift */,
 				376DF49E1F335D7600D48EAE /* Section.swift */,
 				376DF49F1F335D7600D48EAE /* TableManager.swift */,
@@ -334,7 +334,7 @@
 			files = (
 				376DF4B61F335DC900D48EAE /* LaunchScreen.storyboard in Resources */,
 				376DF4B31F335DC900D48EAE /* Assets.xcassets in Resources */,
-				376DF4C51F33669500D48EAE /* Data.plist in Resources */,
+				376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */,
 				376DF4B11F335DC900D48EAE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,13 +360,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				376DF4C71F33A1A500D48EAE /* CellButton.swift in Sources */,
-				376DF4CB1F33ABB900D48EAE /* CellExpandable.swift in Sources */,
-				376DF4CD1F33ABE400D48EAE /* ExpandableNode.swift in Sources */,
-				376DF4C31F33626500D48EAE /* TextNode.swift in Sources */,
-				376DF4C11F33621B00D48EAE /* CellMultilineText.swift in Sources */,
+				376DF4D51F3604D800D48EAE /* Shared.swift in Sources */,
+				376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */,
+				376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */,
 				376DF4AE1F335DC900D48EAE /* ViewController.swift in Sources */,
 				376DF4AC1F335DC900D48EAE /* AppDelegate.swift in Sources */,
+				376DF4D31F35F4CF00D48EAE /* PlayerCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +377,7 @@
 				376DF4A11F335D7600D48EAE /* Row.swift in Sources */,
 				376DF4A31F335D7600D48EAE /* Section.swift in Sources */,
 				376DF4A21F335D7600D48EAE /* RowProtocol.swift in Sources */,
+				376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */,
 				376DF4A01F335D7600D48EAE /* ObservableArray.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
