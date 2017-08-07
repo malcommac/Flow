@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/library_topbar.png" width=210px height=211 alt="Flow" title="Flow">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/library_topbar.png" width=524px height=102 alt="Flow" title="Flow">
 </p>
 
 [![Carthage compatible](https://travis-ci.org/malcommac/Flow.svg)](https://travis-ci.org/malcommac/Flow) [![Version](https://img.shields.io/cocoapods/v/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![License](https://img.shields.io/cocoapods/l/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![Platform](https://img.shields.io/cocoapods/p/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow)
