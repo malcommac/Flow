@@ -48,8 +48,6 @@ class ViewController: UIViewController {
 			let realMadridHeader = SectionView<TeamSectionView>(team)
 			self.tableManager?.section(atIndex: 0)?.headerView = realMadridHeader
 			
-			
-			
 		}
 	}
 	

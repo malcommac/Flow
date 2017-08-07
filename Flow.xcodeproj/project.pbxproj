@@ -125,20 +125,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		376DF4AA1F335DC900D48EAE /* FlowDemoApp */ = {
+		375F11781F38BCC5005CEE1C /* Supports */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4D61F37059C00D48EAE /* SectionView.swift */,
+				376DF49D1F335D7600D48EAE /* RowProtocol.swift */,
+				376DF49B1F335D7600D48EAE /* ObservableArray.swift */,
+			);
+			name = Supports;
+			sourceTree = "<group>";
+		};
+		375F11791F38BCD6005CEE1C /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4B21F335DC900D48EAE /* Assets.xcassets */,
+				376DF4B41F335DC900D48EAE /* LaunchScreen.storyboard */,
+				376DF4B71F335DC900D48EAE /* Info.plist */,
+			);
+			name = Others;
+			sourceTree = "<group>";
+		};
+		376DF4AA1F335DC900D48EAE /* Flow Demo Application */ = {
 			isa = PBXGroup;
 			children = (
 				376DF4AB1F335DC900D48EAE /* AppDelegate.swift */,
 				376DF4AD1F335DC900D48EAE /* ViewController.swift */,
 				376DF4AF1F335DC900D48EAE /* Main.storyboard */,
-				376DF4B21F335DC900D48EAE /* Assets.xcassets */,
-				376DF4B41F335DC900D48EAE /* LaunchScreen.storyboard */,
-				376DF4B71F335DC900D48EAE /* Info.plist */,
 				376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */,
 				376DF4C91F33A1AF00D48EAE /* Models */,
 				376DF4E71F37591200D48EAE /* Data */,
 				376DF4E81F37591600D48EAE /* Utils */,
+				375F11791F38BCD6005CEE1C /* Others */,
 			);
+			name = "Flow Demo Application";
 			path = FlowDemoApp;
 			sourceTree = "<group>";
 		};
@@ -200,10 +219,10 @@
 		52D6D9721BEFF229002C0205 = {
 			isa = PBXGroup;
 			children = (
-				8933C7811EB5B7E0000D00A4 /* Sources */,
-				8933C7831EB5B7EB000D00A4 /* Tests */,
+				8933C7811EB5B7E0000D00A4 /* Flow Library Source */,
+				376DF4AA1F335DC900D48EAE /* Flow Demo Application */,
+				8933C7831EB5B7EB000D00A4 /* Flow Tests */,
 				52D6D99C1BEFF38C002C0205 /* Configs */,
-				376DF4AA1F335DC900D48EAE /* FlowDemoApp */,
 				52D6D97D1BEFF229002C0205 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -227,25 +246,24 @@
 			path = Configs;
 			sourceTree = "<group>";
 		};
-		8933C7811EB5B7E0000D00A4 /* Sources */ = {
+		8933C7811EB5B7E0000D00A4 /* Flow Library Source */ = {
 			isa = PBXGroup;
 			children = (
-				376DF49B1F335D7600D48EAE /* ObservableArray.swift */,
-				376DF49C1F335D7600D48EAE /* Row.swift */,
-				376DF4D61F37059C00D48EAE /* SectionView.swift */,
-				376DF49D1F335D7600D48EAE /* RowProtocol.swift */,
-				376DF49E1F335D7600D48EAE /* Section.swift */,
 				376DF49F1F335D7600D48EAE /* TableManager.swift */,
+				376DF49E1F335D7600D48EAE /* Section.swift */,
+				376DF49C1F335D7600D48EAE /* Row.swift */,
+				375F11781F38BCC5005CEE1C /* Supports */,
 			);
+			name = "Flow Library Source";
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		8933C7831EB5B7EB000D00A4 /* Tests */ = {
+		8933C7831EB5B7EB000D00A4 /* Flow Tests */ = {
 			isa = PBXGroup;
 			children = (
 				8933C7891EB5B82A000D00A4 /* FlowTests.swift */,
 			);
-			name = Tests;
+			name = "Flow Tests";
 			path = Tests/FlowTests;
 			sourceTree = "<group>";
 		};

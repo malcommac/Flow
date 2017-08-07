@@ -1,13 +1,18 @@
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/library_topbar.png" width=524px height=102 alt="Flow" title="Flow">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
 </p>
 
-[![Carthage compatible](https://travis-ci.org/malcommac/Flow.svg)](https://travis-ci.org/malcommac/Flow) [![Version](https://img.shields.io/cocoapods/v/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![License](https://img.shields.io/cocoapods/l/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![Platform](https://img.shields.io/cocoapods/p/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow)
+[![Version](https://img.shields.io/cocoapods/v/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![License](https://img.shields.io/cocoapods/l/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![Platform](https://img.shields.io/cocoapods/p/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/FlowTables.svg)](https://img.shields.io/cocoapods/v/FlowTables.svg)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
 ## Flow
 ### Finally, the great way to create and manage UITableViews in iOS
 
-<p align="center" >★★ <b>Star our github repository to help us!</b> ★★</p>
+<p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
+
+<p align="center" ><a href="http://paypal.me/danielemargutti"><b>Support the project. Make a small donation.</b></a></p>
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
 
 ## WHAT'S FLOW
@@ -41,14 +46,13 @@ Main features of Flow includes:
 * **AutoLayout support**: Provide a simple mechanism to specify the height of a cell or leave the class decide the best one upon described constraints.
 * **Animations**: Like `performBatchUpdates` of `UICollectionView` Flow manage automatically what kind of animations perform on the table as you change the layout.
 
-## REQUIREMENTS
+## REQUIREMENTS & LICENSE
 Flow minimum requirements are:
 * iOS 8+
 * Swift 3+
 
 We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
 
-## AUTHOR & LICENSE
 Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
 
 This library is licensed under [MIT License](https://opensource.org/licenses/MIT).
@@ -56,6 +60,18 @@ This library is licensed under [MIT License](https://opensource.org/licenses/MIT
 If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
+
+## SUPPORT THE PROJECT
+Creating and mantaining libraries takes time.
+
+As programmer you know this better than anyone else.
+
+If you want to contribuite to the development of this project or give to me a thanks please consider to make a small donation using PayPal:
+
+**MAKE A SMALL DONATION** and support the project.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/danielemargutti)
+
 
 ## OTHER LIBRARIES YOU MAY LIKE
 
@@ -381,17 +397,17 @@ The following events are observable by the `Row` instance and allows you to cust
 
 ### Install via CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like SwiftDate in your projects. You can install it with the following command:
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like Flow in your projects. You can install it with the following command:
 
 ```bash
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.0.1+ is required to build SwiftDate 4+ (along with Swift 3 and Xcode 8).
+> CocoaPods 1.0.1+ is required to build Flow.
 
 #### Install via Podfile
 
-To integrate SwiftDate into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate Flow into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -399,7 +415,7 @@ platform :ios, '8.0'
 
 target 'TargetName' do
   use_frameworks!
-  pod 'Flow'
+  pod 'FlowTables'
 end
 ```
 
@@ -422,7 +438,7 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate SwiftDate into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate Flow into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
 github "malcommac/Flow"

@@ -40,6 +40,7 @@ public enum SectionType {
 	case footer
 }
 
+/// Section represent a single Table's section. It contains rows, may have an header or a footer.
 open class Section {
 	
 	/// The rows of this section

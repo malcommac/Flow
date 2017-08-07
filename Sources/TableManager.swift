@@ -30,6 +30,9 @@
 import Foundation
 import UIKit
 
+/// TableManager is the class which manage the content and events of a `UITableView`.
+/// You need to allocate this class with a valid table instance to manage.
+/// Then you can use public funcs to add, remove or move rows.
 open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	/// Scroll view delegate for associated table
@@ -243,20 +246,16 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self
 	}
 	
-	/// Add rows to a section specified at index, if index is `nil` a new section is appened with rows at the end of table
+	/// Add rows to a section specified at index
 	///
 	/// - Parameters:
 	///   - rows: rows to add
-	///   - index: index of the destination section. if `nil` a new section is created automatically with passed rows.
+	///   - index: index of the destination section.
 	/// - Returns: self
 	@discardableResult
-	public func add(rows: [RowProtocol], inSectionAt index: Int? = nil) -> Self {
-		if let index = index {
-			guard index < self.sections.count else { return self }
-			self.sections[index].rows.append(contentsOf: rows)
-		} else {
-			self.sections.append(Section(rows: rows))
-		}
+	public func add(rows: [RowProtocol], inSectionAt index: Int) -> Self {
+		guard index < self.sections.count else { return self }
+		self.sections[index].rows.append(contentsOf: rows)
 		return self
 	}
 
@@ -278,20 +277,16 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	}
 	
 	
-	/// Add a new row into specified section. If section index is `nil` a new section is created with the row.
+	/// Add a new row into specified section.
 	///
 	/// - Parameters:
 	///   - row: row to add
-	///   - index: index of the destination section. `nil` to create and append a new one at the end of the table
+	///   - index: index of the destination section.
 	/// - Returns: self
 	@discardableResult
-	public func add(row: RowProtocol, inSectionAt index: Int? = nil) -> Self {
-		if let index = index {
-			guard index < self.sections.count else { return self }
-			self.sections[index].rows.append(row)
-		} else {
-			self.sections.append(Section(rows: [row]))
-		}
+	public func add(row: RowProtocol, inSectionAt index: Int) -> Self {
+		guard index < self.sections.count else { return self }
+		self.sections[index].rows.append(row)
 		return self
 	}
 	
