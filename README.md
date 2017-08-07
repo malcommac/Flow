@@ -1,12 +1,12 @@
 ## Flow
 #### The great way to deal with UITableViews in iOS
 
-### What's Flow?
+## What's Flow?
 Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 Say goodbye to the mess of `UITableViewDataSource` and `UITableViewDelegate` implementations: start flowing your tables!
 
-### What it can do
+## A real world example
 The following code is the only required to create a table for some football players *(you can also find it in our example application)*:
 
 ```swift
@@ -21,7 +21,7 @@ tableManager.add(rows: rows)
 
 A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
 
-### Main Features
+## Main Features
 Main features of Flow includes:
 * **Declare the content**: Decide cell's class, the model and use array-like methods to add/remove or manage rows into the table. No more data source, no more delegate, just plain understandable methods to manage what kind of data you want to display (auto animations included!).
 * **Separation of concerns**: Let the cell do its damn job; passing represented item (model) to the cell you can add a layer of separation between your model, your view controller and the cell which represent the model itself. Stop doing cell population inside the `tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)` datasource function. Be [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)).
@@ -30,14 +30,14 @@ Main features of Flow includes:
 * **AutoLayout support**: Provide a simple mechanism to specify the height of a cell or leave the class decide the best one upon described constraints.
 * **Animations**: Like `performBatchUpdates` of `UICollectionView` Flow manage automatically what kind of animations perform on the table as you change the layout.
 
-### Requirements
+## Requirements
 Flow minimum requirements are:
 * iOS 8+
 * Swift 3+
 
 We are supporting both [CocoaPods]() and [Chartage]().
 
-### Author & License
+## Author & License
 Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
 
 This library is licensed under [MIT License](https://opensource.org/licenses/MIT).
@@ -46,27 +46,39 @@ If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
 
-### Full documentation
-* [Basic Entities]()
-* [A small example]()
-  * [Create the `TableManager`]()
-  * [Create `UITableViewCell` subclass]()
-  * [Create Cells in Interface Builder]()
-  * [Manage the size of the `UITableViewCell`]()
-  * [Create your `Rows`]()
-  * [Create a new `Section` (and manage Header and Footer)]()
-* [Respond to `Row` events]()
-* [Supporting `UITableView` Animations]()
+## Full documentation
+* [Architecture](#architecture)
+* [Example](#example)
+  * [Create the `TableManager`](#create_tablemanager)
+  * [Create `UITableViewCell` subclass](#create_cell)
+  * [Create Cells in Interface Builder](#create_cell_ib)
+  * [Manage the size of the `UITableViewCell`](#manage_cell_size)
+  * [Create your `Rows`](#create_rows)
+  * [Create a new `Section` (and manage Header and Footer)](#create_section)
+* [Supporting `UITableView` Animations](#table_animations)
+* [Respond to `Row` events](#row_events)
 
+** API Documentation **
+* [`TableManager`](#api_tablemanager)
+* [`Section`](#api_section)
+* [`Row`](#api_row)
 
-#### Basic Entities
+<a name="architecture" />
+
+### Architecture
 Flow basically is composed by four different entities:
 * **TableManager**: a single table manager is responsible to manage the content of a `UITableView` instance.
 * **Section**: represent a section of a table. It encapsulate the logic to manage rows into the section, custom header or footer.
 * **Row**: represent a single row of the table; when you create a new row to insert into the table you will specify the class you want to use to represent it (a subclass of `UITableViewCell`) and the model which you are about to represent (any object you want).
 * **SectionView**: if you want to create custom header/footer into the table you are using this class to create reusable views. As like for rows also `SectionView` are associated to a specific model to represent.
 
-#### Create the `TableManager`
+<a name="example" />
+
+### Example
+
+<a name="create_tablemanager" />
+
+### Create the `TableManager`
 
 First of all you need to create your table manager.
 You will create it (generally) in your view controller:
@@ -77,7 +89,9 @@ self.tableManager = TableManager(table: self.table!)
 
 From now your `UITableView` instance is backed by Flow Table Manager; you will refer to it to manage the content you want to display.
 
-#### Create `UITableViewCell` subclass
+<a name="create_cell" />
+
+### Create `UITableViewCell` subclass
 
 Suppose you want to represent a list of soccer players; you will have an array of players (suppose they are represented by `PlayerModel` class). Now you need to create an `UITableViewCell` subclass (`PlayerCell`) which represent this kind of data.
 `PlayerCell` is a normal `UITableViewCell` which is conform to `DeclarativeCell` protocol which is needed to define some intrinsic properties of the cell itself.
@@ -100,7 +114,10 @@ public class PlayerCell: UITableViewCell, DeclarativeCell {
     }
 }
 ```
-#### Create Cells in Interface Builder
+
+<a name="create_cell_ib" />
+
+### Create Cells in Interface Builder
 
 You can create the UI of your cell in two different ways:
 * **Using Storyboard**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
@@ -108,7 +125,9 @@ You can create the UI of your cell in two different ways:
 
 Flow will take care of the load and dequeue of the instances for you!
 
-#### Manage the size of the `UITableViewCell`
+<a name="manage_cell_size" />
+
+### Manage the size of the `UITableViewCell`
 
 If your cell has a fixed height which does not change with the content of the model you want also implement the following static properties:
 
@@ -117,7 +136,9 @@ If your cell has a fixed height which does not change with the content of the mo
 
 If your cell needs to evaluate the height based upon the content you can override the `evaluateRowHeight()` and/or `evaluateEstimatedHeight()` of your `Row` class (we'll see it later).
 
-#### Create your `Rows`
+<a name="create_rows" />
+
+### Create your `Rows`
 
 As we said each section of the table is managed by a `Section` instance and each row by a `Row` instance.
 When you add rows to a table manager you are creating a section automatically (unless you specify a destination `Section` or create a new `Section` with the rows).
@@ -144,7 +165,9 @@ self.tableManager.reloadData() // apply changes
 
 And that's all, your table is ready!
 
-#### Create a new `Section` (and manage Header and Footer)
+<a name="create_section" />
+
+### Create a new `Section` (and manage Header and Footer)
 If not specified sections are created automatically. You can however create a new `Section` instance and assign rows to it and customize the appearance of the header/footer.
 
 Section header/footer view can be plain `String` objects (just assign the `headerTitle` or `footerTitle` of the `Section`) or custom `UITableViewHeaderFooterView`.
@@ -179,8 +202,9 @@ let realMadridSection = Section(teamPlayers, headerView: SectionView<TeamSection
 self.tableManager.add(section: realMadridSection)
 self.tableManager.reloadData()
 ```
+<a name="table_animations" />
 
-#### Supporting TableView Animations
+### Supporting `UITableView` animations
 
 Flow fully supports animation for `UITableView` changes. As like for `UICollectionView` you will need to call a func which encapsulate the operations you want to apply.
 
@@ -201,8 +225,9 @@ self.tableManager?.update(animation: .automatic, {
 	self.tableManager?.add(row: newPlayer, in: self.tableManager?.section(atIndex: 0)) // add a new row in section 0
 })
 ```
+<a name="row_events" />
 
-#### Respond to `Row` events
+### Respond to `Row` events
 
 Flow allows you to encapsulate the logic of your `UITableViewCell` instances directly in your `Row` objects. You can listen for `dequeue`, `tap`, manage `highlights` or `edit`... pratically everything you can do with plain tables, but more confortably.
 
@@ -221,7 +246,9 @@ let rows = Row<PlayerCell>.create(players, { row in
 
 All other events are described in [Row Events]() section.
 
-#### `TableManager` functions
+<a name="api_tablemanager" />
+
+### API: `TableManager`
 
 **Reload**
 * `reloadData()` reload the data inside managed table. You must call it at the end of your operation in order to reflect changes. Reload is not animated.
@@ -249,7 +276,9 @@ Note: all of these events can be used sequentially but you need to call `reloadD
 **Get section**
 * `section(atIndex idx: Int)` return setion at specified index.
 
-#### `Section` functions
+<a name="api_sections" />
+
+### API: `Section`
 
 **Initialize**
 * `init(_ rows:, header:,footer:)` Initialize a new section with a set of `rows`, optional simple header/footer strings.
@@ -265,7 +294,9 @@ Note: you must call `reloadData()` to reflect changes (or `update()` and add ope
 * `replace(rowAt index: Int, with row: RowProtocol)` replace a row with another row.
 * `remove(rowAt index: Int)` remove a row at specified index.
 
-#### `Row` functions
+<a name="api_row" />
+
+### API: `Row`
 
 **Initialize**
 * `init(_ item: Cell.T, _ configurator: TableRowConfigurator? = nil)` Initialize a new `Row` with a single model (`item`) and optional configuration block you can define to initialize your class.
