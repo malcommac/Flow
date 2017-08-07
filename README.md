@@ -20,13 +20,14 @@ Flow is a Swift lightweight library which help you to better manage content in U
 The following code is the only required to create a complete  which shows  some football players *(the complete example is also available in project's demo)*:
 
 ```swift
-let players: [PlayerModel] = ... // load player's models
+let players: [PlayerModel] = ... // your array of players
 let rows = Row<PlayerCell>.create(players, { row in // create rows
-row.onTap = { _, path in // reponds to tap
- print("Tap on '\(row.item.fullName)'")
- return nil
+row.onTap = { _, path in // reponds to tap on cells
+  print("Tap on '\(row.item.fullName)'")
+  return nil
 }
-tableManager.add(rows: rows)
+tableManager.add(rows: rows) // just add them to the table
+tableManager.reloadData()
 ```
 
 A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
