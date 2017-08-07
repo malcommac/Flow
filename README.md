@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommacx/SwiftDate/master/logo.png" width=210px height=211 alt="SwiftDate" title="SwiftDate">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/library_topbar.png" width=210px height=211 alt="Flow" title="Flow">
 </p>
 
 [![Carthage compatible](https://travis-ci.org/malcommac/Flow.svg)](https://travis-ci.org/malcommac/Flow) [![Version](https://img.shields.io/cocoapods/v/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![License](https://img.shields.io/cocoapods/l/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![Platform](https://img.shields.io/cocoapods/p/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow)
@@ -9,8 +9,6 @@
 
 <p align="center" >★★ <b>Star our github repository to help us!</b> ★★</p>
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
-
-
 
 ## WHAT'S FLOW
 Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
@@ -57,10 +55,12 @@ If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
 
-## YOU MAY LIKE
+## OTHER LIBRARIES YOU MAY LIKE
 
 I'm also working on several other projects you may like.
 Take a look below:
+
+<p align="center" >
 
 | Library         | Description                                      |
 |-----------------|--------------------------------------------------|
@@ -70,6 +70,8 @@ Take a look below:
 | [**SwiftLocation**](https://github.com/malcommac/SwiftLocation)   | Efficient location manager                       |
 | [**Flow**](https://github.com/malcommac/Flow)            | The great way to create and manage tables in iOS |
 | [**SwiftMsgPack**](https://github.com/malcommac/SwiftMsgPack)    | Fast/efficient msgPack encoder/decoder           |
+</p>
+
 * * *
 
 ## DOCUMENTATION
