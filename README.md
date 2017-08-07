@@ -5,7 +5,7 @@
 [![Carthage compatible](https://travis-ci.org/malcommac/Flow.svg)](https://travis-ci.org/malcommac/Flow) [![Version](https://img.shields.io/cocoapods/v/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![License](https://img.shields.io/cocoapods/l/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![Platform](https://img.shields.io/cocoapods/p/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow)
 
 ## Flow
-### The great way to deal with UITableViews in iOS
+### Finally, the great way to create and manage UITableViews in iOS
 
 <p align="center" >★★ <b>Star our github repository to help us!</b> ★★</p>
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
@@ -13,10 +13,11 @@
 ## WHAT'S FLOW
 Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
 
-Say goodbye to the mess of `UITableViewDataSource` and `UITableViewDelegate` implementations: start flowing your tables!
+**Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of all!
 
-## WHAT YOU CAN DO WITH FLOW
-The following code is the only required to create a table for some football players *(you can also find it in our example application)*:
+## WHAT YOU CAN REALLY DO WITH FLOW
+
+The following code is the only required to create a complete  which shows  some football players *(the complete example is also available in project's demo)*:
 
 ```swift
 let players: [PlayerModel] = ... // load player's models
