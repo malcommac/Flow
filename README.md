@@ -8,7 +8,7 @@
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
 ## Flow
-### Finally, the great way to create and manage UITableViews in iOS
+### the cool way to create and manage UITableViews in iOS
 
 <p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
 
