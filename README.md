@@ -37,6 +37,8 @@ tableManager.reloadData()
 
 A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
 
+(A complete introductory article on this topic can be found on my blog at: ["Forget datasources & delegates: a new way to create and manage UITableView"](http://danielemargutti.com/2017/08/28/forget-datasources-delegates-a-new-way-to-create-and-manage-uitableview))
+
 ## MAIN FEATURES
 Main features of Flow includes:
 * **Declare the content**: Decide cell's class, the model and use array-like methods to add/remove or manage rows into the table. No more data source, no more delegate, just plain understandable methods to manage what kind of data you want to display (auto animations included!).
