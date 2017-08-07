@@ -243,15 +243,21 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self
 	}
 	
-	/// Move a row in another position.
-	/// This is a composed operation: first of all row is removed from source, then is added to the new path.
+	/// Add rows to a section specified at index, if index is `nil` a new section is appened with rows at the end of table
 	///
 	/// - Parameters:
-	///   - indexPath: source index path
-	///   - destIndexPath: destination index path
-	public func move(row indexPath: IndexPath, to destIndexPath: IndexPath) {
-		let row = self.section(atIndex: indexPath.section)!.remove(rowAt: indexPath.row)
-		self.section(atIndex: destIndexPath.section)!.add(row, at: destIndexPath.row)
+	///   - rows: rows to add
+	///   - index: index of the destination section. if `nil` a new section is created automatically with passed rows.
+	/// - Returns: self
+	@discardableResult
+	public func add(rows: [RowProtocol], inSectionAt index: Int? = nil) -> Self {
+		if let index = index {
+			guard index < self.sections.count else { return self }
+			self.sections[index].rows.append(contentsOf: rows)
+		} else {
+			self.sections.append(Section(rows: rows))
+		}
+		return self
 	}
 
 	/// Add a new row into a section; if section is `nil` a new section is created and added at the end
@@ -269,6 +275,35 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			self.sections.append(Section(rows: [row]))
 		}
 		return self
+	}
+	
+	
+	/// Add a new row into specified section. If section index is `nil` a new section is created with the row.
+	///
+	/// - Parameters:
+	///   - row: row to add
+	///   - index: index of the destination section. `nil` to create and append a new one at the end of the table
+	/// - Returns: self
+	@discardableResult
+	public func add(row: RowProtocol, inSectionAt index: Int? = nil) -> Self {
+		if let index = index {
+			guard index < self.sections.count else { return self }
+			self.sections[index].rows.append(row)
+		} else {
+			self.sections.append(Section(rows: [row]))
+		}
+		return self
+	}
+	
+	/// Move a row in another position.
+	/// This is a composed operation: first of all row is removed from source, then is added to the new path.
+	///
+	/// - Parameters:
+	///   - indexPath: source index path
+	///   - destIndexPath: destination index path
+	public func move(row indexPath: IndexPath, to destIndexPath: IndexPath) {
+		let row = self.section(atIndex: indexPath.section)!.remove(rowAt: indexPath.row)
+		self.section(atIndex: destIndexPath.section)!.add(row, at: destIndexPath.row)
 	}
 	
 	/// Insert a section at specified index of the table
