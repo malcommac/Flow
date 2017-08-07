@@ -1,12 +1,23 @@
-## Flow
-#### The great way to deal with UITableViews in iOS
+<p align="center" >
+  <img src="https://raw.githubusercontent.com/malcommacx/SwiftDate/master/logo.png" width=210px height=211 alt="SwiftDate" title="SwiftDate">
+</p>
 
-## What's Flow?
+[![Carthage compatible](https://travis-ci.org/malcommac/Flow.svg)](https://travis-ci.org/malcommac/Flow) [![Version](https://img.shields.io/cocoapods/v/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![License](https://img.shields.io/cocoapods/l/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow) [![Platform](https://img.shields.io/cocoapods/p/Flow.svg?style=flat)](http://cocoadocs.org/docsets/Flow)
+
+## Flow
+### The great way to deal with UITableViews in iOS
+
+<p align="center" >★★ <b>Star our github repository to help us!</b> ★★</p>
+<p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
+
+
+
+## WHAT'S FLOW
 Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 Say goodbye to the mess of `UITableViewDataSource` and `UITableViewDelegate` implementations: start flowing your tables!
 
-## A real world example
+## WHAT YOU CAN DO WITH FLOW
 The following code is the only required to create a table for some football players *(you can also find it in our example application)*:
 
 ```swift
@@ -21,7 +32,7 @@ tableManager.add(rows: rows)
 
 A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
 
-## Main Features
+## MAIN FEATURES
 Main features of Flow includes:
 * **Declare the content**: Decide cell's class, the model and use array-like methods to add/remove or manage rows into the table. No more data source, no more delegate, just plain understandable methods to manage what kind of data you want to display (auto animations included!).
 * **Separation of concerns**: Let the cell do its damn job; passing represented item (model) to the cell you can add a layer of separation between your model, your view controller and the cell which represent the model itself. Stop doing cell population inside the `tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)` datasource function. Be [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)).
@@ -30,14 +41,14 @@ Main features of Flow includes:
 * **AutoLayout support**: Provide a simple mechanism to specify the height of a cell or leave the class decide the best one upon described constraints.
 * **Animations**: Like `performBatchUpdates` of `UICollectionView` Flow manage automatically what kind of animations perform on the table as you change the layout.
 
-## Requirements
+## REQUIREMENTS
 Flow minimum requirements are:
 * iOS 8+
 * Swift 3+
 
 We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
 
-## Author & License
+## AUTHOR & LICENSE
 Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
 
 This library is licensed under [MIT License](https://opensource.org/licenses/MIT).
@@ -46,9 +57,22 @@ If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
 
+## YOU MAY LIKE
+
+I'm also working on several other projects you may like.
+Take a look below:
+
+| Library         | Description                                      |
+|-----------------|--------------------------------------------------|
+| [**SwiftDate**](https://github.com/malcommac/SwiftDate)       | The best way to manage date/timezones in Swift   |
+| [**Hydra**](https://github.com/malcommac/Hydra)           | Write better async code: async/await & promises  |
+| [**SwiftRichString**](https://github.com/malcommac/SwiftRichString) | Elegant & Painless NSAttributedString in Swift   |
+| [**SwiftLocation**](https://github.com/malcommac/SwiftLocation)   | Efficient location manager                       |
+| [**Flow**](https://github.com/malcommac/Flow)            | The great way to create and manage tables in iOS |
+| [**SwiftMsgPack**](https://github.com/malcommac/SwiftMsgPack)    | Fast/efficient msgPack encoder/decoder           |
 * * *
 
-## Table Of Contents
+## DOCUMENTATION
 
 * [Main Architecture](#architecture)
 * [Example](#example)
@@ -61,7 +85,7 @@ If you are using it in your software:
 * [`UITableView` Animations](#table_animations)
 * [Observe `Row`/Cell Events](#row_events)
 
-## Full API Documentation
+## API Doc
 
 * [`TableManager` object](#api_tablemanager)
 * [`Section` object](#api_section)
