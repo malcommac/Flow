@@ -35,7 +35,7 @@ Flow minimum requirements are:
 * iOS 8+
 * Swift 3+
 
-We are supporting both [CocoaPods]() and [Chartage]().
+We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
 
 ## Author & License
 Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
@@ -46,31 +46,38 @@ If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
 
-## Full documentation
-* [Architecture](#architecture)
+* * *
+
+## Table Of Contents
+
+* [Main Architecture](#architecture)
 * [Example](#example)
   * [Create the `TableManager`](#create_tablemanager)
-  * [Create `UITableViewCell` subclass](#create_cell)
-  * [Create Cells in Interface Builder](#create_cell_ib)
-  * [Manage the size of the `UITableViewCell`](#manage_cell_size)
-  * [Create your `Rows`](#create_rows)
-  * [Create a new `Section` (and manage Header and Footer)](#create_section)
-* [Supporting `UITableView` Animations](#table_animations)
-* [Respond to `Row` events](#row_events)
+  * [Create `UITableViewCell` cell](#create_cell)
+  * [Design cell in Interface Builder](#create_cell_ib)
+  * [Manage the size of the cell](#manage_cell_size)
+  * [Create and add `Rows` to the table](#create_rows)
+  * [Create `Section` and manage Header/Footer](#create_section)
+* [`UITableView` Animations](#table_animations)
+* [Observe `Row`/Cell Events](#row_events)
 
-** API Documentation **
-* [`TableManager`](#api_tablemanager)
-* [`Section`](#api_section)
-* [`Row`](#api_row)
+## Full API Documentation
+
+* [`TableManager` object](#api_tablemanager)
+* [`Section` object](#api_section)
+* [`Row` object](#api_row)
+
+* * *
 
 <a name="architecture" />
 
-### Architecture
+### Main Architecture
+
 Flow basically is composed by four different entities:
-* **TableManager**: a single table manager is responsible to manage the content of a `UITableView` instance.
-* **Section**: represent a section of a table. It encapsulate the logic to manage rows into the section, custom header or footer.
-* **Row**: represent a single row of the table; when you create a new row to insert into the table you will specify the class you want to use to represent it (a subclass of `UITableViewCell`) and the model which you are about to represent (any object you want).
-* **SectionView**: if you want to create custom header/footer into the table you are using this class to create reusable views. As like for rows also `SectionView` are associated to a specific model to represent.
+* **`TableManager`**: a single table manager is responsible to manage the content of a `UITableView` instance.
+* **`Section`**: represent a section of a table. It encapsulate the logic to manage rows into the section, custom header or footer.
+* **`Row`**: represent a single row of the table; when you create a new row to insert into the table you will specify the class you want to use to represent it (a subclass of `UITableViewCell`) and the model which you are about to represent (any object you want).
+* **`SectionView`**: if you want to create custom header/footer into the table you are using this class to create reusable views. As like for rows also `SectionView` are associated to a specific model to represent.
 
 <a name="example" />
 
@@ -91,7 +98,7 @@ From now your `UITableView` instance is backed by Flow Table Manager; you will r
 
 <a name="create_cell" />
 
-### Create `UITableViewCell` subclass
+### Create `UITableViewCell` cell
 
 Suppose you want to represent a list of soccer players; you will have an array of players (suppose they are represented by `PlayerModel` class). Now you need to create an `UITableViewCell` subclass (`PlayerCell`) which represent this kind of data.
 `PlayerCell` is a normal `UITableViewCell` which is conform to `DeclarativeCell` protocol which is needed to define some intrinsic properties of the cell itself.
@@ -117,7 +124,7 @@ public class PlayerCell: UITableViewCell, DeclarativeCell {
 
 <a name="create_cell_ib" />
 
-### Create Cells in Interface Builder
+### Design cell in Interface Builder
 
 You can create the UI of your cell in two different ways:
 * **Using Storyboard**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
@@ -127,7 +134,7 @@ Flow will take care of the load and dequeue of the instances for you!
 
 <a name="manage_cell_size" />
 
-### Manage the size of the `UITableViewCell`
+### Manage the size of the cell
 
 If your cell has a fixed height which does not change with the content of the model you want also implement the following static properties:
 
@@ -138,7 +145,7 @@ If your cell needs to evaluate the height based upon the content you can overrid
 
 <a name="create_rows" />
 
-### Create your `Rows`
+### Create and add `Rows` to the table
 
 As we said each section of the table is managed by a `Section` instance and each row by a `Row` instance.
 When you add rows to a table manager you are creating a section automatically (unless you specify a destination `Section` or create a new `Section` with the rows).
@@ -167,7 +174,7 @@ And that's all, your table is ready!
 
 <a name="create_section" />
 
-### Create a new `Section` (and manage Header and Footer)
+### Create `Section` and manage Header/Footer
 If not specified sections are created automatically. You can however create a new `Section` instance and assign rows to it and customize the appearance of the header/footer.
 
 Section header/footer view can be plain `String` objects (just assign the `headerTitle` or `footerTitle` of the `Section`) or custom `UITableViewHeaderFooterView`.
@@ -204,7 +211,7 @@ self.tableManager.reloadData()
 ```
 <a name="table_animations" />
 
-### Supporting `UITableView` animations
+### `UITableView` animations
 
 Flow fully supports animation for `UITableView` changes. As like for `UICollectionView` you will need to call a func which encapsulate the operations you want to apply.
 
@@ -227,7 +234,7 @@ self.tableManager?.update(animation: .automatic, {
 ```
 <a name="row_events" />
 
-### Respond to `Row` events
+### Observe `Row`/Cell Events
 
 Flow allows you to encapsulate the logic of your `UITableViewCell` instances directly in your `Row` objects. You can listen for `dequeue`, `tap`, manage `highlights` or `edit`... pratically everything you can do with plain tables, but more confortably.
 
@@ -244,11 +251,15 @@ let rows = Row<PlayerCell>.create(players, { row in
 })
 ```
 
-All other events are described in [Row Events]() section.
+All other events are described in [Row Events](row_events) section.
+
+* * *
+
+## API SDK Documentation
 
 <a name="api_tablemanager" />
 
-### API: `TableManager`
+### `TableManager` object
 
 **Reload**
 * `reloadData()` reload the data inside managed table. You must call it at the end of your operation in order to reflect changes. Reload is not animated.
@@ -315,6 +326,8 @@ Here you will receive the instance of the cell and relative path (you can use `s
 
 You can also observe the `onDequeue` event; it happends just after the cell is dequeued from the table's pool.
 
+<a name="row_events" />
+
 **Observable Events**
 
 The following events are observable by the `Row` instance and allows you to customize behaviour and appearance of the single cell.
@@ -331,3 +344,60 @@ The following events are observable by the `Row` instance and allows you to cust
 * `onShouldHighlight: ((RowProtocol.RowInfo) -> (Bool))?` Message received when a cell at specified path is about to be selected. If `false` is returned highlight of the cell will be disabled. If not implemented the default behaviour of the table is to allow highlights of the cell.
 * `canMove: ((RowProtocol.RowInfo) -> (Bool))?` Asks the data source whether a given row can be moved to another location in the table view. If not implemented `false` is assumed instead.
 * `shouldIndentOnEditing: ((RowProtocol.RowInfo) -> (Bool))?` Asks the delegate whether the background of the specified row should be indented while the table view is in editing mode. If not implemented `true` is returned.
+
+* * *
+
+## Installation
+
+<a name="cocoapods" />
+
+### Install via CocoaPods
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like SwiftDate in your projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+> CocoaPods 1.0.1+ is required to build SwiftDate 4+ (along with Swift 3 and Xcode 8).
+
+#### Install via Podfile
+
+To integrate SwiftDate into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
+
+target 'TargetName' do
+  use_frameworks!
+  pod 'Flow'
+end
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+<a name="carthage" />
+
+### Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+
+You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+To integrate SwiftDate into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```ogdl
+github "malcommac/Flow"
+```
+
+Run `carthage` to build the framework and drag the built `Flow.framework` into your Xcode project.
