@@ -113,7 +113,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - animation: animation to perform; if `nil` no animation is performed and a simple `reloadData()` is done instead.
 	///   - block: block with the operation to perform.
 	public func update(animation: UITableViewRowAnimation? = nil,
-	                   _ block: @escaping ((Void) -> (Void))) {
+	                   _ block: @escaping (() -> (Void))) {
 		guard let animation = animation else {
 			block()
 			self.tableView?.reloadData()

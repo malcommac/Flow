@@ -59,7 +59,7 @@ public protocol RowProtocol {
 	/// to the `estimatedHeight` of the provided cell class.
 	/// If, even this method, return `nil` `TableManager` attempt to evaluate the height of the cell
 	/// by creating it and getting the size of the `contentView`.
-	var evaluateEstimatedHeight: ((Void) -> (CGFloat?))? { get set }
+	var evaluateEstimatedHeight: (() -> (CGFloat?))? { get set }
 
 	/// Allows the user to return the height of the cell.
 	/// This is done at runtime level when a single instance of the Row is about to be displayed.
@@ -68,7 +68,7 @@ public protocol RowProtocol {
 	/// to the `defaultHeight` of the provided cell class.
 	/// If, even this method, return `nil` `TableManager` attempt to evaluate the height of the cell
 	/// by creating it and getting the size of the `contentView`.
-	var evaluateRowHeight: ((Void) -> (CGFloat?))? { get set }
+	var evaluateRowHeight: (() -> (CGFloat?))? { get set }
 	
 	/// This is for internal purpose only.
 	var estimatedHeight: CGFloat? { get }

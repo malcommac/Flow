@@ -49,10 +49,10 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	}
 	
 	/// Estimated height of the cell. Used when autosizing is enabled
-	public var evaluateEstimatedHeight: ((Void) -> (CGFloat?))? = nil
+	public var evaluateEstimatedHeight: (() -> (CGFloat?))? = nil
 
 	/// Fixed height for cell
-	public var evaluateRowHeight: ((Void) -> (CGFloat?))? = nil
+	public var evaluateRowHeight: (() -> (CGFloat?))? = nil
 	
 	
 	/// Private
