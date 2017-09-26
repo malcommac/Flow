@@ -78,9 +78,9 @@ public class Event: CustomStringConvertible {
 	/// Description of the event
 	public var description: String {
 		switch self.type {
-		case .inserted(let items):		return "Inserted: \(items)"
-		case .deleted(let items):		return "Deleted: \(items)"
-		case .updated(let items):		return "Updated: \(items)"
+		case .inserted:		return "Inserted: \(self.indexes)"
+		case .deleted:		return "Deleted: \(self.indexes)"
+		case .updated:		return "Updated: \(self.indexes)"
 		}
 	}
 }

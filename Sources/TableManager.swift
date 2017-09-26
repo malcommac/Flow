@@ -610,7 +610,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 
 		if let onWillSelect = row.onWillSelect {
-			return onWillSelect(cell,indexPath)
+			return onWillSelect((cell,indexPath))
 		} else {
 			return indexPath // not implemented
 		}
@@ -625,13 +625,13 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 		
-		let select_behaviour = row.onTap?(cell,indexPath) ?? .deselect(true)
+		let select_behaviour = row.onTap?((cell,indexPath)) ?? .deselect(true)
 		switch select_behaviour {
 		case .deselect(let animated):
 			// remove selection, is a temporary tap selection
 			tableView.deselectRow(at: indexPath, animated: animated)
 		case .keepSelection:
-			row.onSelect?(cell,indexPath) // dispatch selection change event
+			row.onSelect?((cell,indexPath)) // dispatch selection change event
 		}
 	}
 	
@@ -644,7 +644,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		// Dispatch on de-select event to the represented model of the row
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onDeselect?(cell,indexPath)
+		row.onDeselect?((cell,indexPath))
 	}
 	
 	
@@ -659,7 +659,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		// Dispatch display event for a particular cell to its represented model
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onWillDisplay?(cell,indexPath)
+		row.onWillDisplay?((cell,indexPath))
 	}
 	
 	
@@ -672,7 +672,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.onShouldHighlight?(cell,indexPath) ?? true
+		return row.onShouldHighlight?((cell,indexPath)) ?? true
 	}
 	
 	
@@ -686,7 +686,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 		// If no actions are definined cell is not editable
-		return row.onEdit?(cell,indexPath)?.count ?? 0 > 0
+		return row.onEdit?((cell,indexPath))?.count ?? 0 > 0
 	}
 	
 	
@@ -700,7 +700,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.onEdit?(cell,indexPath) ?? nil
+		return row.onEdit?((cell,indexPath)) ?? nil
 	}
 	
 	
@@ -714,7 +714,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		guard editingStyle == .delete else { return }
 		let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onDelete?(cell,indexPath)
+		row.onDelete?((cell,indexPath))
 	}
 	
 	
