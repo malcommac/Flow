@@ -51,6 +51,13 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 		return Cell.reuseIdentifier
 	}
 	
+	public weak var _instance: UITableViewCell?
+
+	/// Weak reference to cell instances
+	public var cell: Cell? {
+		get { return _instance as? Cell }
+	}
+	
 	/// Estimated height of the cell. Used when autosizing is enabled
 	public var evaluateEstimatedHeight: (() -> (CGFloat?))? = nil
 
@@ -87,8 +94,9 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// Configure cell
 	///
 	/// - Parameter cell: cell instance
-	open func configure(_ cell: UITableViewCell, path: IndexPath) {
-		(cell as? Cell)?.configure(self.model, path: path)
+	open func configure(_ instance: UITableViewCell, path: IndexPath) {
+		self._instance = instance
+		self.cell?.configure(self.model, path: path)
 	}
 	
 	/// Message received when a cell instance has been dequeued from table

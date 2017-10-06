@@ -44,7 +44,15 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// This array contains all the removed row in an update sessions.
 	/// It's used to dispatch `onDidEndDisplay` messages before a cell is definitively removed
 	/// from table.
-	private var removedRows: [RowProtocol] = []
+	internal var removedRows: [Int: RowProtocol] = [:]
+	
+	internal func keepRemovedRows(_ rows: [RowProtocol]) {
+		rows.forEach {
+			if let cell = $0._instance {
+				removedRows[cell.hashValue] = $0
+			}
+		}
+	}
 	
 	/// Number of sections in table
 	private(set) var sections: ObservableArray<Section> = [] { // [Section] = [] {
@@ -286,6 +294,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			section.rows.append(contentsOf: rows)
 		} else {
 			let newSection = Section(rows: rows)
+			newSection.manager = self
 			self.sections.append(newSection)
 		}
 		return self
@@ -316,7 +325,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		if let section = section {
 			section.rows.append(row)
 		} else {
-			self.sections.append(Section(rows: [row]))
+			let newSection = Section(rows: [row])
+			newSection.manager = self
+			self.sections.append(newSection)
 		}
 		return self
 	}
@@ -367,6 +378,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func replace(sectionAt index: Int, with section: Section) -> Self {
 		guard index < self.sections.count else { return self }
+		self.keepRemovedRows(Array(self.sections[index].rows))
 		self.sections[index] = section
 		return self
 	}
@@ -378,6 +390,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func remove(sectionAt index: Int) -> Self {
 		guard index < self.sections.count else { return self }
+		self.keepRemovedRows(Array(self.sections[index].rows))
 		self.sections.remove(at: index)
 		return self
 	}
@@ -387,6 +400,8 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: self
 	@discardableResult
 	public func removeAll() -> Self {
+		let removedRows = self.sections.flatMap { $0.rows }
+		self.keepRemovedRows(removedRows)
 		self.sections.removeAll()
 		return self
 	}
@@ -427,11 +442,15 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: target table
 	///   - cell: cell instance
 	///   - indexPath: index path of the cell
-//    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        let row = self.sections[indexPath.section].rows[indexPath.row]
-//        let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-//        row.onDidEndDisplay?((cell,indexPath))
-//    }
+    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		let hashedRow = cell.hashValue
+		guard let row = self.removedRows[hashedRow] else {
+			return
+		}
+        let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+        row.onDidEndDisplay?((cell,indexPath))
+		self.removedRows.removeValue(forKey: hashedRow)
+    }
 	
 	/// Cell for a particular `indexPath` in target table
 	///

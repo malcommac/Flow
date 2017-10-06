@@ -46,6 +46,9 @@ open class Section {
 	/// The rows of this section
 	open internal(set) var rows: ObservableArray<RowProtocol> = []
 	
+	/// Reference to parent manager
+	internal weak var manager: TableManager? = nil
+	
 	/// Identifier string for this ection
 	open var identifier: String? = nil
 	
@@ -128,6 +131,7 @@ open class Section {
 	
 	/// Remove all rows from the section
 	open func clearAll() {
+		self.manager?.keepRemovedRows(Array(self.rows))
 		self.rows.removeAll()
 	}
 	
@@ -169,6 +173,7 @@ open class Section {
 	@discardableResult
 	open func replace(rowAt index: Int, with row: RowProtocol) -> RowProtocol {
 		guard index < self.rows.count else { return row }
+		self.manager?.keepRemovedRows([self.rows[index]])
 		self.rows[index] = row
 		return row
 	}
@@ -178,7 +183,9 @@ open class Section {
 	/// - Parameter index: index
 	@discardableResult
 	open func remove(rowAt index: Int) -> RowProtocol {
-		return self.rows.remove(at: index)
+		let removed = self.rows.remove(at: index)
+		self.manager?.keepRemovedRows([removed])
+		return removed
 	}
 
 }

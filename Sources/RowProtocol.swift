@@ -54,7 +54,9 @@ public protocol RowProtocol {
 	
 	/// Type of cell which represent the row
 	var cellType:			AnyClass { get }
-    
+	
+	var _instance:			UITableViewCell? { get }
+
     /// You can use this value if your row has a fixed height.
     /// By setting a non `nil` value your both `evaluateEstimatedHeight` and
     /// `evaluateRowHeight` will be ignored.
