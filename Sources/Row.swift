@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com
@@ -34,10 +34,13 @@ import UIKit
 open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	
 	public typealias TableRowConfigurator = ((_ maker: Row) -> (Void))
-
-	/// Item represented by the cell
-	open let item: Cell.T
 	
+	/// Item represented by the cell
+	open let model: Cell.T
+	
+	/// Optional unique identifier of the row
+	public var identifier: String? = nil
+
 	/// Hash value
 	public var hashValue: Int {
 		return ObjectIdentifier(self).hashValue
@@ -54,17 +57,25 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// Fixed height for cell
 	public var evaluateRowHeight: (() -> (CGFloat?))? = nil
 	
-	
 	/// Private
-	public var estimatedHeight: CGFloat? {
+	public var _estimatedHeight: CGFloat? {
 		return Cell.estimatedHeight
 	}
 	
+    /// You can use this value if your row has a fixed height.
+    /// By setting a non `nil` value your both `evaluateEstimatedHeight` and
+    /// `evaluateRowHeight` will be ignored.
+    public var rowHeight: CGFloat? = nil
+    
+    /// You can use this value to disable or enable highlight of the cell.
+    /// If non `nil` value is set `onShouldHighlight` will be not called.
+    public var shouldHighlight: Bool? = nil
+    
 	/// Fixed height of the cell
 	/// If you have not provided a valid height at instance level for given `Row` this is the
 	/// last chance to return a valid value. This method is called statically and you can implement
 	/// it if your cell does need to change the height but has a fixed height value (or automatic one).
-	public var defaultHeight: CGFloat? {
+	public var _defaultHeight: CGFloat? {
 		return Cell.defaultHeight
 	}
 	
@@ -77,7 +88,7 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	///
 	/// - Parameter cell: cell instance
 	open func configure(_ cell: UITableViewCell, path: IndexPath) {
-		(cell as? Cell)?.configure(self.item, path: path)
+		(cell as? Cell)?.configure(self.model, path: path)
 	}
 	
 	/// Message received when a cell instance has been dequeued from table
@@ -136,8 +147,9 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// - Parameters:
 	///   - item: item represented by the row
 	///   - maker: maker block to configure the object
-	public init(_ item: Cell.T, _ configurator: TableRowConfigurator? = nil) {
-		self.item = item
+	public init(id: String? = nil, model: Cell.T, _ configurator: TableRowConfigurator? = nil) {
+		self.identifier = id
+		self.model = model
 		configurator?(self)
 	}
 	
@@ -150,7 +162,7 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// - Returns: a list of the row
 	public static func create(_ items: [Cell.T], _ configurator: TableRowConfigurator? = nil) -> [Row] {
 		guard items.count > 0 else { return [] }
-		return items.map { Row($0, configurator) }
+		return items.map { Row(model: $0, configurator) }
 	}
 }
 

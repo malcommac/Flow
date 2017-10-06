@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com
@@ -42,9 +42,12 @@ public enum SectionType {
 
 /// Section represent a single Table's section. It contains rows, may have an header or a footer.
 open class Section {
-	
+		
 	/// The rows of this section
 	open internal(set) var rows: ObservableArray<RowProtocol> = []
+	
+	/// Identifier string for this ection
+	open var identifier: String? = nil
 	
 	/// Number of rows
 	open var countRows: Int {
@@ -74,24 +77,37 @@ open class Section {
 	open var indexTitle: String?
 
 	/// Initialize a new section of the table without sectiont's footer or header
-	/// (You can add it later by using relative properties)
-	///
-	/// - Parameter rows: rows to allocate in this section
-	public init(rows: [RowProtocol]? = nil) {
+	/// (You can add it later by using relative properties)	///
+	/// - Parameters:
+	///   - id: optional identifier of the section
+	///   - rows: rows to allocate in this section
+	public init(id: String? = nil, rows: [RowProtocol]? = nil) {
+		self.identifier = id
 		if let rows = rows {
 			self.rows.append(contentsOf: rows)
 		}
 	}
 	
+	/// Initialize a new section with a single passed row
+	///
+	/// - Parameters:
+	///   - id: optional identifier of the section
+	///   - row: row to add
+	public init(id: String? = nil, row: RowProtocol) {
+		self.identifier = id
+		self.rows = [row]
+	}
+
 	/// Initialize a new section with a list of rows and optionally a standard header
 	/// and/or footer string.
 	///
 	/// - Parameters:
+	///   - id: optional identifier of the section
 	///   - rows: rows to allocate in this section
 	///   - header: header title string
 	///   - footer: footer title string
-	public convenience init(_ rows: [RowProtocol]? = nil, header: String? = nil, footer: String? = nil) {
-		self.init(rows: rows)
+	public convenience init(id: String? = nil, _ rows: [RowProtocol]? = nil, header: String? = nil, footer: String? = nil) {
+		self.init(id: id, rows: rows)
 		self.headerTitle = header
 		self.footerTitle = footer
 	}
@@ -100,11 +116,12 @@ open class Section {
 	/// UIView subclass.
 	///
 	/// - Parameters:
+	///   - id: optional identifier of the section
 	///   - rows: rows to allocate in this section
 	///   - header: header view
 	///   - footer: footer view
-	public convenience init(_ rows: [RowProtocol]? = nil, headerView: SectionProtocol? = nil, footerView: SectionProtocol? = nil) {
-		self.init(rows: rows)
+	public convenience init(id: String? = nil, _ rows: [RowProtocol]? = nil, headerView: SectionProtocol? = nil, footerView: SectionProtocol? = nil) {
+		self.init(id: id, rows: rows)
 		self.headerView = headerView
 		self.footerView = footerView
 	}

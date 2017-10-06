@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com
@@ -30,6 +30,19 @@
 
 
 import Foundation
+
+public typealias RowIdentifier = RawRepresentable
+
+extension Sequence {
+	func find( predicate: (Self.Iterator.Element) throws -> Bool) rethrows -> Self.Iterator.Element? {
+		for element in self {
+			if try predicate(element) {
+				return element
+			}
+		}
+		return nil
+	}
+}
 
 /// Event generated for each change of the array
 public class Event: CustomStringConvertible {

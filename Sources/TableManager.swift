@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com
@@ -40,6 +40,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	/// This represent which table should be managed by this instance
 	private(set) weak var tableView: UITableView?
+	
+	/// This array contains all the removed row in an update sessions.
+	/// It's used to dispatch `onDidEndDisplay` messages before a cell is definitively removed
+	/// from table.
+	private var removedRows: [RowProtocol] = []
 	
 	/// Number of sections in table
 	private(set) var sections: ObservableArray<Section> = [] { // [Section] = [] {
@@ -210,6 +215,44 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		}
 	}
 	
+	/// Return the first section with given identifier inside the table
+	///
+	/// - Parameter identifier: identifier to search
+	/// - Returns: found Section or `nil`
+	public func section(forID identifier: String) -> Section? {
+		return self.sections.first(where: { $0.identifier == identifier })
+	}
+	
+	/// Return the first row with given identifier inside all sections of the table
+	///
+	/// - Parameter identifier: identifier to search
+	/// - Returns: found Row, or `nil`
+	public func row(forID identifier: String) -> RowProtocol? {
+		for section in self.sections {
+			if let firstMatch = section.rows.first(where: { $0.identifier == identifier }) {
+				return firstMatch
+			}
+		}
+		return nil
+	}
+	
+	/// Return any row in table's section with given identifiers
+	///
+	/// - Parameter identifiers: identifiers to search
+	/// - Returns: found `[Row]` or empty array
+	public func row(forIDs identifiers: [String]) -> [RowProtocol] {
+		var list: [RowProtocol] = []
+		for section in self.sections {
+			list.append(contentsOf: section.rows.filter {
+				if let id = $0.identifier {
+					return identifiers.contains(id)
+				}
+				return false
+			})
+		}
+		return list
+	}
+	
 	/// Add a new section to the table
 	///
 	/// - Parameter section: section to add
@@ -219,6 +262,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		self.sections.append(section)
 		return self
 	}
+
 	
 	/// Add a list of sections to the table
 	///
@@ -241,7 +285,8 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		if let section = section {
 			section.rows.append(contentsOf: rows)
 		} else {
-			self.sections.append(Section(rows: rows))
+			let newSection = Section(rows: rows)
+			self.sections.append(newSection)
 		}
 		return self
 	}
@@ -382,11 +427,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: target table
 	///   - cell: cell instance
 	///   - indexPath: index path of the cell
-	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		let row = self.sections[indexPath.section].rows[indexPath.row]
-		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-		row.onDidEndDisplay?((cell,indexPath))
-	}
+//    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        let row = self.sections[indexPath.section].rows[indexPath.row]
+//        let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+//        row.onDidEndDisplay?((cell,indexPath))
+//    }
 	
 	/// Cell for a particular `indexPath` in target table
 	///
@@ -433,10 +478,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: The table-view object requesting this information.
 	///   - indexPath: An index path that locates a row in tableView.
 	/// - Returns: A nonnegative floating-point value that estimates the height (in points) that row should be
-	public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return self.rowHeight(forRow: row, at: indexPath, estimate: true)
-	}
+    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = self.sections[indexPath.section].rows[indexPath.row]
+        return self.rowHeight(forRow: row, at: indexPath, estimate: true)
+    }
 	
 	/// Tells the delegate that a header view is about to be displayed for the specified section.
 	///
@@ -921,6 +966,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	private func rowHeight(forRow row: RowProtocol, at indexPath: IndexPath, estimate: Bool = false) -> CGFloat {
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 
+        /// If a fixed height is provided, we'll use it
+        if let fixedHeight = row.rowHeight {
+            return fixedHeight
+        }
+        
 		/// User provided a function to evaluate the height of the table
 		if row.evaluateRowHeight != nil {
 			if let height = row.evaluateRowHeight!() {
@@ -929,17 +979,13 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		}
 		
 		/// User provided the height of the table at class level (static based)
-		if let static_height = row.defaultHeight {
+		if let static_height = row._defaultHeight {
 			return static_height
 		}
 		
 		/// Attempt to estimate the height of the row automatically
-		if self.estimateRowSizeAutomatically == true {
-			if estimate == true {
-				return self.estimatedHeight(forRow: row, at: indexPath)
-			} else {
-				return self.height(forRow: row, at: indexPath)
-			}
+		if self.estimateRowSizeAutomatically == true && estimate == true {
+            return self.estimatedHeight(forRow: row, at: indexPath)
 		}
 
 		// universal fallback to automatic dimension
@@ -997,7 +1043,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			return height
 		}
 		
-		if let estimatedHeight = row.estimatedHeight , estimatedHeight > 0 {
+		if let estimatedHeight = row._estimatedHeight , estimatedHeight > 0 {
 			return estimatedHeight
 		}
 		

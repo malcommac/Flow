@@ -8,6 +8,22 @@
 
 import UIKit
 
+public extension UITableViewCell {
+    
+    public func removeMargins() {
+        self.layoutMargins = UIEdgeInsets.zero //or UIEdgeInsetsMake(top, left, bottom, right)
+        self.separatorInset = UIEdgeInsets.zero //if you also want to adjust separatorInset
+    }
+    
+}
+
+public extension String {
+    
+    public var loc: String {
+        return NSLocalizedString(self, comment: self)
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
+        
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = LoginController.create()
+        self.window?.makeKeyAndVisible()
+        
 		return true
 	}
 

@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com

@@ -1,7 +1,7 @@
 //
 //	Flow
-//	A better way to manage table contents in iOS
-//	--------------------------------------------
+//	A declarative approach to UITableView management
+//	------------------------------------------------
 //	Created by:	Daniele Margutti
 //				hello@danielemargutti.com
 //				http://www.danielemargutti.com
@@ -44,13 +44,25 @@ public enum RowTapBehaviour {
 public protocol RowProtocol {
 	
 	typealias RowInfo = (_: UITableViewCell?, _: IndexPath)
-	typealias RowEventCallback = ((RowInfo) -> (Void))
+	typealias RowEventCallback = ((RowInfo) -> ())
+		
+	/// Optional unique identifier for this row
+	var identifier:			String? { get set }
 	
 	/// Reuse identifier of the cell
 	var reuseIdentifier:	String { get }
 	
 	/// Type of cell which represent the row
 	var cellType:			AnyClass { get }
+    
+    /// You can use this value if your row has a fixed height.
+    /// By setting a non `nil` value your both `evaluateEstimatedHeight` and
+    /// `evaluateRowHeight` will be ignored.
+    var rowHeight: CGFloat? { get set }
+    
+    /// You can use this value to disable or enable highlight of the cell.
+    /// If non `nil` value is set `onShouldHighlight` will be not called.
+    var shouldHighlight: Bool? { get set }
 	
 	/// Allows the user to perform an estimation of the height of the cell.
 	/// This is done at runtime level when a single instance of the Row is about to be displayed.
@@ -71,10 +83,10 @@ public protocol RowProtocol {
 	var evaluateRowHeight: (() -> (CGFloat?))? { get set }
 	
 	/// This is for internal purpose only.
-	var estimatedHeight: CGFloat? { get }
+	var _estimatedHeight: CGFloat? { get }
 	
 	/// This is for internal purpose only.
-	var defaultHeight: CGFloat? { get }
+	var _defaultHeight: CGFloat? { get }
 		
 	/// Allows the user to configure the cell instance
 	///
