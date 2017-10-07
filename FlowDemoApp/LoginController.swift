@@ -9,6 +9,7 @@
 import UIKit
 import Flow
 
+
 class LoginController: UIViewController {
 	
 	@IBOutlet public var table: UITableView?
@@ -69,9 +70,15 @@ class LoginController: UIViewController {
             }
         }
 		let login_button = Row<CellButton>(model: "LOGIN!")
-        login_button.onDequeue = { data in
-            (data.0 as! CellButton).onTap = self.executeLogin
-        }
+//        login_button.onDequeue = { data in
+//            (data.0 as! CellButton).onTap = self.executeLogin
+//        }
+		
+		login_button.onDequeue = { row in
+			//let cell = (row as! Row<CellButton>).cell
+
+		}
+		
         login_button.rowHeight = 70
         login_button.shouldHighlight = false
         

@@ -51,6 +51,18 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 		return Cell.reuseIdentifier
 	}
 	
+	/// When associated cell instance is dequeued this contains
+	/// the indexPath of the cell itself.
+	/// You should not modify it.
+	public var _indexPath: IndexPath?
+	public var indexPath: IndexPath? {
+		get { return self._indexPath }
+	}
+
+	/// Internal reference (weak) to cell instance.
+	/// You should not reference to it (we cannot assign private var in
+	/// protocols yet); use `cell` property instead, it will return
+	/// the instance of the cell used to represent the row itself.
 	public weak var _instance: UITableViewCell?
 
 	/// Weak reference to cell instances
@@ -95,61 +107,62 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	///
 	/// - Parameter cell: cell instance
 	open func configure(_ instance: UITableViewCell, path: IndexPath) {
-		self._instance = instance
+		self._instance = instance // set instance of the cell
+		self._indexPath = path // set the indexPath of the cell
 		self.cell?.configure(self.model, path: path)
 	}
 	
 	/// Message received when a cell instance has been dequeued from table
-	public var onDequeue: RowProtocol.RowEventCallback? = nil
-	
+	public var onDequeue: RowProtocol.RowReference? = nil
+
 	/// Message received when user tap on a cell at specified path. You must provide a default behaviour
 	/// by returning one of the `RowTapBehaviour` options. If `nil` is provided the default
 	/// behaviour is `deselect` with animation.
-	public var onTap: ((RowProtocol.RowInfo) -> (RowTapBehaviour?))? = nil
-	
+	public var onTap: ((RowProtocol) -> (RowTapBehaviour?))? = nil
+
 	/// Message received when a selection has been made. Selection still active only if
 	/// `onTap` returned `.keepSelection` option.
-	public var onDelete: RowProtocol.RowEventCallback? = nil
-	
+	public var onDelete: RowReference? = nil
+
 	/// Message received when a selection has been made. Selection still active only if
 	/// `onTap` returned `.keepSelection` option.
-	public var onSelect: RowProtocol.RowEventCallback? = nil
-	
+	public var onSelect: RowReference? = nil
+
 	/// Message received when a cell at specified path is about to be swiped in order to allow
 	/// on or more actions into the context.
 	/// You must provide an array of UITableViewRowAction objects representing the actions
 	/// for the row. Each action you provide is used to create a button that the user can tap.
 	/// By default no swipe actions are returned.
-	public var onEdit: ((RowProtocol.RowInfo) -> ([UITableViewRowAction]?))? = nil
-	
+	public var onEdit: ((RowProtocol) -> ([UITableViewRowAction]?))? = nil
+
 	/// Message received when cell at specified path did deselected
-	public var onDeselect: RowProtocol.RowEventCallback? = nil
-	
+	public var onDeselect: RowReference? = nil
+
 	/// Message received when a cell at specified path is about to be displayed.
 	/// Gives the delegate the opportunity to modify the specified cell at
 	/// the given row and column location before the browser displays it.
-	public var onWillDisplay: RowProtocol.RowEventCallback? = nil
-	
+	public var onWillDisplay: RowReference? = nil
+
 	/// The cell was removed from the table
-	public var onDidEndDisplay: RowEventCallback? = nil
+	public var onDidEndDisplay: RowReference? = nil
 
 	/// Message received when a cell at specified path is about to be selected.
-	public var onWillSelect: ((RowProtocol.RowInfo) -> (IndexPath?))? = nil
-	
+	public var onWillSelect: ((RowProtocol) -> (IndexPath?))? = nil
+
 	/// Message received when a cell at specified path is about to be selected.
 	/// If `false` is returned highlight of the cell will be disabled.
 	/// If not implemented the default behaviour of the table is to allow highlights of the cell.
-	public var onShouldHighlight: ((RowProtocol.RowInfo) -> (Bool))? = nil
-	
+	public var onShouldHighlight: ((RowProtocol) -> (Bool))? = nil
+
 	/// Asks the data source whether a given row can be moved to another location in the table view.
 	/// If not implemented `false` is assumed instead.
-	public var canMove: ((RowProtocol.RowInfo) -> (Bool))? = nil
+	public var canMove: ((RowProtocol) -> (Bool))? = nil
 
 	/// Asks the delegate whether the background of the specified row should be
 	/// indented while the table view is in editing mode.
 	/// If not implemented `true` is returned.
-	public var shouldIndentOnEditing: ((RowProtocol.RowInfo) -> (Bool))? = nil
-	
+	public var shouldIndentOnEditing: ((RowProtocol) -> (Bool))? = nil
+
 	/// Initialize a new row
 	///
 	/// - Parameters:

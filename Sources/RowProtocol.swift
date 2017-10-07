@@ -43,11 +43,15 @@ public enum RowTapBehaviour {
 /// Protocol of the table's row
 public protocol RowProtocol {
 	
-	typealias RowInfo = (_: UITableViewCell?, _: IndexPath)
-	typealias RowEventCallback = ((RowInfo) -> ())
+	typealias RowReference = ((RowProtocol) -> (Void))
 		
 	/// Optional unique identifier for this row
 	var identifier:			String? { get set }
+	
+	/// When associated cell is dequeued this value contains the associated
+	/// indexPath value.
+	var indexPath:			IndexPath? { get }
+	var _indexPath: IndexPath? { get set }
 	
 	/// Reuse identifier of the cell
 	var reuseIdentifier:	String { get }
@@ -55,6 +59,7 @@ public protocol RowProtocol {
 	/// Type of cell which represent the row
 	var cellType:			AnyClass { get }
 	
+	/// Instance of the represented cell for this row (set only if row is visible, maybe `nil`)
 	var _instance:			UITableViewCell? { get }
 
     /// You can use this value if your row has a fixed height.
@@ -101,55 +106,60 @@ public protocol RowProtocol {
 	var hashValue: Int { get }
 
 	/// Message received when a cell instance has been made
-	var onDequeue: RowEventCallback? { get set }
+	//var onDequeue: RowEventCallback? { get set }
+	var onDequeue: RowReference? { get set }
 	
 	/// Message received when user tap on a cell at specified path. You must provide a default behaviour
 	/// by returning one of the `RowTapBehaviour` options. If `nil` is provided the default
 	/// behaviour is `deselect` with animation.
-	var onTap: ((RowInfo) -> (RowTapBehaviour?))? { get set }
+	//var onTap: ((RowInfo) -> (RowTapBehaviour?))? { get set }
+	var onTap: ((RowProtocol) -> (RowTapBehaviour?))? { get set }
 	
 	/// Message received when a selection has been made. Selection still active only if
 	/// `onTap` returned `.keepSelection` option.
-	var onSelect: RowEventCallback? { get set }
-	
+	//var onSelect: RowEventCallback? { get set }
+	var onSelect: RowReference? { get set }
+
 	/// Message received when cell at specified path did deselected
-	var onDeselect: RowEventCallback? { get set }
-	
+	//var onDeselect: RowEventCallback? { get set }
+	var onDeselect: RowReference? { get set }
+
 	/// Message received when a cell at specified path is about to be displayed.
 	/// Gives the delegate the opportunity to modify the specified cell at
 	/// the given row and column location before the browser displays it.
-	var onWillDisplay: RowEventCallback? { get set }
-	
+	//var onWillDisplay: RowEventCallback? { get set }
+	var onWillDisplay: RowReference? { get set }
+
 	/// Tells that the specified cell was removed from the table
-	var onDidEndDisplay: RowEventCallback? { get set }
-	
+	var onDidEndDisplay: RowReference? { get set }
+
 	/// Message received when a cell at specified path is about to be selected.
 	/// If `false` is returned highlight of the cell will be disabled.
 	/// If not implemented the default behaviour of the table is to allow highlights of the cell.
-	var onShouldHighlight: ((RowInfo) -> (Bool))? { get set }
-	
+	var onShouldHighlight: ((RowProtocol) -> (Bool))? { get set }
+
 	/// Message received when a cell at specified path is about to be selected.
 	/// If you return nil cell will be not selected.
 	/// If you don't implement this function row is selected normally.
 	/// Return the same indexPath of the source or another indexPath to perform a valid selection.
-	var onWillSelect: ((RowInfo) -> (IndexPath?))? { get set }
-	
+	var onWillSelect: ((RowProtocol) -> (IndexPath?))? { get set }
+
 	/// Message received when a cell at specified path is about to be swiped in order to allow
 	/// on or more actions into the context.
 	/// You must provide an array of UITableViewRowAction objects representing the actions
 	/// for the row. Each action you provide is used to create a button that the user can tap.
 	/// By default no swipe actions are returned.
-	var onEdit: ((RowInfo) -> ([UITableViewRowAction]?))? { get set }
-	
+	var onEdit: ((RowProtocol) -> ([UITableViewRowAction]?))? { get set }
+
 	/// Message received when a cell at specified path is about to be removed.
-	var onDelete: RowEventCallback? { get set }
-	
+	var onDelete: RowReference? { get set }
+
 	/// Asks the data source whether a given row can be moved to another location in the table view.
 	/// If not implemented it return `false` and user is not able to move the row.
-	var canMove: ((RowInfo) -> (Bool))? { get set }
-	
+	var canMove: ((RowProtocol) -> (Bool))? { get set }
+
 	/// Asks the delegate whether the background of the specified row should be
 	/// indented while the table view is in editing mode.
-	var shouldIndentOnEditing: ((RowInfo) -> (Bool))? { get set }
+	var shouldIndentOnEditing: ((RowProtocol) -> (Bool))? { get set }
 
 }

@@ -46,9 +46,15 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// from table.
 	internal var removedRows: [Int: RowProtocol] = [:]
 	
+	/// Store removed rows temporary in order send didEndDisplay messages.
+	///
+	/// - Parameter rows: rows proposed to be temporary kept
 	internal func keepRemovedRows(_ rows: [RowProtocol]) {
 		rows.forEach {
-			if let cell = $0._instance {
+			// Only we want to listen for didEndDisplay message we will keep
+			// inside the table manager instance a strong reference to removed row
+			// until message will be dispatched
+			if $0.onDidEndDisplay != nil, let cell = $0._instance {
 				removedRows[cell.hashValue] = $0
 			}
 		}
@@ -206,13 +212,13 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			switch $0.type {
 			case .deleted:
 				let paths: [IndexPath] = $0.indexes.map {
-					print("delete row=\($0) (section=\(section)")
+					//print("delete row=\($0) (section=\(section)")
 					return IndexPath(row: $0, section: section)
 				}
 				self.tableView?.deleteRows(at: paths, with: animation)
 			case .inserted:
 				let paths: [IndexPath] = $0.indexes.map {
-					print("insert row=\($0) (section=\(section)")
+				//	print("insert row=\($0) (section=\(section)")
 					return IndexPath(row: $0, section: section)
 				}
 				self.tableView?.insertRows(at: paths, with: animation)
@@ -447,8 +453,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		guard let row = self.removedRows[hashedRow] else {
 			return
 		}
-        let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-        row.onDidEndDisplay?((cell,indexPath))
+       // let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+       // row.onDidEndDisplay?((cell,indexPath)) // send any message
+		row.onDidEndDisplay?(row)
+		// free removed rows instances
 		self.removedRows.removeValue(forKey: hashedRow)
     }
 	
@@ -461,18 +469,19 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		// Identify the row to allocate, register if necessary
-		let row = self.sections[indexPath.section].rows[indexPath.row]
+		var row = self.sections[indexPath.section].rows[indexPath.row]
 		self.register(row: row)
 		
 		// Allocate the class
 		let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
 		self.adjustLayout(forCell: cell) // adjust width of the cell if necessary
-		
+				
 		// configure the cell
 		row.configure(cell, path: indexPath)
 		
 		// dispatch dequeue event
-		row.onDequeue?((cell,indexPath))
+		//row.onDequeue?((cell,indexPath))
+		row.onDequeue?(row)
 		
 		return cell
 	}
@@ -670,11 +679,12 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///				Return an NSIndexPath object other than indexPath if you want another cell
 	///				to be selected. Return nil if you don't want the row selected.
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+		//let cell = tableView.cellForRow(at: indexPath) // instance of the cell
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 
 		if let onWillSelect = row.onWillSelect {
-			return onWillSelect((cell,indexPath))
+			//return onWillSelect((cell,indexPath))
+			return onWillSelect(row)
 		} else {
 			return indexPath // not implemented
 		}
@@ -686,16 +696,18 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: target table
 	///   - indexPath: An index path locating the new selected row in tableView.
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+		//let cell = tableView.cellForRow(at: indexPath) // instance of the cell
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 		
-		let select_behaviour = row.onTap?((cell,indexPath)) ?? .deselect(true)
+		//let select_behaviour = row.onTap?((cell,indexPath)) ?? .deselect(true)
+		let select_behaviour = row.onTap?(row) ?? .deselect(true)
 		switch select_behaviour {
 		case .deselect(let animated):
 			// remove selection, is a temporary tap selection
 			tableView.deselectRow(at: indexPath, animated: animated)
 		case .keepSelection:
-			row.onSelect?((cell,indexPath)) // dispatch selection change event
+			//row.onSelect?((cell,indexPath)) // dispatch selection change event
+			row.onSelect?(row) // dispatch selection change event
 		}
 	}
 	
@@ -706,9 +718,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating the deselected row in tableView.
 	public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		// Dispatch on de-select event to the represented model of the row
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onDeselect?((cell,indexPath))
+		//row.onDeselect?((cell,indexPath))
+		row.onDeselect?(row)
 	}
 	
 	
@@ -721,9 +734,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating the row in tableView
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		// Dispatch display event for a particular cell to its represented model
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onWillDisplay?((cell,indexPath))
+		//row.onWillDisplay?((cell,indexPath))
+		row.onWillDisplay?(row)
 	}
 	
 	
@@ -734,9 +748,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: The index path of the row being highlighted.
 	/// - Returns: `true` or `false`.
 	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.onShouldHighlight?((cell,indexPath)) ?? true
+		//return row.onShouldHighlight?((cell,indexPath)) ?? true
+		return row.onShouldHighlight?(row) ?? true
 	}
 	
 	
@@ -747,10 +762,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating a row in tableView.
 	/// - Returns: true if the row indicated by indexPath is editable; otherwise, false.
 	public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		let cell = tableView.cellForRow(at: indexPath)
+	//	let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 		// If no actions are definined cell is not editable
-		return row.onEdit?((cell,indexPath))?.count ?? 0 > 0
+		//return row.onEdit?((cell,indexPath))?.count ?? 0 > 0
+		return row.onEdit?(row)?.count ?? 0 > 0
 	}
 	
 	
@@ -762,9 +778,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: An array of UITableViewRowAction objects representing the actions
 	///            for the row. Each action you provide is used to create a button that the user can tap.
 	public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.onEdit?((cell,indexPath)) ?? nil
+		//return row.onEdit?((cell,indexPath)) ?? nil
+		return row.onEdit?(row) ?? nil
 	}
 	
 	
@@ -776,9 +793,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: The editing style of the cell for the row identified by indexPath.
 	open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		guard editingStyle == .delete else { return }
-		let cell = tableView.cellForRow(at: indexPath)
+	//	let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		row.onDelete?((cell,indexPath))
+		//row.onDelete?((cell,indexPath))
+		row.onDelete?(row)
 	}
 	
 	
@@ -789,9 +807,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating a row in tableView.
 	/// - Returns: boolean
 	public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.canMove?((cell,indexPath)) ?? false
+		//return row.canMove?((cell,indexPath)) ?? false
+		return row.canMove?(row) ?? false
 	}
 	
 	/// Asks the delegate whether the background of the specified row should be indented
@@ -802,9 +821,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index-path object locating the row in its section.
 	/// - Returns: boolean
 	public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
-		let cell = tableView.cellForRow(at: indexPath)
+		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		return row.shouldIndentOnEditing?((cell,indexPath)) ?? true
+		//return row.shouldIndentOnEditing?((cell,indexPath)) ?? true
+		return row.shouldIndentOnEditing?(row) ?? true
 	}
 	
 	///MARK: Private Helper Methods
