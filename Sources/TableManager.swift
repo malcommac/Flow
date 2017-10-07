@@ -292,7 +292,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///
 	/// - Parameters:
 	///   - rows: rows to add
-	///   - section: destination section, `nil` create and added a new section at the end of the table
+	///   - section: destination section. If `nil` is passed a new section is append at the end of the table with given rows.
 	/// - Returns: self
 	@discardableResult
 	public func add(rows: [RowProtocol], in section: Section? = nil) -> Self {
@@ -310,12 +310,18 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///
 	/// - Parameters:
 	///   - rows: rows to add
-	///   - index: index of the destination section.
+	///   - index: index of the destination section. If `nil` is passed rows will be added to the last section of the table.
+	///				If no sections are available, a new section with passed rows will be created automatically.
 	/// - Returns: self
 	@discardableResult
-	public func add(rows: [RowProtocol], inSectionAt index: Int) -> Self {
-		guard index < self.sections.count else { return self }
-		self.sections[index].rows.append(contentsOf: rows)
+	public func add(rows: [RowProtocol], inSectionAt index: Int?) -> Self {
+		if let index = index { // append to a specific section
+			guard index < self.sections.count else { return self } // validate index
+			self.sections[index].rows.append(contentsOf: rows)
+		} else {
+			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			destSection.rows.append(contentsOf: rows)
+		}
 		return self
 	}
 
@@ -343,12 +349,18 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///
 	/// - Parameters:
 	///   - row: row to add
-	///   - index: index of the destination section.
+	///   - index: index of the destination section. If `nil` is passed the last section is used as destination.
+	///				if no sections are present into the table a new section with given row is created automatically.
 	/// - Returns: self
 	@discardableResult
-	public func add(row: RowProtocol, inSectionAt index: Int) -> Self {
-		guard index < self.sections.count else { return self }
-		self.sections[index].rows.append(row)
+	public func add(row: RowProtocol, inSectionAt index: Int?) -> Self {
+		if let index = index { // destination is a specific section
+			guard index < self.sections.count else { return self }
+			self.sections[index].rows.append(row)
+		} else {
+			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			destSection.rows.append(row)
+		}
 		return self
 	}
 	
@@ -748,9 +760,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: The index path of the row being highlighted.
 	/// - Returns: `true` or `false`.
 	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		//return row.onShouldHighlight?((cell,indexPath)) ?? true
+		// If static cell implements a valid value for `shouldHightlight`
+		if let shouldHighlight = row._shouldHighlight {
+			return shouldHighlight
+		}
 		return row.onShouldHighlight?(row) ?? true
 	}
 	
@@ -762,7 +776,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating a row in tableView.
 	/// - Returns: true if the row indicated by indexPath is editable; otherwise, false.
 	public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-	//	let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
 		// If no actions are definined cell is not editable
 		//return row.onEdit?((cell,indexPath))?.count ?? 0 > 0
@@ -778,9 +791,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: An array of UITableViewRowAction objects representing the actions
 	///            for the row. Each action you provide is used to create a button that the user can tap.
 	public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		//return row.onEdit?((cell,indexPath)) ?? nil
 		return row.onEdit?(row) ?? nil
 	}
 	
@@ -793,9 +804,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: The editing style of the cell for the row identified by indexPath.
 	open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		guard editingStyle == .delete else { return }
-	//	let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		//row.onDelete?((cell,indexPath))
 		row.onDelete?(row)
 	}
 	
@@ -807,9 +816,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index path locating a row in tableView.
 	/// - Returns: boolean
 	public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		//return row.canMove?((cell,indexPath)) ?? false
 		return row.canMove?(row) ?? false
 	}
 	
@@ -821,9 +828,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - indexPath: An index-path object locating the row in its section.
 	/// - Returns: boolean
 	public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
-		//let cell = tableView.cellForRow(at: indexPath)
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-		//return row.shouldIndentOnEditing?((cell,indexPath)) ?? true
 		return row.shouldIndentOnEditing?(row) ?? true
 	}
 	
@@ -1004,11 +1009,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	private func rowHeight(forRow row: RowProtocol, at indexPath: IndexPath, estimate: Bool = false) -> CGFloat {
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-
-        /// If a fixed height is provided, we'll use it
-        if let fixedHeight = row.rowHeight {
-            return fixedHeight
-        }
         
 		/// User provided a function to evaluate the height of the table
 		if row.evaluateRowHeight != nil {

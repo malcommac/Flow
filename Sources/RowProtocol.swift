@@ -44,32 +44,41 @@ public enum RowTapBehaviour {
 public protocol RowProtocol {
 	
 	typealias RowReference = ((RowProtocol) -> (Void))
-		
+	
+	/// PRIVATE
+	
+	/// This is for internal purpose only.
+	/// Return the valid value of associated `DeclarativeCell`'s `estimatedHeight`.
+	var _estimatedHeight: CGFloat? { get }
+	
+	/// This is for internal purpose only.
+	/// Return the valid value of associated `DeclarativeCell`'s `defaultHeight`.
+	var _defaultHeight: CGFloat? { get }
+	
+	/// This is for internal purpose only.
+	/// Return the valid value of associated `DeclarativeCell`'s `shouldHighlight`.
+	var _shouldHighlight: Bool? { get }
+	
+	/// Private use only.
+	var _indexPath: 		IndexPath? { get set }
+	
+	/// Instance of the represented cell for this row (set only if row is visible, maybe `nil`)
+	var _instance:			UITableViewCell? { get }
+	
+	/// PUBLIC
+
 	/// Optional unique identifier for this row
 	var identifier:			String? { get set }
 	
 	/// When associated cell is dequeued this value contains the associated
 	/// indexPath value.
 	var indexPath:			IndexPath? { get }
-	var _indexPath: IndexPath? { get set }
 	
 	/// Reuse identifier of the cell
 	var reuseIdentifier:	String { get }
 	
 	/// Type of cell which represent the row
 	var cellType:			AnyClass { get }
-	
-	/// Instance of the represented cell for this row (set only if row is visible, maybe `nil`)
-	var _instance:			UITableViewCell? { get }
-
-    /// You can use this value if your row has a fixed height.
-    /// By setting a non `nil` value your both `evaluateEstimatedHeight` and
-    /// `evaluateRowHeight` will be ignored.
-    var rowHeight: CGFloat? { get set }
-    
-    /// You can use this value to disable or enable highlight of the cell.
-    /// If non `nil` value is set `onShouldHighlight` will be not called.
-    var shouldHighlight: Bool? { get set }
 	
 	/// Allows the user to perform an estimation of the height of the cell.
 	/// This is done at runtime level when a single instance of the Row is about to be displayed.
@@ -89,12 +98,6 @@ public protocol RowProtocol {
 	/// by creating it and getting the size of the `contentView`.
 	var evaluateRowHeight: (() -> (CGFloat?))? { get set }
 	
-	/// This is for internal purpose only.
-	var _estimatedHeight: CGFloat? { get }
-	
-	/// This is for internal purpose only.
-	var _defaultHeight: CGFloat? { get }
-		
 	/// Allows the user to configure the cell instance
 	///
 	/// - Parameters:

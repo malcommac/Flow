@@ -98,6 +98,12 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 		return Cell.defaultHeight
 	}
 	
+	/// Static level highlight of the cell.
+	/// This method is called statically and you can implement it in your cell.
+	public var _shouldHighlight: Bool? {
+		return Cell.shouldHightlight
+	}
+	
 	/// Class which represent the cell
 	public var cellType: AnyClass {
 		return Cell.self
@@ -204,6 +210,11 @@ public protocol DeclarativeCell: class {
 	/// upon the content (you may, however, return `UITableViewAutomaticDimension` if needed)
 	static var defaultHeight: CGFloat? { get }
 	
+	/// If you want to disable highlight of the row without doing any conditions check you
+	/// can set this value directly as cell property.
+	/// It will override any `onShouldHighlight` event of the `RowProtocol`.
+	static var shouldHightlight: Bool? { get }
+	
 	/// Configure a cell instance just after the dequeue from table instance
 	///
 	/// - Parameters:
@@ -229,6 +240,11 @@ public extension DeclarativeCell where Self: UITableViewCell {
 	
 	/// Default height of the cell, if applicable
 	static var defaultHeight: CGFloat? {
+		return nil
+	}
+	
+	/// Default height of the cell, if applicable
+	static var shouldHightlight: Bool? {
 		return nil
 	}
 	

@@ -176,6 +176,10 @@ public class ObservableArray<Element>: ExpressibleByArrayLiteral {
 		self.elements = []
 	}
 	
+	public var last: Element? {
+		return self.elements.count > 0 ? self.elements[self.elements.count - 1] : nil
+	}
+	
 	public init(count: Int, repeatedValue: Element) {
 		self.elements = Array(repeating: repeatedValue, count: count)
 	}
