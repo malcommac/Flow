@@ -43,7 +43,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	/// This array contains all the removed row in an update sessions.
 	/// It's used to dispatch `onDidEndDisplay` messages before a cell is definitively removed
-	/// from table.
+	/// from table and deallocated.
 	internal var removedRows: [Int: RowProtocol] = [:]
 	
 	/// Store removed rows temporary in order send didEndDisplay messages.
@@ -98,6 +98,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// and uses `systemLayoutSizeFitting()` on cell's `contentView` to calculate the size.
 	/// If zero value is returned it uses the cell's `contentView` bounds.
 	private var estimateRowSizeAutomatically: Bool = true
+	
+	/// Return `true` if associated table does not contains sections or rows
+	public var isEmpty: Bool {
+		return self.sections.count == 0
+	}
 	
 	/// Initialize a new manager for a specific `UITableView` instance
 	///
