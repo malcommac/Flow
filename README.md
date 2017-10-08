@@ -1,3 +1,5 @@
+## Flow
+
 <p align="center" >
   <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
 </p>
@@ -7,7 +9,6 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
-## Flow
 
 <p align="center" >★★ <b>Star Flow to help the project! </b> ★★</p>
 
