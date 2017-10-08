@@ -236,23 +236,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			}
 		}
 	}
-	
-	/// Return `true` if table contains passed section with given identifier, `false` otherwise
-	///
-	/// - Parameter identifier: identifier to search
-	/// - Returns: `true` if section is in table, `false` otherwise
-	public func hasSection(withID identifier: String) -> Bool {
-		let exist = self.section(forID: identifier)
-		return exist != nil
-	}
-	
-	/// Return the first section with given identifier inside the table
-	///
-	/// - Parameter identifier: identifier to search
-	/// - Returns: found Section or `nil`
-	public func section(forID identifier: String) -> Section? {
-		return self.sections.first(where: { $0.identifier == identifier })
-	}
 		
 	/// Return the first row with given identifier inside all sections of the table
 	///
@@ -475,6 +458,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self
 	}
 	
+	
 	/// Reload data for section with given identifier
 	///
 	/// - Parameters:
@@ -527,6 +511,34 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self.sections[idx]
 	}
 	
+	/// Return `true` if table contains passed section with given identifier, `false` otherwise
+	///
+	/// - Parameter identifier: identifier to search
+	/// - Returns: `true` if section is in table, `false` otherwise
+	public func hasSection(withID identifier: String) -> Bool {
+		let exist = self.section(forID: identifier)
+		return exist != nil
+	}
+	
+	/// Return the first section with given identifier inside the table
+	///
+	/// - Parameter identifier: identifier to search
+	/// - Returns: found Section or `nil`
+	public func section(forID identifier: String) -> Section? {
+		return self.sections.first(where: { $0.identifier == identifier })
+	}
+	
+	
+	/// Get sections with identifiers
+	///
+	/// - Parameter ids: identifiers to search
+	/// - Returns: found sections
+	public func sections(forIDs ids: [String]) -> [Section] {
+		return self.sections.filter({
+			guard let id = $0.identifier else { return false }
+			return ids.contains(id)
+		})
+	}
 	
 	//MARK: -- TableView Data Source Managment
 	
