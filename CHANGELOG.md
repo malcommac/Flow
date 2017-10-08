@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 ## [0.8.0](https://github.com/Alamofire/Alamofire/releases/tag/0.8.0)
-Released on 2017-XX-XX.
+Released on 2017-10-09.
 
 #### Added
 - Initial release of Flow.

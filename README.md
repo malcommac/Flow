@@ -1,5 +1,7 @@
+## Flow
+
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=418px height=320px alt="Flow" title="Flow">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
 </p>
 
 [![Version](https://img.shields.io/cocoapods/v/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![License](https://img.shields.io/cocoapods/l/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![Platform](https://img.shields.io/cocoapods/p/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables)
@@ -7,14 +9,12 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
-## Flow: a new declarative approach to UITableView
 
-<p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
+<p align="center" >★★ <b>Star Flow to help the project! </b> ★★</p>
 
-<p align="center" ><a href="http://paypal.me/danielemargutti"><b>Support the project. Make a small donation.</b></a></p>
+<p align="center" ><a href="http://paypal.me/danielemargutti">Support the project. <b>Donate now.</b></a></p>
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
 
-## WHAT'S FLOW
 Flow is a Swift lightweight library which help you to better manage content in UITableViews.
 It's easy and fast, perfectly fits the type-safe nature of Swift.
 
@@ -81,8 +81,14 @@ Take a look below:
   * [Prepare Rows for an array of model](#prepare_rows_array)
   * [Add Rows into the table](#add_rows)
   * [Create `Section` and manage header/footer](#create_section)
+  
 * [`UITableView` Animations](#table_animations)
 * [Observe `Row`/Cell Events](#row_events)
+* [Full SDK Documentation](#sdk)
+* [Changelog](#changelog)
+* [Installation](#installation)
+* [Requirements](#requirements)
+* [Support the project](#donate)
 
 <a name="architecture" />
 
@@ -325,10 +331,21 @@ All observable events are described in [API SDK](API_SDK.md).
 
 * * *
 
-## API SDK Documentation
+<a name="sdk" />
+
+## Full SDK Documentation
 
 Full method documentation is available both in source code and in API_SDK file.
 Click here to read the [Full SDK Documentation](API_SDK.md).
+
+<a name="changelog" />
+
+## Changelog
+
+Current version of Flow is 0.8.0.
+Full changelog is available in [CHANGELOG.MD](CHANGELOG.md) file.
+
+<a name="installation" />
 
 ## Installation
 
@@ -385,6 +402,8 @@ github "malcommac/Flow"
 
 Run `carthage` to build the framework and drag the built `Flow.framework` into your Xcode project.
 
+<a name="requirements" />
+
 ## REQUIREMENTS & LICENSE
 Flow minimum requirements are:
 * iOS 8+
@@ -399,6 +418,8 @@ This library is licensed under [MIT License](https://opensource.org/licenses/MIT
 If you are using it in your software:
 * Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
+
+<a name="donate" />
 
 ## SUPPORT THE PROJECT
 Creating and mantaining libraries takes time and as developer you know this better than anyone else.
