@@ -342,7 +342,7 @@ Click here to read the [Full SDK Documentation](API_SDK.md).
 
 ## Changelog
 
-Current version of Flow is 0.8.0.
+Current version of Flow is 0.8.1.
 Full changelog is available in [CHANGELOG.MD](CHANGELOG.md) file.
 
 <a name="installation" />

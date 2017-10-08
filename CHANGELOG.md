@@ -3,10 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 #### 0.8 Releases
-- `0.8.x` Releases - [0.8.0](#080)
+- `0.8.x` Releases - [0.8.1](#081)
 
 ---
-## [0.8.0](https://github.com/Alamofire/Alamofire/releases/tag/0.8.0)
+## [0.8.1](https://github.com/Alamofire/Alamofire/releases/tag/0.8.1)
 Released on 2017-10-09.
 
 #### Added
