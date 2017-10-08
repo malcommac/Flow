@@ -100,37 +100,29 @@ Take a look below:
 ## DOCUMENTATION
 
 * [Main Architecture](#architecture)
-* [Example](#example)
+* [Demo Application](#example)
   * [Create the `TableManager`](#create_tablemanager)
-  * [Create `UITableViewCell` cell](#create_cell)
-  * [Design cell in Interface Builder](#create_cell_ib)
-  * [Manage the size of the cell](#manage_cell_size)
-  * [Create and add `Rows` to the table](#create_rows)
-  * [Create `Section` and manage Header/Footer](#create_section)
+  * [Prepare a Cell (for Row)](#prepare_cell)
+  * [Prepare a Row](#prepare_row)
+  * [Prepare Rows for an array of model](#prepare_rows_array)
+  * [Add Rows into the table](#add_rows)
+  * [Create `Section` and manage header/footer](#create_section)
 * [`UITableView` Animations](#table_animations)
 * [Observe `Row`/Cell Events](#row_events)
-
-## API Doc
-
-* [`TableManager` object](#api_tablemanager)
-* [`Section` object](#api_section)
-* [`Row` object](#api_row)
-
-* * *
 
 <a name="architecture" />
 
 ### Main Architecture
 
-Flow basically is composed by four different entities:
+Flow is composed by four different entities:
 * **`TableManager`**: a single table manager is responsible to manage the content of a `UITableView` instance.
-* **`Section`**: represent a section of a table. It encapsulate the logic to manage rows into the section, custom header or footer.
-* **`Row`**: represent a single row of the table; when you create a new row to insert into the table you will specify the class you want to use to represent it (a subclass of `UITableViewCell`) and the model which you are about to represent (any object you want).
-* **`SectionView`**: if you want to create custom header/footer into the table you are using this class to create reusable views. As like for rows also `SectionView` are associated to a specific model to represent.
+* **`Section`**: represent a section in table. It manages the list of rows and optional header and footer.
+* **`Row`**: represent a single row in a section; a row is linked to a pair of objects: the model (any class; if not applicable `Void` is valid) and the cell (a subclass of the `UITableViewCell` conforms to `DeclarativeCell` protocol).
+* **`SectionView`**: A section may show header/footer; these objects maybe simple `String` or custom views: `SectionView`. As for `Row`, `SectionView` is linked to a model and a view (subclass of `UITableViewHeaderFooterView`).
 
 <a name="example" />
 
-### Example
+### Demo Application
 
 A live working example can be found in [FlowDemoApp directory](https://github.com/malcommac/Flow/tree/develop/FlowDemoApp). It demostrates how to use Flow in a simple Login screen for a fake social network app. Check it out to see how Flow can really help you to simplify UITableView management.
 
@@ -138,21 +130,29 @@ A live working example can be found in [FlowDemoApp directory](https://github.co
 
 #### Create the `TableManager`
 
-First of all you need to create your table manager.
-You will create it (generally) in your view controller:
+In order to use Flow you must set the ownership of a `UITableView` instance to an instance of `TableManager`:
 
 ```swift
 self.tableManager = TableManager(table: self.table!)
 ```
 
-From now your `UITableView` instance is backed by Flow Table Manager; since now you will refer to it to manage the content you want to display (rows, sections, headers or footers).
+From now the `UITableView` instance is backed by Flow; every change (add/remove/move rows or sections) must be done by calling appropriate methods of the `TableManager` itself or any child `Section`/`Row`.
 
-<a name="create_cell" />
+<a name="prepare_cell" />
 
-#### Create `UITableViewCell` cell
+#### Prepare a Cell (for Row)
 
-Suppose you want to represent a list of soccer players; you will have an array of players (suppose they are represented by `PlayerModel` class). Now you need to create an `UITableViewCell` subclass (`PlayerCell`) which represent this kind of data.
-`PlayerCell` is a normal `UITableViewCell` which is conform to `DeclarativeCell` protocol which is needed to define some intrinsic properties of the cell itself.
+A row is resposible to manage the model and its graphical representation (the cell instance).
+To create a new `Row` instance you need to specify the model class received by the instance cell and the cell class to instantiate into the table.
+
+While sometimes a model is not applicable (your cell maybe a simple static representation or its decorative), the cell class is mandatory.
+The cell must be a subclass of `UITableViewCell` conforms to `DeclarativeCell` protocol.
+This protocol defines at least two important properties:
+
+- the model assocated with the Cell (`public typealias T = MyClass`)
+- a method called right after the row's cell is dequeued (`public func configure(_: T, path: IndexPath)`)
+
+This is an example of a `PlayerCell` which is responsible to display data for a single football player (class `PlayerModel`):
 
 ```swift
 import UIKit
@@ -161,6 +161,8 @@ import Flow
 public class PlayerCell: UITableViewCell, DeclarativeCell {
     // assign to the cell the model to be represented
     public typealias T = PlayerModel
+    // if your cell has a fixed height you can set it directly at class level as below
+    public static var defaultHeight: CGFloat? = 157.0
 
     // this func is called when a new instance of the cell is dequeued
     // and you need to fill the data with a model instance.
@@ -173,94 +175,119 @@ public class PlayerCell: UITableViewCell, DeclarativeCell {
 }
 ```
 
-<a name="create_cell_ib" />
+If your cell does not need of a model you can assign `public typealias T = Void`.
 
-### Design cell in Interface Builder
+User interface of the cell can be made in two ways:
+* **Prototype (only in Storyboards)**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
+* **External XIB File**: create a new xib file with the same name of your cell class (here `PlayerCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
 
-You can create the UI of your cell in two different ways:
-* **Using Storyboard**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
-* **Separate XIB File**: create a new xib file with the same name of your cell class (here `PlayerCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
+Height of a cell can be set in differen ways:
+* If cell has a fixed height you can set it at class level by adding `public static var defaultHeight: CGFloat? = ...` in your cell subclass.
+* If cell is autosized you can evaluate the height in row configuration (see below) by providing a value into `estimatedHeight` or `evaluateEstimatedHeight()` function.
 
-Flow will take care of the load and dequeue of the instances for you.
 
-<a name="manage_cell_size" />
+<a name="prepare_row" />
 
-### Manage the size of the cell
+#### Prepare a Row
 
-If your cell has a fixed height which does not change with the content of the model you want also implement the following static properties:
+You can now create a new row to add into the table; a `Row` instance is created by passing the `DeclarativeCell` type and an instance of the model represented.
 
-* `defaultHeight` (`CGFloat`): return the height of the cell (if your cell is autosizing you can also return `UITableViewAutomaticDimension`)
-* `estimatedHeight` (`CGFloat`): return estimated height (only for autosizing cells)
-
-If your cell needs to evaluate the height based upon the content you can override the `evaluateRowHeight()` and/or `evaluateEstimatedHeight()` of your `Row` class (we'll see it later).
-
-Example of static height in Cell class:
-
-```
-public class PlayerCell: UITableViewCell, DeclarativeCell {
-	public static var defaultHeight: CGFloat? = 250
-}
-```
-
-Example of dynamic calculated height in Row instance:
-
-```
-let logo = Row<PlayerCell>(model: Void(), { row in // the configuration callback is the ideal place to configure the cell
-  row.evaluateRowHeight = {
-	// do your calculations...
-	return value
-  }
+```swift
+let ronaldo = PlayerModel("Christiano","Ronaldo",.forward)
+...
+let row_ronaldo = Row<PlayerCell>(model: ronaldo, { row in
+	// ... configuration
 })
 ```
 
-<a name="create_rows" />
+If model is not applicable just pass `Void()` as model param.
 
-### Create and add `Rows` to the table
+Inside the callback you can configure the various aspect of the row behaviour and appearance.
+All standard UITableView events can be overriden; a common event is `onDequeue`, called when `Row`'s linked cell instance is dequeued and displayed. Anoter one (`onTap`) allows you to perform an action on cell's tap event.
+So, for example:
 
-As we said each section of the table is managed by a `Section` instance and each row by a `Row` instance.
-When you add rows to a table manager you are creating a section automatically (unless you specify a destination `Section` or create a new `Section` with the rows).
+```swift
+let row_ronaldo = Row<PlayerCell>(model: ronaldo, { row in
+	row.onDequeue = { _ in
+		row.cell?.fullNameLabel.text = ronaldo.fullName
+		return nil // when nil is returned cell will be deselected automatically
+	}
+	row.onTap = { _ in
+		print("Tapped cell")
+	}
+})
+```
 
-Now let's suppose we want to create a section with our `[PlayerModel]` using the `PlayerCell` cell class.
+There are lots of other events you can set into the row configuration callback (`onDelete`,`onSelect`,`onDeselect`,`onShouldHighlit` and so on).
+
+<a name="prepare_rows_array" />
+
+#### Prepare Rows for an array of model
+
+When you have an array of model instances to represent, one for each Row, you can use `create` shortcut.
+The following code create an array of `Rows<PlayerCell>` where each row receive the relative item from `self.players` array.
 
 ```swift
 let players_rows = Row<PlayerCell>.create(self.players)
 ```
+<a name="add_rows" />
 
-We are telling the compiler to create a set of rows from `self.players` array and uses `PlayerCell` as backed `UITableViewCell` class.
-Obviously you can also create a single row:
+#### Add Rows into the table
 
-```swift
-let row = Row<PlayerCell>(self.singlePlayer)
-```
-
-Now you can add rows to your table by using:
+Adding rows to a table is easy as call a simple `add` function.
 
 ```swift
 self.tableManager.add(rows: players_rows) // add rows (by appending a new section)
 self.tableManager.reloadData() // apply changes
-``` 
+```
 
-And that's all, your table is ready!
+(Remember: when you add rows without specifing a section a new section is created automatically for you).
+
+**Please note**: when you apply a change to a table (by using `add`, `remove` or `move` functions, both for `Section` or `Row` instances) you must call the `reloadData()` function in order to reflect changes in UI.
+
+
+If you want to apply changes using standard table's animations just call `update()` function; it allows you to specify a list of actions to perform. In this case `reloadData()` is called automatically for you and the engine evaluate what's changed automatically (inserted/moved/removed rows/section).
+
+The following example add a new section at the end of the table and remove the first:
+
+```swift
+self.tableManager?.update(animation: .automatic, {
+	self.tableManager?.insert(section: profileDetailSection, at: profileSection!.index! + 1)
+	self.tableManager?.remove(sectionAt: 0)
+})
+```
 
 <a name="create_section" />
 
-### Create `Section` and manage Header/Footer
-If not specified sections are created automatically. You can however create a new `Section` instance and assign rows to it and customize the appearance of the header/footer.
+#### Create `Section` and manage header/footer
 
-Section header/footer view can be plain `String` objects (just assign the `headerTitle` or `footerTitle` of the `Section`) or custom `UITableViewHeaderFooterView`.
+If not specified sections are created automatically when you add rows into a table.
+`Section` objects encapulate the following properties:
 
-To create a new custom view just create your custom class which is conform to `DeclarativeView` protocol.
+- `rows` list of rows (`RowProtocol`) inside the section
+- `headerTitle` / `headerView` a plain header string or a custom header view (`SectionView`)
+- `footerTitle` / `footerView` a plain footer string or a custom footer view (`SectionView`)
+
+Creating a new section with rows is pretty simple:
+
+```swift
+let rowPlayers: [RowProtocol] = ...
+let sectionPlayers = Section(id: SECTION_ID_PLAYERS, row: rowPlayers, headerTitle: "\(rowPlayers.count) PLAYERS")"
+```
+
+As like for `Row` even `Section` may have custom view for header or footer; in this case your custom header/footer must be an `UITableViewHeaderFooterView` subclass defined in a separate XIB file (**with the same name of the class**) which is conform to `DeclarativeView` protocol.
+`DeclarativeView` protocol defines the model accepted by the custom view (as for `Row` you can use `Void` if not applicable).
+
+For example:
 
 ```swift
 import UIKit
 import Flow
 
 public class TeamSectionView: UITableViewHeaderFooterView, DeclarativeView {
- public typealias T = TeamModel // the model represented by the view
+ public typealias T = TeamModel // the model represented by the view, use `Void` if not applicable
 	
- public static var defaultHeight: CGFloat? {
-  return 100 // fixed height for view
- }
+ public static var defaultHeight: CGFloat? = 100
 	
  public func configure(_ item: TeamModel, type: SectionType, section: Int) {
   self.sectionLabel?.text = item.name.uppercased()
@@ -268,17 +295,16 @@ public class TeamSectionView: UITableViewHeaderFooterView, DeclarativeView {
 }
 ```
 
-Now you need to create your own representation via Interface Builder.
-Just create a `xib` file with the same name (`TeamSectionView.xib`) and drag a UIView as single top level object. Finally assign the class to your subclass (`TeamSectionView`).
-Flow will take care of dequeue and load header/footer views automatically.
+Now you can create custom view as header for section:
 
-Now you are free to create your new section and assign your custom header:
 
 ```swift
 let realMadridSection = Section(teamPlayers, headerView: SectionView<TeamSectionView>(team))
 self.tableManager.add(section: realMadridSection)
 self.tableManager.reloadData()
 ```
+
+
 <a name="table_animations" />
 
 ### `UITableView` animations
@@ -327,7 +353,8 @@ All other events are described in [Row Events](row_events) section.
 
 ## API SDK Documentation
 
-The detailed documentation for SDK is [available here](API_SDK.md).
+Full method documentation is available both in source code and in API_SDK file.
+Click here to read the [Full SDK Documentation](API_SDK.md).
 
 ## Installation
 
