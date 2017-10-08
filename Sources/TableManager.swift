@@ -301,7 +301,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Parameter sectionsToAdd: sections to add
 	/// - Returns: self
 	@discardableResult
-	public func add(sectionsToAdd: [Section]) -> Self {
+	public func add(sections sectionsToAdd: [Section]) -> Self {
 		self.sections.append(contentsOf: sectionsToAdd)
 		sectionsToAdd.forEach { $0.manager = self }
 		return self
@@ -425,6 +425,18 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		return self
 	}
 	
+	
+	/// Remove section with given identifier. If section does not exist nothing is altered.
+	///
+	/// - Parameter id: identifier of the section
+	/// - Returns: `true` if section exists and it's been removed, `false` otherwise.
+	@discardableResult
+	public func remove(sectionWithID id: String) -> Bool {
+		guard let section = self.section(forID: id) else { return false }
+		self.remove(section: section)
+		return true
+	}
+	
 	/// Remove an existing section at specified index
 	///
 	/// - Parameter index: index of the section to remove
@@ -443,7 +455,8 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Parameter section: section to remove
 	/// - Returns: self
 	@discardableResult
-	public func remove(section: Section) -> Self {
+	public func remove(section: Section?) -> Self {
+		guard let section = section else { return self }
 		if let idx = self.sections.index(of: section) {
 			self.remove(sectionAt: idx)
 		}

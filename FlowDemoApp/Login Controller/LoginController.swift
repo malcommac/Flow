@@ -44,6 +44,7 @@ class LoginController: UIViewController {
 	/// manipulate them easily.
 	private let SECTION_ID_PROFILE = "SECTION_ID_PROFILE" // profile section
 	private let SECTION_ID_PROFILE_DETAIL = "SECTION_ID_PROFILE_DETAIL" // profile details section
+	private let SECTION_ID_LOGINCREDENTIALS = "SECTION_ID_LOGINCREDENTIALS" // credentials fields and login
 
     /// Create the controller
     ///
@@ -75,7 +76,7 @@ class LoginController: UIViewController {
 		// Remove the content of the table
 		self.tableManager?.removeAll()
 		// Add sections based upon the content
-		self.tableManager?.add(sectionsToAdd: self.tableContent(forType: self.content))
+		self.tableManager?.add(sections: self.tableContent(forType: self.content))
 		// Reload data and display it
 		self.tableManager?.reloadData()
 	}
@@ -110,11 +111,15 @@ class LoginController: UIViewController {
 				row.shouldHighlight = false // disable highlight of the row
 				// We have hooked `onTapLogin` to our controller's `loginUser` function
 				row.onDequeue = { _ in
-					row.cell?.onTapLogin = self.loginUser
+					row.cell?.onTapLogin = self.didTapLoginUser
+					row.cell?.onTapForgotCredentials = self.didTapForgotCredentials
 				}
 			})
 			// create two sections, one for logo+welcome and another with credentials fields
-			return [Section(rows: [logo,welcome]), Section(row: credentials)]
+			return [
+				Section(rows: [logo,welcome]),
+				Section(id: SECTION_ID_LOGINCREDENTIALS, row: credentials)
+			]
 		case .profile:
 			// ROW: Profile Info
 			// This is a cell with profile's info
@@ -156,13 +161,17 @@ class LoginController: UIViewController {
 			// ROW: Recover data by email
 			// This is a cell with a text field with email and a recover button
 			let recover = Row<CellRecoverCredentials>(model: Void(), { row in
-				row.rowHeight = 180.0
-				row.cell?.onTapRecover = { email in
-					self.recoverAccount(byEmail: email)
+				row.rowHeight = 220.0
+				row.onDequeue = { _ in
+					row.cell?.onTapRecover = { email in
+						self.recoverAccount(byEmail: email)
+					}
 				}
 			})
 			// Creeate a section with this row
-			return [Section(row: recover)]
+			return [
+				Section(row: recover)
+			]
 			
 		case .loader:
 			
@@ -172,13 +181,15 @@ class LoginController: UIViewController {
 				row.rowHeight = self.table!.frame.size.height
 				row.shouldHighlight = false
 			})
-			return [Section(row: loader)]
+			return [
+				Section(row: loader)
+			]
 		}
 	}
 	
 	// Helper functions
 	
-	private func loginUser() {
+	private func didTapLoginUser() {
 		// Show loader...
 		self.content = .loader
 		self.reloadData()
@@ -191,8 +202,18 @@ class LoginController: UIViewController {
 		}
 	}
 	
+	private func didTapForgotCredentials() {
+		// We want to alter the table's data directly without reloading the entire content.
+		// We will remove the login credentials section and replace it with
+		// rocover login sections
+		self.tableManager?.remove(sectionWithID: SECTION_ID_LOGINCREDENTIALS) // remove login section
+		self.tableManager?.add(sections: self.tableContent(forType: .recoverLogin)) // add recover section
+		self.tableManager?.reloadData() // ...and reload! (no animation is performed)
+	}
+	
 	private func didTapFriend(_ friend: FriendUser) {
-		let alert = UIAlertController(title: "Tap on friend", message: "Did you know \(friend.firstName)?", preferredStyle: .alert)
+		let alert = UIAlertController(title: "Tap on friend",
+		                              message: "Did you know \(friend.firstName)?", preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "Yup", style: .default, handler: { _ in
 			print("Okay!")
 		}))
@@ -233,7 +254,19 @@ class LoginController: UIViewController {
 	}
 	
 	private func recoverAccount(byEmail email: String) {
+		guard email.isEmpty == false else {
+			let alert = UIAlertController(title: "Error", message: "Add a valid email!", preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+			self.present(alert, animated: true, completion: nil)
+			return
+		}
 		
+		let alert = UIAlertController(title: "Check your inbox", message: "You have received a funny email at '\(email)'!", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Got it!", style: .default, handler: { _ in
+			self.content = .login
+			self.reloadData()
+		}))
+		self.present(alert, animated: true, completion: nil)
 	}
 	
     private func loaderSection(forEmail txt: String) -> Section {
@@ -244,6 +277,13 @@ class LoginController: UIViewController {
     }
     
     private func executeLogin() {
+		guard self.credentials.email.isEmpty, self.credentials.password.isEmpty == false else {
+			let alert = UIAlertController(title: "Error", message: "Check your login data first!", preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+			self.present(alert, animated: true, completion: nil)
+			return
+		}
+		
         self.tableManager?.update(animation: .fade, { () -> (Void) in
             self.tableManager?.remove(sectionAt: 1)
             self.tableManager?.add(section: self.loaderSection(forEmail: self.credentials.email))

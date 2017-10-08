@@ -11,6 +11,7 @@
     </dependencies>
     <customFonts key="customFonts">
         <array key="HelveticaNeue.ttc">
+            <string>HelveticaNeue</string>
             <string>HelveticaNeue-Bold</string>
             <string>HelveticaNeue-Medium</string>
         </array>
@@ -92,15 +93,15 @@ It's time to be the best debugger; signup for a new free account or login with y
                                             <outlet property="contentLabel" destination="Qm8-MJ-Exv" id="BgG-h4-tqe"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellLoginCredential" rowHeight="210" id="6tY-JF-2mm" customClass="CellLoginCredential" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="229" width="375" height="210"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellLoginCredential" rowHeight="250" id="6tY-JF-2mm" customClass="CellLoginCredential" customModule="FlowDemoApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="229" width="375" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6tY-JF-2mm" id="LUW-QZ-944">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="209.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="249.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email Address" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PBc-Hs-Agy">
-                                                    <rect key="frame" x="23" y="15" width="329" height="45"/>
+                                                    <rect key="frame" x="23" y="40" width="329" height="45"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="45" id="zTq-jp-3G5"/>
                                                     </constraints>
@@ -109,7 +110,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <textInputTraits key="textInputTraits" textContentType="email"/>
                                                 </textField>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fna-qR-Xqa">
-                                                    <rect key="frame" x="23" y="75" width="329" height="45"/>
+                                                    <rect key="frame" x="23" y="100" width="329" height="45"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="45" id="J7J-9q-cRy"/>
                                                     </constraints>
@@ -118,7 +119,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bg8-0k-vfz">
-                                                    <rect key="frame" x="62" y="145" width="250" height="44"/>
+                                                    <rect key="frame" x="62" y="170" width="250" height="44"/>
                                                     <color key="backgroundColor" red="0.99783211949999995" green="0.0043027987700000004" blue="0.45543879269999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="VxY-KU-3UQ"/>
@@ -126,33 +127,59 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     </constraints>
                                                     <state key="normal" title="LOGIN"/>
                                                 </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dDR-d8-Mok">
+                                                    <rect key="frame" x="15" y="219" width="345" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="Jqi-6r-wW0"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                                    <state key="normal" title="Forgot Credentials?">
+                                                        <color key="titleColor" red="0.99783211946487427" green="0.0043027987703680992" blue="0.45543879270553589" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LOGIN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bhF-GT-BNn">
+                                                    <rect key="frame" x="164.5" y="8" width="47" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="NGa-Gm-PWO"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Fna-qR-Xqa" firstAttribute="top" secondItem="PBc-Hs-Agy" secondAttribute="bottom" constant="15" id="0eb-nw-sDD"/>
                                                 <constraint firstItem="bg8-0k-vfz" firstAttribute="top" secondItem="Fna-qR-Xqa" secondAttribute="bottom" constant="25" id="7ru-OC-2hJ"/>
                                                 <constraint firstItem="bg8-0k-vfz" firstAttribute="centerX" secondItem="LUW-QZ-944" secondAttribute="centerX" id="9e6-uU-rVq"/>
-                                                <constraint firstItem="PBc-Hs-Agy" firstAttribute="top" secondItem="LUW-QZ-944" secondAttribute="top" constant="15" id="Wai-PY-o4s"/>
+                                                <constraint firstItem="dDR-d8-Mok" firstAttribute="leading" secondItem="LUW-QZ-944" secondAttribute="leading" constant="15" id="A9j-7s-548"/>
+                                                <constraint firstItem="bhF-GT-BNn" firstAttribute="top" secondItem="LUW-QZ-944" secondAttribute="top" constant="8" id="HF5-xG-0FD"/>
+                                                <constraint firstItem="dDR-d8-Mok" firstAttribute="centerX" secondItem="LUW-QZ-944" secondAttribute="centerX" id="WNg-AB-VSK"/>
+                                                <constraint firstItem="PBc-Hs-Agy" firstAttribute="top" secondItem="LUW-QZ-944" secondAttribute="top" constant="40" id="Wai-PY-o4s"/>
+                                                <constraint firstItem="dDR-d8-Mok" firstAttribute="top" secondItem="bg8-0k-vfz" secondAttribute="bottom" constant="5" id="Xnl-A5-gQP"/>
                                                 <constraint firstItem="PBc-Hs-Agy" firstAttribute="leading" secondItem="LUW-QZ-944" secondAttribute="leading" constant="23" id="bUA-JE-yAH"/>
+                                                <constraint firstItem="bhF-GT-BNn" firstAttribute="centerX" secondItem="LUW-QZ-944" secondAttribute="centerX" id="fMv-4Z-eJe"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="Fna-qR-Xqa" secondAttribute="trailing" constant="15" id="fmS-Tg-jNd"/>
                                                 <constraint firstItem="Fna-qR-Xqa" firstAttribute="leading" secondItem="LUW-QZ-944" secondAttribute="leadingMargin" constant="15" id="kFo-UU-dkW"/>
+                                                <constraint firstAttribute="trailing" secondItem="dDR-d8-Mok" secondAttribute="trailing" constant="15" id="lMW-7a-kHg"/>
                                                 <constraint firstAttribute="trailing" secondItem="PBc-Hs-Agy" secondAttribute="trailing" constant="23" id="mwt-My-X51"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="buttonForgotCredentials" destination="dDR-d8-Mok" id="Chj-ku-xih"/>
                                             <outlet property="buttonLogin" destination="bg8-0k-vfz" id="2bZ-GV-DzE"/>
                                             <outlet property="emailField" destination="PBc-Hs-Agy" id="IAq-pG-lpR"/>
                                             <outlet property="passwordField" destination="Fna-qR-Xqa" id="IYQ-43-1g0"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellRecoverCredentials" rowHeight="180" id="1jw-Xv-rlP" customClass="CellRecoverCredentials" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="439" width="375" height="180"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellRecoverCredentials" rowHeight="220" id="1jw-Xv-rlP" customClass="CellRecoverCredentials" customModule="FlowDemoApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="479" width="375" height="220"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1jw-Xv-rlP" id="coc-ik-itX">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="179.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="219.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email Address" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m1L-7k-cR0">
-                                                    <rect key="frame" x="15" y="56" width="345" height="45"/>
+                                                    <rect key="frame" x="15" y="88" width="345" height="45"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="45" id="HsC-3D-4AW"/>
                                                     </constraints>
@@ -161,7 +188,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <textInputTraits key="textInputTraits" textContentType="email"/>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To recover your account type here your email and tap the button!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iDR-jX-Rb3">
-                                                    <rect key="frame" x="15" y="8" width="345" height="40"/>
+                                                    <rect key="frame" x="15" y="40" width="345" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="EGg-qj-YQz"/>
                                                     </constraints>
@@ -170,7 +197,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yno-nc-MqF">
-                                                    <rect key="frame" x="62" y="124" width="250" height="44"/>
+                                                    <rect key="frame" x="62" y="156" width="250" height="44"/>
                                                     <color key="backgroundColor" red="0.99783211949999995" green="0.0043027987700000004" blue="0.45543879269999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="4Gj-3L-YDv"/>
@@ -178,14 +205,25 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     </constraints>
                                                     <state key="normal" title="RECOVER"/>
                                                 </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RECOVER" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m7P-K2-a90">
+                                                    <rect key="frame" x="151.5" y="10" width="72" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="2ea-ka-Db5"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="m1L-7k-cR0" firstAttribute="leading" secondItem="coc-ik-itX" secondAttribute="leading" constant="15" id="4a3-gW-eEa"/>
                                                 <constraint firstItem="iDR-jX-Rb3" firstAttribute="leading" secondItem="coc-ik-itX" secondAttribute="leading" constant="15" id="6Lt-Rk-Chu"/>
                                                 <constraint firstAttribute="trailing" secondItem="m1L-7k-cR0" secondAttribute="trailing" constant="15" id="Onh-jw-cul"/>
+                                                <constraint firstItem="m7P-K2-a90" firstAttribute="top" secondItem="coc-ik-itX" secondAttribute="top" constant="10" id="X9Q-dd-uQB"/>
                                                 <constraint firstItem="Yno-nc-MqF" firstAttribute="centerX" secondItem="coc-ik-itX" secondAttribute="centerX" id="ZQl-ry-hMH"/>
                                                 <constraint firstAttribute="trailing" secondItem="iDR-jX-Rb3" secondAttribute="trailing" constant="15" id="bRN-cP-eDU"/>
-                                                <constraint firstItem="iDR-jX-Rb3" firstAttribute="top" secondItem="coc-ik-itX" secondAttribute="top" constant="8" id="fX1-yY-A2W"/>
+                                                <constraint firstItem="iDR-jX-Rb3" firstAttribute="top" secondItem="coc-ik-itX" secondAttribute="top" constant="40" id="fX1-yY-A2W"/>
+                                                <constraint firstItem="m7P-K2-a90" firstAttribute="centerX" secondItem="coc-ik-itX" secondAttribute="centerX" id="itu-Aw-Nfx"/>
                                                 <constraint firstItem="m1L-7k-cR0" firstAttribute="top" secondItem="iDR-jX-Rb3" secondAttribute="bottom" constant="8" id="krn-m2-wwk"/>
                                                 <constraint firstItem="Yno-nc-MqF" firstAttribute="top" secondItem="m1L-7k-cR0" secondAttribute="bottom" constant="23" id="v1m-9L-l35"/>
                                             </constraints>
@@ -196,7 +234,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellProfile" rowHeight="100" id="3rn-QC-3YU" customClass="CellProfile" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="619" width="375" height="100"/>
+                                        <rect key="frame" x="0.0" y="699" width="375" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3rn-QC-3YU" id="KZO-NV-qgb">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
@@ -256,7 +294,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellAttribute" rowHeight="44" id="0qh-R0-SEk" customClass="CellAttribute" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="719" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="799" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0qh-R0-SEk" id="4Et-0f-3Rk">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -295,7 +333,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="CellFriend" rowHeight="60" id="vbv-jp-ZFc" customClass="CellFriend" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="763" width="375" height="60"/>
+                                        <rect key="frame" x="0.0" y="843" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vbv-jp-ZFc" id="zOn-2f-OMB">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="59.5"/>
@@ -329,7 +367,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellLoader" rowHeight="150" id="yFu-R4-Xs1" customClass="CellLoader" customModule="FlowDemoApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="823" width="375" height="150"/>
+                                        <rect key="frame" x="0.0" y="903" width="375" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yFu-R4-Xs1" id="UA6-RS-0YK">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="149.5"/>

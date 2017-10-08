@@ -42,22 +42,30 @@ public class CellLoginCredential: UITableViewCell, DeclarativeCell, UITextFieldD
     
 	@IBOutlet public var emailField: UITextField?
 	@IBOutlet public var passwordField: UITextField?
+	
 	@IBOutlet public var buttonLogin: UIButton?
+	@IBOutlet public var buttonForgotCredentials: UIButton?
 
-	public static var defaultHeight: CGFloat? = 210.0
+	public static var defaultHeight: CGFloat? = 250
 
     private var credentials: LoginCredentialsModel?
 	public var onTapLogin: (() -> (Void))? = nil
-    
+	public var onTapForgotCredentials: (() -> (Void))? = nil
+
     public override func awakeFromNib() {
         super.awakeFromNib()
 		self.emailField?.delegate = self
 		self.passwordField?.delegate = self
 		self.buttonLogin?.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
+		self.buttonForgotCredentials?.addTarget(self, action: #selector(didTapForgotCredentials), for: .touchUpInside)
     }
 	
 	@objc public func didTapLogin() {
 		self.onTapLogin?()
+	}
+	
+	@objc public func didTapForgotCredentials() {
+		self.onTapForgotCredentials?()
 	}
 	
 	public func configure(_ credentials: LoginCredentialsModel, path: IndexPath) {
