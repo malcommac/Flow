@@ -369,35 +369,54 @@ All other events are described in [Row Events](row_events) section.
 
 ### `Section`
 
-**Initialize**
-* `init(id: String?, row: RowProtocol)` Initialize a new section with a single passed row
-* `init(id: String?, _ rows: [RowProtocol]?, header: String?, footer: String?)` Initialize a new section with a list of rows and optionally a standard header and/or footer string.
-* `init(id: String?, _ rows: [RowProtocol]?, headerView: SectionProtocol?, footerView: SectionProtocol?)` Initialize a new section with a list of rows and optionally an header/footer as a custom UITableViewHeaderFooterView subclass.
+#### Initialize
 
-**Reload Section**
-* `reload(_ anim: UITableViewRowAnimation?)` Reload current section with given animation (`nil` uses `automatic`)
-* `reload(rowsAtIndexes indexes: [IndexPath], animation: UITableViewRowAnimation?)` Reload rows at specified indexes with given animation (`nil` uses `automatic`)
-* `reload(rowWithID id: String, animation: UITableViewRowAnimation?)` Reload row with given identifier using passed animation type (`nil` uses `automatic`)
-* `reload(rowsWithIDs ids: [String], animation: UITableViewRowAnimation?)` Reload rows with given identifiers using passed animation type (`nil` uses `automatic`)
+| **Signature**                                                                                           | **Description**                                                                                                                |
+|---------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `init(id: String?, row: RowProtocol)`                                                                   | Initialize a new section with a single passed row                                                                              |
+| `init(id: String?, _ rows: [RowProtocol]?, header: String?, footer: String?)`                           | Initialize a new section with a list of rows and optionally a standard header and/or footer string.                            |
+| `init(id: String?, _ rows: [RowProtocol]?, headerView: SectionProtocol?, footerView: SectionProtocol?)` | Initialize a new section with a list of rows and optionally an header/footer as a custom UITableViewHeaderFooterView subclass. |
 
-**Get Rows from Section**
-* `rows(withIDs ids: [String]) -> [RowProtocol]` Get rows with given identifiers
-* `row(withID id: String?) -> RowProtocol?` Get the first row with given identifier
-* `index(ofRowWithID identifier: String?) -> Int?` Return the index of the first row with given identifier
-* `indexes(ofRowsWithIDs identifiers: [String]) -> IndexSet?` Return the indexes of rows with given identifiers
 
-**Add/Replace Rows in Section**
-* `add(_ row: RowProtocol, at index: Int? = nil)` add a new row into the section optionally specifying the index.
-* `add(_ rows: [RowProtocol], at index: Int? = nil)` add rows into the section optionally specifying the index of the first item.
-* `replace(rowAt index: Int, with row: RowProtocol)` replace a row with another row.
+#### Reload Section
 
-**Remove Rows from Section**
-* `remove(rowAt index: Int)` remove a row at specified index.
-* `remove(rowWithID identifier: String?) -> RowProtocol?` remove first row with given identifier
-* `remove(rowsWithIDs identifiers: [String]) -> [RowProtocol]` Remove rows with given identifiers
+| **Signature**                                                                     | **Description**                                                                         |
+|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `reload(_ anim: UITableViewRowAnimation?)`                                        | Reload current section with given animation (`nil` uses `automatic`)                    |
+| `reload(rowsAtIndexes indexes: [IndexPath], animation: UITableViewRowAnimation?)` | Reload rows at specified indexes with given animation (`nil` uses `automatic`)          |
+| `reload(rowWithID id: String, animation: UITableViewRowAnimation?)`               | Reload row with given identifier using passed animation type (`nil` uses `automatic`)   |
+| `reload(rowsWithIDs ids: [String], animation: UITableViewRowAnimation?)`          | Reload rows with given identifiers using passed animation type (`nil` uses `automatic`) |
 
-**Other functions**
-* `clearAll()` remove all rows of the section
+#### Get Rows from Section
+
+| **Signature**                                               | **Description**                                         |
+|-------------------------------------------------------------|---------------------------------------------------------|
+| `rows(withIDs ids: [String]) -> [RowProtocol]`              | Get rows with given identifiers                         |
+| `row(withID id: String?) -> RowProtocol?`                   | Get the first row with given identifier                 |
+| `index(ofRowWithID identifier: String?) -> Int?`            | Return the index of the first row with given identifier |
+| `indexes(ofRowsWithIDs identifiers: [String]) -> IndexSet?` | Return the indexes of rows with given identifiers       |
+
+#### Add/Replace Rows in Section
+
+| **Signature**                                      | **Description**                                                              |
+|----------------------------------------------------|------------------------------------------------------------------------------|
+| `add(_ row: RowProtocol, at index: Int? = nil)`    | Add a new row into the section optionally specifying the index.              |
+| `add(_ rows: [RowProtocol], at index: Int? = nil)` | Add rows into the section optionally specifying the index of the first item. |
+| `replace(rowAt index: Int, with row: RowProtocol)` | Replace a row with another row.                                              |
+
+#### Remove Rows from Section
+
+| **Signature**                                                | **Description**                        |
+|--------------------------------------------------------------|----------------------------------------|
+| `remove(rowAt index: Int)`                                   | Remove a row at specified index.       |
+| `remove(rowWithID identifier: String?) -> RowProtocol?`      | Remove first row with given identifier |
+| `remove(rowsWithIDs identifiers: [String]) -> [RowProtocol]` | Remove rows with given identifiers     |
+
+#### Other functions
+
+| **Signature** | **Description**                |
+|---------------|--------------------------------|
+| `clearAll()`  | Remove all rows of the section |
 
 Note: you must call `reloadData()` to reflect changes (or `update()` and add operations inside a block to perform animated reload).
 
