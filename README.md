@@ -53,31 +53,6 @@ Main features of Flow includes:
 * **AutoLayout support**: Provide a simple mechanism to specify the height of a cell or leave the class decide the best one upon described constraints.
 * **Animations**: Like `performBatchUpdates` of `UICollectionView` Flow manage automatically what kind of animations perform on the table as you change the layout.
 
-## REQUIREMENTS & LICENSE
-Flow minimum requirements are:
-* iOS 8+
-* Swift 4+ (Swift 3 is supported in [swift-3 branch](https://github.com/malcommac/Flow/tree/swift-3))
-
-We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
-
-Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
-
-This library is licensed under [MIT License](https://opensource.org/licenses/MIT).
-
-If you are using it in your software:
-* Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
-* *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
-
-## SUPPORT THE PROJECT
-Creating and mantaining libraries takes time and as developer you know this better than anyone else.
-
-If you want to contribuite to the development of this project or give to me a thanks please consider to make a small donation using PayPal:
-
-**MAKE A SMALL DONATION** and support the project.
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/danielemargutti)
-
-
 ## OTHER LIBRARIES YOU MAY LIKE
 
 I'm also working on several other projects you may like.
@@ -410,3 +385,28 @@ github "malcommac/Flow"
 ```
 
 Run `carthage` to build the framework and drag the built `Flow.framework` into your Xcode project.
+
+## REQUIREMENTS & LICENSE
+Flow minimum requirements are:
+* iOS 8+
+* Swift 4+ (Swift 3 is supported in [swift-3 branch](https://github.com/malcommac/Flow/tree/swift-3))
+
+We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
+
+Flow was created and mantained by [Daniele Margutti](http://www.danielemargutti.com); you can contact me at [hello@danielemargutti.com](mailto://hello@danielemargutti.com) or on twitter at [@danielemargutti](http://www.twitter.com/danielemargutti).
+
+This library is licensed under [MIT License](https://opensource.org/licenses/MIT).
+
+If you are using it in your software:
+* Add a notice in your credits/copyright box: `Flow for UITableViews - © 2017 Daniele Margutti - www.danielemargutti.com`
+* *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
+
+## SUPPORT THE PROJECT
+Creating and mantaining libraries takes time and as developer you know this better than anyone else.
+
+If you want to contribuite to the development of this project or give to me a thanks please consider to make a small donation using PayPal:
+
+**MAKE A SMALL DONATION** and support the project.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](http://paypal.me/danielemargutti)
+
