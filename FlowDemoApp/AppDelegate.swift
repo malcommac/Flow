@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  FlowDemoApp
 //
-//  Created by dan on 03/08/2017.
+//  Created by Daniele Margutti on 03/08/2017.
 //  Copyright © 2017 Flow. All rights reserved.
 //
 

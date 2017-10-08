@@ -2,7 +2,7 @@
 //  Cells.swift
 //  Flow-iOS
 //
-//  Created by dan on 28/09/2017.
+//  Created by Daniele Margutti on 28/09/2017.
 //  Copyright © 2017 Flow. All rights reserved.
 //
 
@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Flow
 
+
+/// This is the logo
 public class CellLogo: UITableViewCell, DeclarativeCell {
 	public typealias T = Void
 

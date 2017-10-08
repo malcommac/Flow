@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  FlowDemoApp
 //
-//  Created by dan on 03/08/2017.
+//  Created by Daniele Margutti on 03/08/2017.
 //  Copyright © 2017 Flow. All rights reserved.
 //
 
@@ -11,23 +11,43 @@ import Flow
 
 class LoginController: UIViewController {
 	
+	@IBOutlet public var table: UITableView?
+	
+	/// Manager of the table
+	private var tableManager: TableManager?
+	
+	/// Define the content of the table
+	///
+	/// - login: login content
+	/// - recoverLogin: recover account by email
+	/// - profile: profile data
+	/// - loader: loader for login
 	public enum ContentType {
 		case login
 		case recoverLogin
 		case profile
 		case loader
 	}
-	
-	@IBOutlet public var table: UITableView?
-	private var tableManager: TableManager?
-	
+	/// Current content of the table
 	public var content: ContentType = .login
 
-    var credentials = LoginCredentialsModel()
+    /// Helper Properties
 	
-	private let SECTION_ID_PROFILE = "SECTION_ID_PROFILE"
-	private let SECTION_ID_PROFILE_DETAIL = "SECTION_ID_PROFILE_DETAIL"
+    /// Credentials used to perform login
+    private var credentials = LoginCredentialsModel()
+	
+	/// Profile struct to fake the logged user
+	private var userProfile: UserProfile?
 
+	/// Identifier of the sections
+	/// We can assign an identifier to sections in table so we can search and
+	/// manipulate them easily.
+	private let SECTION_ID_PROFILE = "SECTION_ID_PROFILE" // profile section
+	private let SECTION_ID_PROFILE_DETAIL = "SECTION_ID_PROFILE_DETAIL" // profile details section
+
+    /// Create the controller
+    ///
+    /// - Returns: instance
     public static func create() -> LoginController {
         let u = UIStoryboard(name: "LoginController", bundle: Bundle.main)
         return u.instantiateViewController(withIdentifier: "LoginController") as! LoginController
@@ -35,28 +55,39 @@ class LoginController: UIViewController {
     
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		// Allocate table manager
+
+		// Just setup some fancy things of the table itself
         self.table!.rowHeight = UITableViewAutomaticDimension
         self.table!.separatorStyle = .none
         self.table?.tableFooterView = UIView()
+		
+		// Allocate the table manager to manage declaratively the table itself
 		self.tableManager = TableManager(table: self.table!)
 	}
-	
-	private var userProfile: UserProfile?
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.reloadData()
 	}
 	
-	private func reloadData() {
+	/// A function which prepare the table itself to be displayed
+	public func reloadData() {
+		// Remove the content of the table
 		self.tableManager?.removeAll()
+		// Add sections based upon the content
 		self.tableManager?.add(sectionsToAdd: self.tableContent(forType: self.content))
+		// Reload data and display it
 		self.tableManager?.reloadData()
 	}
 	
+	
+	/// This function is used to prepare the content (sections and rows) of the table
+	/// based upon the content property.
+	///
+	/// - Parameter type: type of content
+	/// - Returns: list of sections
 	private func tableContent(forType type: ContentType) -> [Section] {
+		
 		// ROW #1: Big cell with social's logo
 		let logo = Row<CellLogo>(model: Void(), { row in // the configuration callback is the ideal place to configure the cell
 			row.onTap = { _ in // Do something on tap of the entire cell
@@ -67,26 +98,26 @@ class LoginController: UIViewController {
 		
 		switch type {
 		case .login:
-			// ROW #2: Welcome cell (with autosizing layout)
-			let welcome_msg = "Welcome_Text".loc // the model of the cell is the localized messages's String
-			let welcome = Row<CellAutosizeText>(model: welcome_msg)
+			// ROW: Welcome Text
+			// This is an autosizing cell with some welcome text
+			let welcome = Row<CellAutosizeText>(model: "Welcome_Text".loc) // the model of the row is a string with text to display
 			welcome.onShouldHighlight = { _ in return false } // we can set properties even outside the configuration callback (we have disabled highlight)
 			
-			// ROW #3: The cell with login and password fields
-			// In this case we have specified the height of the row directly on CellLoginCredentials
-			// The model of the call is the credentials field.
+			// ROW: Credentials
+			// This row contains the login textfields (email and password). The model used is the LoginCredentialsModel
+			// used to keep and sync data received from the user
 			let credentials = Row<CellLoginCredential>(model: self.credentials, { row in
+				row.shouldHighlight = false // disable highlight of the row
 				// We have hooked `onTapLogin` to our controller's `loginUser` function
 				row.onDequeue = { _ in
 					row.cell?.onTapLogin = self.loginUser
 				}
-				row.shouldHighlight = false
 			})
-			
-			let topSection = Section(rows: [logo,welcome])
-			let loginSection = Section(row: credentials)
-			return [topSection,loginSection]
+			// create two sections, one for logo+welcome and another with credentials fields
+			return [Section(rows: [logo,welcome]), Section(row: credentials)]
 		case .profile:
+			// ROW: Profile Info
+			// This is a cell with profile's info
 			let profile = Row<CellProfile>(model: self.userProfile!, { row in
 				row.onDequeue = { _ in
 					if self.isFullProfileDetailSectionVisible == false {
@@ -101,10 +132,8 @@ class LoginController: UIViewController {
 				}
 			})
 			
-			let topSection = Section(rows: [logo])
-			let profileSection = Section(id: SECTION_ID_PROFILE, row: profile)
-			
-
+			// ROWs: List of friends
+			// This is a list of cells, one for each friend of the profile
 			let row_friends = Row<CellFriend>.create(self.userProfile!.friends, { row in
 				row.rowHeight = 60
 				row.onTap = { _ in
@@ -112,22 +141,29 @@ class LoginController: UIViewController {
 					return nil
 				}
 			})
-			let sectionFriends = Section(rows: row_friends)
 			
-			return [topSection,profileSection,sectionFriends]
+			// Create section
+			return [ Section(rows: [logo]), // one for logo
+			         Section(id: SECTION_ID_PROFILE, row: profile), // one for profile's data
+			         Section(rows: row_friends) // the last with friends list
+			]
 		case .recoverLogin:
 			
-			// Recover field
+			// ROW: Recover data by email
+			// This is a cell with a text field with email and a recover button
 			let recover = Row<CellRecoverCredentials>(model: Void(), { row in
 				row.rowHeight = 180.0
 				row.cell?.onTapRecover = { email in
 					self.recoverAccount(byEmail: email)
 				}
 			})
-			
+			// Creeate a section with this row
 			return [Section(row: recover)]
 			
 		case .loader:
+			
+			// ROW: Loader
+			// This is a full-height cell with a loader during the login process
 			let loader = Row<CellLoader>(model: "Login \(self.credentials.email)", { row in
 				row.rowHeight = self.table!.frame.size.height
 				row.shouldHighlight = false
@@ -136,11 +172,16 @@ class LoginController: UIViewController {
 		}
 	}
 	
+	// Helper functions
+	
 	private func loginUser() {
+		// Show loader...
 		self.content = .loader
 		self.reloadData()
+		// And fake login...
 		DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-			self.userProfile = UserProfile(firstName: "Mark", lastName: "Zuckerbergo", mood: "I share hard!")
+			self.userProfile = UserProfile.loggedUser() // a fake user!
+			// Update data
 			self.content = .profile
 			self.reloadData()
 		}
@@ -154,25 +195,21 @@ class LoginController: UIViewController {
 		let profileSection = self.tableManager?.section(forID: SECTION_ID_PROFILE)
 		
 		if self.isFullProfileDetailSectionVisible == false { // SHOW FULL PROFILE SECTION WITH ROWS
-			// Create rows for full profile
-			let profileDatas = [
-				UserProfileAttribute("Job", value: "Facebook Inc"),
-				UserProfileAttribute("Position", value: "CEO"),
-				UserProfileAttribute("Birthdate", value: "11/06/2017 - 24yrs"),
-				UserProfileAttribute("Debugger Level", value: "Top ★★★")
-			]
-			let profiles_rows = Row<CellAttribute>.create(profileDatas, { row in
+			// Create a row for each profile's detailed attribute
+			let profiles_rows = Row<CellAttribute>.create(self.userProfile!.attributes, { row in
 				row.onTap = { r in
 					print("Tap")
 					return nil
 				}
 			})
-			
+			// Group these data in a section
 			let profileDetailSection = Section(id: SECTION_ID_PROFILE_DETAIL, rows: profiles_rows)
+			
+			// Update the table to add it
 			self.tableManager?.update(animation: .automatic, {
 				self.tableManager?.insert(section: profileDetailSection, at: profileSection!.index! + 1)
 			})
-			profileSection?.reload(.automatic)
+			profileSection?.reload(.automatic) // reload the profile's data to update the tap field
 		}
 		else { // HIDE FULL PROFILE SECTION
 			let profileSection = self.tableManager!.section(forID: SECTION_ID_PROFILE_DETAIL)!
@@ -187,7 +224,6 @@ class LoginController: UIViewController {
 		
 	}
 	
-    
     private func loaderSection(forEmail txt: String) -> Section {
 		let loader = Row<CellLoader>(model: txt)
         loader.rowHeight = self.table!.frame.size.height - self.table!.contentSize.height
