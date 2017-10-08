@@ -320,7 +320,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			guard index < self.sections.count else { return self } // validate index
 			self.sections[index].rows.append(contentsOf: rows)
 		} else {
-			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			let destSection = self.sections.last ?? Section(rows: nil) // destination is the last section or a new section
 			destSection.manager = self
 			destSection.rows.append(contentsOf: rows)
 		}
@@ -360,7 +360,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			guard index < self.sections.count else { return self }
 			self.sections[index].rows.append(row)
 		} else {
-			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			let destSection = self.sections.last ?? Section(rows: nil) // destination is the last section or a new section
 			destSection.manager = self
 			destSection.rows.append(row)
 		}
