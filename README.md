@@ -322,7 +322,7 @@ let rows = Row<PlayerCell>.create(players, { row in
 })
 ```
 
-All other events are described in [Row Events](row_events) section.
+All observable events are described in [API SDK](API_SDK.md).
 
 * * *
 

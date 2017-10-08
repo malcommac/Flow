@@ -1,22 +1,23 @@
 ## Flow APIs Documentation
 
-* [`TableManager` object](#api_tablemanager)
-* [`Section` object](#api_section)
-* [`Row` object](#api_row)
+* [`TableManager`](#api_tablemanager)
+* [`Section`](#api_section)
+* [`Row`](#api_row)
+* [Observable Events in Row](#observable_events)
 
 * * *
 
 <a name="api_tablemanager" />
 
-### `TableManager`
+## `TableManager`
 
-#### Initialize
+### Initialize
 
 | **Signature**                                                                | **Description**                                                                                                                                                                          |
 |------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `init(table: UITableView, estimateRowHeight: Bool)`                          | Initialize a new manager for a specific `UITableView` instance                                                                                                                           |                                                                                                                                                     |
 
-#### Reload
+### Reload
 
 | **Signature**                                                                | **Description**                                                                                                                                                                          |
 |------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -27,7 +28,7 @@
 | `reload(sections: [Section], animation: UITableViewRowAnimation?)`           | Reload data for given sections.                                                                                                                                                          |
 
 
-#### Add Rows
+### Add Rows
 
 | **Signature**                                       | **Description**                                                                                                                                                                                               |
 |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -37,7 +38,7 @@
 | `add(row: RowProtocol, inSectionAt index: Int?)`    | Add a new row into specified section (If `nil` is passed the last section is used as destination. if no sections are present into the table a new section with given row is created automatically).           |
 
 
-#### Move/Insert/Replace Rows
+### Move/Insert/Replace Rows
 
 | **Signature**                                                 | **Description**                                                                                                                       |
 |---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -47,7 +48,7 @@
 | `remove(sectionAt index: Int)`                                | Remove an existing section at specified index.                                                                                        |
 | `removeAll()`                                                 | Remove all the sections of the table.                                                                                                 |
 
-#### Get section
+### Get section
 
 | **Signature**                           | **Description**                                                                         |
 |-----------------------------------------|-----------------------------------------------------------------------------------------|
@@ -56,7 +57,7 @@
 | `sections(forIDs ids: [String])`        | Return all sections with given identifiers                                              |
 | `hasSection(withID identifier: String)` | Return `true` if table contains passed section with given identifier, `false` otherwise |
 
-#### Properties
+### Properties
 
 | **Signature** | **Description**                                                               |
 |---------------|-------------------------------------------------------------------------------|
@@ -68,9 +69,9 @@
 
 <a name="api_sections" />
 
-### `Section`
+## `Section`
 
-#### Initialize
+### Initialize
 
 | **Signature**                                                                                           | **Description**                                                                                                                |
 |---------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
@@ -79,7 +80,7 @@
 | `init(id: String?, _ rows: [RowProtocol]?, headerView: SectionProtocol?, footerView: SectionProtocol?)` | Initialize a new section with a list of rows and optionally an header/footer as a custom UITableViewHeaderFooterView subclass. |
 
 
-#### Reload Section
+### Reload Section
 
 | **Signature**                                                                     | **Description**                                                                         |
 |-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
@@ -88,7 +89,7 @@
 | `reload(rowWithID id: String, animation: UITableViewRowAnimation?)`               | Reload row with given identifier using passed animation type (`nil` uses `automatic`)   |
 | `reload(rowsWithIDs ids: [String], animation: UITableViewRowAnimation?)`          | Reload rows with given identifiers using passed animation type (`nil` uses `automatic`) |
 
-#### Get Rows from Section
+### Get Rows from Section
 
 | **Signature**                                               | **Description**                                         |
 |-------------------------------------------------------------|---------------------------------------------------------|
@@ -97,7 +98,7 @@
 | `index(ofRowWithID identifier: String?) -> Int?`            | Return the index of the first row with given identifier |
 | `indexes(ofRowsWithIDs identifiers: [String]) -> IndexSet?` | Return the indexes of rows with given identifiers       |
 
-#### Add/Replace Rows in Section
+### Add/Replace Rows in Section
 
 | **Signature**                                      | **Description**                                                              |
 |----------------------------------------------------|------------------------------------------------------------------------------|
@@ -105,7 +106,7 @@
 | `add(_ rows: [RowProtocol], at index: Int? = nil)` | Add rows into the section optionally specifying the index of the first item. |
 | `replace(rowAt index: Int, with row: RowProtocol)` | Replace a row with another row.                                              |
 
-#### Remove Rows from Section
+### Remove Rows from Section
 
 | **Signature**                                                | **Description**                        |
 |--------------------------------------------------------------|----------------------------------------|
@@ -113,7 +114,7 @@
 | `remove(rowWithID identifier: String?) -> RowProtocol?`      | Remove first row with given identifier |
 | `remove(rowsWithIDs identifiers: [String]) -> [RowProtocol]` | Remove rows with given identifiers     |
 
-#### Other functions
+### Other functions
 
 | **Signature** | **Description**                |
 |---------------|--------------------------------|
@@ -126,9 +127,9 @@ Note: you must call `reloadData()` to reflect changes (or `update()` and add ope
 
 <a name="api_row" />
 
-### `Row`
+## `Row`
 
-#### Initialize
+### Initialize
 
 | **Signature**                                                                        | **Description**                                                                                                               |
 |--------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
@@ -136,22 +137,7 @@ Note: you must call `reloadData()` to reflect changes (or `update()` and add ope
 | `static func create(_ items: [Cell.T], _ configurator: TableRowConfigurator? = nil)` | Create a new set of `Rows` of the specified type which hold data for passed models (`items`).                                 |
 
 
-#### Manage Heights of the Cell
-
-* If your cell has a fixed height you can override the static var `defaultHeight` and provide the height (you can also return `UITableViewAutomaticDimension` for autosizing cell).
-If your cell supports autosizing you can also override static var `estimatedHeight` to provide an estimate height of the cell.
-* If you want to customize the height per instance you need to provide a a valid result to `evaluateRowHeight()` function (and optionally `evaluateEstimatedHeight()`).
-
-**Configure cell with model instance**
-
-Configuration of the cell with an instance of your model is done by declaring `func configure(_ cell: UITableViewCell, path: IndexPath)` in your `UITableViewCell` subclass.
-Here you will receive the instance of the cell and relative path (you can use `self.item` to get represented item istance of the row).
-
-You can also observe the `onDequeue` event; it happends just after the cell is dequeued from the table's pool.
-
-<a name="row_events" />
-
-**Observable Events**
+## Observable Events in Row
 
 The following events are observable by the `Row` instance and allows you to customize behaviour and appearance of the single cell.
 
