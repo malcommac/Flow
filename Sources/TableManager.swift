@@ -888,7 +888,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - type: type of view (`header` or `footer`)
 	/// - Returns: height of the section
 	private func sectionHeight(at index: Int, estimated: Bool, _ type: SectionType) -> CGFloat {
-		guard let sectionView = self.sections[index].headerView else {
+		let section = self.sections[index]
+		guard let sectionView = section.headerView else {
+			if section.sectionTitle(forType: type)?.isEmpty ?? true {
+				return 0 // no default title is set
+			}
 			return TableManager.HEADERFOOTER_HEIGHT
 		}
 		

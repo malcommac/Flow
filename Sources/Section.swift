@@ -149,6 +149,14 @@ open class Section: Equatable, Hashable {
 		self.rows.removeAll()
 	}
 	
+	/// Return the standard title (string) for header/footer of the section
+	///
+	/// - Parameter type: type of data
+	/// - Returns: string, `nil` if not set
+	internal func sectionTitle(forType type: SectionType) -> String? {
+		return (type == .header ? self.headerTitle : self.footerTitle)
+	}
+	
 	/// Add a new row into the section optionally specifying the index
 	///
 	/// - Parameters:
