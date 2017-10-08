@@ -38,8 +38,12 @@ public class CellAutosizeText: UITableViewCell, DeclarativeCell {
 }
 
 public class CellLoginCredential: UITableViewCell, DeclarativeCell, UITextFieldDelegate {
+	// This define the model received by cell's instances at runtime.
+	// If your cell does not need of it you can use Void.
 	public typealias T = LoginCredentialsModel
-    
+	
+	private var credentials: LoginCredentialsModel?
+
 	@IBOutlet public var emailField: UITextField?
 	@IBOutlet public var passwordField: UITextField?
 	
@@ -47,8 +51,7 @@ public class CellLoginCredential: UITableViewCell, DeclarativeCell, UITextFieldD
 	@IBOutlet public var buttonForgotCredentials: UIButton?
 
 	public static var defaultHeight: CGFloat? = 250
-
-    private var credentials: LoginCredentialsModel?
+	
 	public var onTapLogin: (() -> (Void))? = nil
 	public var onTapForgotCredentials: (() -> (Void))? = nil
 
@@ -68,6 +71,9 @@ public class CellLoginCredential: UITableViewCell, DeclarativeCell, UITextFieldD
 		self.onTapForgotCredentials?()
 	}
 	
+	
+	/// Configure is called everytime the cell needs to be updated.
+	/// We want to report the state of LoginCredentialsModel instance into login fields.
 	public func configure(_ credentials: LoginCredentialsModel, path: IndexPath) {
         self.credentials = credentials
 		self.emailField?.text = credentials.email
@@ -75,6 +81,7 @@ public class CellLoginCredential: UITableViewCell, DeclarativeCell, UITextFieldD
 	}
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+		// Just update the model with content of the field
         let value = (((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string) as String)
 		if textField == self.emailField {
 			self.credentials?.email = value

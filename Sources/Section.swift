@@ -49,7 +49,8 @@ open class Section: Equatable, Hashable {
 	/// Reference to parent manager
 	internal weak var manager: TableManager? = nil
 	
-	/// Identifier string for this ection
+	/// Optional identifier of the section.
+	/// You can assign it when you need to retrive it from manager.
 	open var identifier: String? = nil
 	
 	/// Index of the section in parent manager (if any).

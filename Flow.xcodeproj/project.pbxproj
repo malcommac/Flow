@@ -135,7 +135,7 @@
 			name = Others;
 			sourceTree = "<group>";
 		};
-		376DF4AA1F335DC900D48EAE /* Flow Demo Application */ = {
+		376DF4AA1F335DC900D48EAE /* Example Application */ = {
 			isa = PBXGroup;
 			children = (
 				376DF4AB1F335DC900D48EAE /* AppDelegate.swift */,
@@ -143,7 +143,7 @@
 				375F11791F38BCD6005CEE1C /* Others */,
 				644236E11F8A365F009F9A2F /* External */,
 			);
-			name = "Flow Demo Application";
+			name = "Example Application";
 			path = FlowDemoApp;
 			sourceTree = "<group>";
 		};
@@ -152,7 +152,7 @@
 			children = (
 				64E87D5D1F854F0C0043C2A0 /* Localizable.strings */,
 				8933C7811EB5B7E0000D00A4 /* Flow Library Source */,
-				376DF4AA1F335DC900D48EAE /* Flow Demo Application */,
+				376DF4AA1F335DC900D48EAE /* Example Application */,
 				8933C7831EB5B7EB000D00A4 /* Flow Tests */,
 				52D6D99C1BEFF38C002C0205 /* Configs */,
 				52D6D97D1BEFF229002C0205 /* Products */,

@@ -38,7 +38,7 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// Item represented by the cell
 	open let model: Cell.T
 	
-	/// Optional unique identifier of the row
+	/// Optional identifier of the row
 	public var identifier: String? = nil
 
 	/// Hash value

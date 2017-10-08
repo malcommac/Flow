@@ -8,7 +8,7 @@
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
 ## Flow
-### the cool way to create and manage UITableViews in iOS
+### A new way to populate and manage UITableView
 
 <p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
 
@@ -16,13 +16,16 @@
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
 
 ## WHAT'S FLOW
-Flow is a Swift lightweight library which help you to better manage content in UITableViews. It's easy and fast, perfectly fits the type-safe nature of Swift.
+Flow is a Swift lightweight library which help you to better manage content in UITableViews.
+It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 **Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of all!
 
-## WHAT YOU CAN REALLY DO WITH FLOW
+## WHAT YOU CAN DO
 
-The following code is the only required to create a complete  which shows  some football players *(the complete example is also available in project's demo)*:
+The following code is the only required to create a complete TableView which shows a list of some football players.
+Each player is represented by a class (the model) called `PlayerModel`; the instance is represented into the tableview by the `PlayerCell` UITableViewCell subclass.
+
 
 ```swift
 let players: [PlayerModel] = ... // your array of players
@@ -35,9 +38,11 @@ tableManager.add(rows: rows) // just add them to the table
 tableManager.reloadData()
 ```
 
-A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more: handle tap events, customize editing, easy create footer and headers...
+A complete table in few lines of code; **feel amazing uh? Yeah it is**, and there's more:
+You can handle tap events, customize editing, easy create custom footer and headers and manage the entire content simply as like it was an array!.
 
-(A complete introductory article on this topic can be found on my blog at: ["Forget datasources & delegates: a new way to create and manage UITableView"](http://danielemargutti.com/2017/08/28/forget-datasources-delegates-a-new-way-to-create-and-manage-uitableview))
+A complete article about this topic can be found here:
+["Forget DataSource and Delegates: a new approach for UITableView"](http://danielemargutti.com/2017/08/28/forget-datasources-delegates-a-new-way-to-create-and-manage-uitableview)
 
 ## MAIN FEATURES
 Main features of Flow includes:
@@ -51,7 +56,7 @@ Main features of Flow includes:
 ## REQUIREMENTS & LICENSE
 Flow minimum requirements are:
 * iOS 8+
-* Swift 3+
+* Swift 4+ (Swift 3 is supported in [swift-3 branch](https://github.com/malcommac/Flow/tree/swift-3))
 
 We are supporting both [CocoaPods](#cocoapods) and [Chartage](#carthage).
 
@@ -64,9 +69,7 @@ If you are using it in your software:
 * *(optional but appreciated)* [Click here to report me](https://github.com/malcommac/flow/issues/new?labels[]=Share&labels[]=[Type]%20Share&title=I'm%20using%20your%20library%20in%20my%20software&body=Hi,%20I'm%20using%20your%20library%20in%20my%20software;%20you%20can%20found%20it%20at%20the%20following%20link:) **your app using Flow**.
 
 ## SUPPORT THE PROJECT
-Creating and mantaining libraries takes time.
-
-As programmer you know this better than anyone else.
+Creating and mantaining libraries takes time and as developer you know this better than anyone else.
 
 If you want to contribuite to the development of this project or give to me a thanks please consider to make a small donation using PayPal:
 
