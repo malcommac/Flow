@@ -41,7 +41,7 @@ A complete table in few lines of code; **feel amazing uh? Yeah it is**, and ther
 You can handle tap events, customize editing, easy create custom footer and headers and manage the entire content simply as like it was an array!.
 
 A complete article about this topic can be found here:
-["Forget DataSource and Delegates: a new approach for UITableView"](http://danielemargutti.com/2017/08/28/forget-datasources-delegates-a-new-way-to-create-and-manage-uitableview)
+[**"Forget DataSource and Delegates: a new approach for UITableView"**](http://danielemargutti.com/2017/10/08/forget-datasource-delegates-a-new-approach-to-uitableview/)
 
 ## MAIN FEATURES
 Main features of Flow includes:
