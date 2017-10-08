@@ -179,9 +179,9 @@ public class PlayerCell: UITableViewCell, DeclarativeCell {
 
 You can create the UI of your cell in two different ways:
 * **Using Storyboard**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
-* **Manually**: create a new xib file with the same name of your cell class (here `PlayerCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
+* **Separate XIB File**: create a new xib file with the same name of your cell class (here `PlayerCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
 
-Flow will take care of the load and dequeue of the instances for you!
+Flow will take care of the load and dequeue of the instances for you.
 
 <a name="manage_cell_size" />
 
@@ -189,10 +189,29 @@ Flow will take care of the load and dequeue of the instances for you!
 
 If your cell has a fixed height which does not change with the content of the model you want also implement the following static properties:
 
-* `defaultHeight` (`CGFLoat`): return the height of the cell (if your cell is autosizing you can also return `UITableViewAutomaticDimension`)
+* `defaultHeight` (`CGFloat`): return the height of the cell (if your cell is autosizing you can also return `UITableViewAutomaticDimension`)
 * `estimatedHeight` (`CGFloat`): return estimated height (only for autosizing cells)
 
 If your cell needs to evaluate the height based upon the content you can override the `evaluateRowHeight()` and/or `evaluateEstimatedHeight()` of your `Row` class (we'll see it later).
+
+Example of static height in Cell class:
+
+```
+public class PlayerCell: UITableViewCell, DeclarativeCell {
+	public static var defaultHeight: CGFloat? = 250
+}
+```
+
+Example of dynamic calculated height in Row instance:
+
+```
+let logo = Row<PlayerCell>(model: Void(), { row in // the configuration callback is the ideal place to configure the cell
+  row.evaluateRowHeight = {
+	// do your calculations...
+	return value
+  }
+})
+```
 
 <a name="create_rows" />
 
