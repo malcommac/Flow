@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommac/Flow/develop/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=418px height=320px alt="Flow" title="Flow">
 </p>
 
 [![Version](https://img.shields.io/cocoapods/v/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![License](https://img.shields.io/cocoapods/l/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![Platform](https://img.shields.io/cocoapods/p/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables)
@@ -7,8 +7,7 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
-## Flow
-### A new way to populate and manage UITableView
+## Flow: a new declarative approach to UITableView
 
 <p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
 
@@ -19,7 +18,7 @@
 Flow is a Swift lightweight library which help you to better manage content in UITableViews.
 It's easy and fast, perfectly fits the type-safe nature of Swift.
 
-**Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of all!
+**Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of the rest!
 
 ## WHAT YOU CAN DO
 
