@@ -308,6 +308,8 @@ All other events are described in [Row Events](row_events) section.
 
 ## API SDK Documentation
 
+- - -
+
 <a name="api_tablemanager" />
 
 ### `TableManager`
@@ -365,6 +367,9 @@ All other events are described in [Row Events](row_events) section.
 | `isEmpty`     | Return `true` if table does not contains sections or rows                     |
 | `sections`    | Return the list of `Sections` actually contained into the manager (read-only) |
 
+
+- - -
+
 <a name="api_sections" />
 
 ### `Section`
@@ -419,6 +424,9 @@ All other events are described in [Row Events](row_events) section.
 | `clearAll()`  | Remove all rows of the section |
 
 Note: you must call `reloadData()` to reflect changes (or `update()` and add operations inside a block to perform animated reload).
+
+- - -
+
 
 <a name="api_row" />
 
