@@ -145,7 +145,7 @@ class LoginController: UIViewController {
 			// Create section
 			return [ Section(rows: [logo]), // one for logo
 			         Section(id: SECTION_ID_PROFILE, row: profile), // one for profile's data
-			         Section(rows: row_friends) // the last with friends list
+					 Section(row_friends, header: "\(self.userProfile!.friends.count) Friends") // one with the list of friends and a regular header
 			]
 		case .recoverLogin:
 			
@@ -164,7 +164,7 @@ class LoginController: UIViewController {
 			
 			// ROW: Loader
 			// This is a full-height cell with a loader during the login process
-			let loader = Row<CellLoader>(model: "Login \(self.credentials.email)", { row in
+			let loader = Row<CellLoader>(model: "Logging in\n '\(self.credentials.email)'", { row in
 				row.rowHeight = self.table!.frame.size.height
 				row.shouldHighlight = false
 			})

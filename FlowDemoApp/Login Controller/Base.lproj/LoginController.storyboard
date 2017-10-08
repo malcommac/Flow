@@ -263,7 +263,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Attribute Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kh2-G3-uPh">
-                                                    <rect key="frame" x="15" y="13" width="89" height="18"/>
+                                                    <rect key="frame" x="25" y="13" width="89" height="18"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="18" id="88h-Sh-5Py"/>
                                                     </constraints>
@@ -272,18 +272,18 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="100" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ut-px-okb">
-                                                    <rect key="frame" x="104" y="11.5" width="256" height="21"/>
+                                                    <rect key="frame" x="114" y="11.5" width="246" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="PfO-xZ-fdX"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Kh2-G3-uPh" firstAttribute="centerY" secondItem="4Et-0f-3Rk" secondAttribute="centerY" id="8if-oU-Swj"/>
-                                                <constraint firstItem="Kh2-G3-uPh" firstAttribute="leading" secondItem="4Et-0f-3Rk" secondAttribute="leading" constant="15" id="AU6-sS-V4A"/>
+                                                <constraint firstItem="Kh2-G3-uPh" firstAttribute="leading" secondItem="4Et-0f-3Rk" secondAttribute="leading" constant="25" id="AU6-sS-V4A"/>
                                                 <constraint firstItem="9Ut-px-okb" firstAttribute="centerY" secondItem="4Et-0f-3Rk" secondAttribute="centerY" id="BKy-cr-wfj"/>
                                                 <constraint firstAttribute="trailing" secondItem="9Ut-px-okb" secondAttribute="trailing" constant="15" id="KaG-fC-hxw"/>
                                                 <constraint firstItem="9Ut-px-okb" firstAttribute="leading" secondItem="Kh2-G3-uPh" secondAttribute="trailing" id="R6q-Pe-fG9"/>

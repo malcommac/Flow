@@ -121,8 +121,9 @@ public class CellAttribute: UITableViewCell, DeclarativeCell {
 	@IBOutlet public var attributeKeyLabel: UILabel?
 	@IBOutlet public var attributeValueLabel: UILabel?
 	
-	public func configure(_: UserProfileAttribute, path: IndexPath) {
-		
+	public func configure(_ p: UserProfileAttribute, path: IndexPath) {
+		self.attributeKeyLabel?.text = p.label
+		self.attributeValueLabel?.text = p.value
 	}
 }
 

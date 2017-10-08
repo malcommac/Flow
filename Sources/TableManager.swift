@@ -46,6 +46,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// from table and deallocated.
 	internal var removedRows: [Int: RowProtocol] = [:]
 	
+	
+	/// Default height of the header/footer with plain style
+	private static let HEADERFOOTER_HEIGHT: CGFloat = 44.0
+	
 	/// Store removed rows temporary in order send didEndDisplay messages.
 	///
 	/// - Parameter rows: rows proposed to be temporary kept
@@ -885,7 +889,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: height of the section
 	private func sectionHeight(at index: Int, estimated: Bool, _ type: SectionType) -> CGFloat {
 		guard let sectionView = self.sections[index].headerView else {
-			return UITableViewAutomaticDimension
+			return TableManager.HEADERFOOTER_HEIGHT
 		}
 		
 		// Has the user provided an evaluation function for view's height? If yes we can realy to it
