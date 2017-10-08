@@ -143,6 +143,64 @@ open class Section: Equatable, Hashable {
 		self.manager?.tableView?.reloadSections(IndexSet(integer: index), with: (anim ?? .automatic))
 	}
 	
+	/// Reload rows at specified indexes.
+	///
+	/// - Parameters:
+	///   - indexes: indexes of rows to reload
+	///   - animation: animation to use, `automatic` is used when `nil` is passed.
+	open func reload(rowsAtIndexes indexes: [IndexPath], animation: UITableViewRowAnimation? = nil) {
+		self.manager?.tableView?.reloadRows(at: indexes, with: animation ?? .automatic)
+	}
+
+	
+	/// Reload row with given identifier.
+	///
+	/// - Parameters:
+	///   - id: identifier of the row
+	///   - animation: animation to use, `automatic` is used when `nil` is passed.
+	open func reload(rowWithID id: String, animation: UITableViewRowAnimation? = nil) {
+		guard let rowIdx = self.rows.index(where: { $0.identifier == id }) else { return }
+		let indexPath = IndexPath(row: rowIdx, section: self.index!)
+		self.manager?.tableView?.reloadRows(at: [indexPath], with: animation ?? .automatic)
+	}
+	
+	/// Reload rows with given IDs
+	///
+	/// - Parameters:
+	///   - ids: ids to search
+	///   - animation: animation to use, `automatic` is used when `nil` is passed.
+	open func reload(rowsWithIDs ids: [String], animation: UITableViewRowAnimation? = nil) {
+		let sectionIdx = self.index!
+		var indexes: [IndexPath] = []
+		self.rows.enumerated().forEach { rowIdx,item in
+			if let id = item.identifier, ids.contains(id) {
+				indexes.append(IndexPath(row: rowIdx, section: sectionIdx))
+			}
+		}
+		guard indexes.count > 0 else { return }
+		self.manager?.tableView?.reloadRows(at: indexes, with: animation ?? .automatic)
+	}
+	
+	
+	/// Get rows with given identifiers
+	///
+	/// - Parameter ids: identifiers to search
+	/// - Returns: instances of `RowProtocol`
+	open func rows(withIDs ids: [String]) -> [RowProtocol] {
+		return self.rows.filter({
+			guard let id = $0.identifier, ids.contains(id) else { return false }
+			return true
+		})
+	}
+	
+	/// Get the first row with given identifier
+	///
+	/// - Parameter id: identifier to search
+	/// - Returns: found instance, `nil` if nothing were found
+	open func row(withID id: String) -> RowProtocol? {
+		return self.rows.find(predicate: { $0.identifier == id })
+	}
+	
 	/// Remove all rows from the section
 	open func clearAll() {
 		self.manager?.keepRemovedRows(Array(self.rows))
@@ -217,7 +275,7 @@ open class Section: Equatable, Hashable {
 		self.manager?.keepRemovedRows([removed])
 		return removed
 	}
-
+	
 	/// Equatable protocol
 	///
 	/// - Parameters:
