@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// This model is used to represent the login data credentials
-public struct LoginCredentialsModel {
+public class LoginCredentialsModel {
 	var email: String = ""
 	var password: String = ""
 }

@@ -190,6 +190,13 @@ class LoginController: UIViewController {
 	// Helper functions
 	
 	private func didTapLoginUser() {
+		guard self.credentials.email.isEmpty == false, self.credentials.password.isEmpty == false else {
+			let alert = UIAlertController(title: "Error", message: "Check your login data first!", preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+			self.present(alert, animated: true, completion: nil)
+			return
+		}
+		
 		// Show loader...
 		self.content = .loader
 		self.reloadData()
@@ -269,24 +276,4 @@ class LoginController: UIViewController {
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-    private func loaderSection(forEmail txt: String) -> Section {
-		let loader = Row<CellLoader>(model: txt)
-        loader.rowHeight = self.table!.frame.size.height - self.table!.contentSize.height
-        loader.shouldHighlight = false
-        return Section(rows: [loader])
-    }
-    
-    private func executeLogin() {
-		guard self.credentials.email.isEmpty, self.credentials.password.isEmpty == false else {
-			let alert = UIAlertController(title: "Error", message: "Check your login data first!", preferredStyle: .alert)
-			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-			self.present(alert, animated: true, completion: nil)
-			return
-		}
-		
-        self.tableManager?.update(animation: .fade, { () -> (Void) in
-            self.tableManager?.remove(sectionAt: 1)
-            self.tableManager?.add(section: self.loaderSection(forEmail: self.credentials.email))
-       })
-    }
 }

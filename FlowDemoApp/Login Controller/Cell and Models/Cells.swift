@@ -166,7 +166,7 @@ public class CellLoader: UITableViewCell, DeclarativeCell {
     }
     
     public func configure(_ text: String, path: IndexPath) {
-        self.messageLabel?.text = "Login as \(text)..."
+        self.messageLabel?.text = text
         spinnerView.frame = self.container!.bounds
         self.container?.addSubview(spinnerView)
         spinnerView.beginRefreshing()
