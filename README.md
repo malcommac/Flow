@@ -1,5 +1,5 @@
 <p align="center" >
-  <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=418px height=320px alt="Flow" title="Flow">
+  <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
 </p>
 
 [![Version](https://img.shields.io/cocoapods/v/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![License](https://img.shields.io/cocoapods/l/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![Platform](https://img.shields.io/cocoapods/p/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables)
@@ -7,14 +7,13 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
-## Flow: a new declarative approach to UITableView
+## Flow
 
-<p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
+<p align="center" >★★ <b>Star Flow to help the project! </b> ★★</p>
 
-<p align="center" ><a href="http://paypal.me/danielemargutti"><b>Support the project. Make a small donation.</b></a></p>
+<p align="center" ><a href="http://paypal.me/danielemargutti">Support the project. <b>Donate now.</b></a></p>
 <p align="center" >Created by <a href="http://www.danielemargutti.com">Daniele Margutti</a> (<a href="http://www.twitter.com/danielemargutti">@danielemargutti</a>)</p>
 
-## WHAT'S FLOW
 Flow is a Swift lightweight library which help you to better manage content in UITableViews.
 It's easy and fast, perfectly fits the type-safe nature of Swift.
 
@@ -329,6 +328,11 @@ All observable events are described in [API SDK](API_SDK.md).
 
 Full method documentation is available both in source code and in API_SDK file.
 Click here to read the [Full SDK Documentation](API_SDK.md).
+
+## Changelog
+
+Current version of Flow is 0.8.0.
+Full changelog is available in [CHANGELOG.MD](CHANGELOG.md) file.
 
 ## Installation
 
