@@ -123,7 +123,7 @@ open class Section: Equatable, Hashable {
 	}
 	
 	/// Initialize a new section with a list of rows and optionally an header/footer as a custom
-	/// UIView subclass.
+	/// UITableViewHeaderFooterView subclass.
 	///
 	/// - Parameters:
 	///   - id: optional identifier of the section
@@ -198,7 +198,8 @@ open class Section: Equatable, Hashable {
 	///
 	/// - Parameter id: identifier to search
 	/// - Returns: found instance, `nil` if nothing were found
-	open func row(withID id: String) -> RowProtocol? {
+	open func row(withID id: String?) -> RowProtocol? {
+		guard let id = id else { return nil }
 		return self.rows.find(predicate: { $0.identifier == id })
 	}
 	
@@ -275,6 +276,60 @@ open class Section: Equatable, Hashable {
 		let removed = self.rows.remove(at: index)
 		self.manager?.keepRemovedRows([removed])
 		return removed
+	}
+	
+	/// Return the index of the first row with given identifier
+	///
+	/// - Parameter identifier: identifier
+	/// - Returns: `Int`, `nil` if not found
+	open func index(ofRowWithID identifier: String?) -> Int? {
+		guard let id = identifier else { return nil }
+		return self.rows.index(where: { $0.identifier == id })
+	}
+	
+	
+	/// Remove first row with given identifier
+	///
+	/// - Parameter identifier: identifier of the row
+	/// - Returns: removed row, `nil` if not found
+	@discardableResult
+	open func remove(rowWithID identifier: String?) -> RowProtocol? {
+		guard let idx = self.index(ofRowWithID: identifier) else { return nil }
+		return self.remove(rowAt: idx)
+	}
+	
+	
+	/// Remove rows with given identifiers
+	///
+	/// - Parameter identifiers: identifiers of the rows to remove
+	/// - Returns: removed rows instances
+	@discardableResult
+	open func remove(rowsWithIDs identifiers: [String]?) -> [RowProtocol]? {
+		guard let ids = identifiers else { return nil }
+		let removedRows = Array(self.rows.filter {
+			guard let id = $0.identifier, ids.contains(id) else {
+				return false
+			}
+			return true
+		})
+		self.manager?.keepRemovedRows(removedRows)
+		return removedRows
+	}
+	
+	/// Return the indexes of rows with given identifiers
+	///
+	/// - Parameter identifiers: identifiers to search
+	/// - Returns: found indexes or nil if nothing is found
+	open func indexes(ofRowsWithIDs identifiers: [String]) -> IndexSet? {
+		guard identifiers.count > 0 else { return nil }
+		var indexes: IndexSet = IndexSet()
+		self.rows.enumerated().forEach { idx,item in
+			if let id = item.identifier, identifiers.contains(id) {
+				indexes.insert(idx)
+			}
+		}
+		guard indexes.count > 0 else { return nil }
+		return indexes
 	}
 	
 	/// Equatable protocol

@@ -132,9 +132,11 @@ Flow basically is composed by four different entities:
 
 ### Example
 
+A live working example can be found in [FlowDemoApp directory](https://github.com/malcommac/Flow/tree/develop/FlowDemoApp). It demostrates how to use Flow in a simple Login screen for a fake social network app. Check it out to see how Flow can really help you to simplify UITableView management.
+
 <a name="create_tablemanager" />
 
-### Create the `TableManager`
+#### Create the `TableManager`
 
 First of all you need to create your table manager.
 You will create it (generally) in your view controller:
@@ -143,11 +145,11 @@ You will create it (generally) in your view controller:
 self.tableManager = TableManager(table: self.table!)
 ```
 
-From now your `UITableView` instance is backed by Flow Table Manager; you will refer to it to manage the content you want to display.
+From now your `UITableView` instance is backed by Flow Table Manager; since now you will refer to it to manage the content you want to display (rows, sections, headers or footers).
 
 <a name="create_cell" />
 
-### Create `UITableViewCell` cell
+#### Create `UITableViewCell` cell
 
 Suppose you want to represent a list of soccer players; you will have an array of players (suppose they are represented by `PlayerModel` class). Now you need to create an `UITableViewCell` subclass (`PlayerCell`) which represent this kind of data.
 `PlayerCell` is a normal `UITableViewCell` which is conform to `DeclarativeCell` protocol which is needed to define some intrinsic properties of the cell itself.
@@ -310,21 +312,35 @@ All other events are described in [Row Events](row_events) section.
 
 ### `TableManager` object
 
-**Reload**
-* `reloadData()` reload the data inside managed table. You must call it at the end of your operation in order to reflect changes. Reload is not animated.
+| Function                                            | Description                                                    |
+|-----------------------------------------------------|----------------------------------------------------------------|
+| `init(table: UITableView, estimateRowHeight: Bool)` | Initialize a new manager for a specific `UITableView` instance |
+|                                                     |                                                                |
+|                                                     |                                                                |
+
+**Initialize**
+* `public init(table: UITableView, estimateRowHeight: Bool)` Initialize a new manager for a specific `UITableView` instance.
+
+**Reload Table/Sections**
+* `reloadData()` reload the data displayed by the managed table. Call it at the end of your operations in order to reflect made changes. Reload is not animated.
 * `update(animation:block:)` allows to perform a batch of operations on table's sections and rows. At the end of the block animations are collected and executed to reflect into the UI changes applied to the model.
+* `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)` Reload data for section with given identifier
+* `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)` Reload data for section with given identifier
+* `reload(sectionsWithIDs ids: [String],  animation: UITableViewRowAnimation?)` Reload data for sections with given identifiers. Non existing section are ignored.
+* `reload(sections: [Section], animation: UITableViewRowAnimation?)` Reload data for given sections.
 
 Note: all of these events can be used sequentially but you need to call `reloadData()` at the end. To perform animated editing use `update()` function instead (but take care of the order of your operations).
 
-**Add sections**
+**Add Sections**
 * `add(section: Section)` add a new section at the end of the table
-* `add(sectionsToAdd: [Section])` add new set of sections at the end of the table
+* `add(sections sectionsToAdd: [Section])` add new set of sections at the end of the table
 
-**Add rows**
-* `add(row: RowProtocol, in section: Section? = nil)` add row at the end of specified section. If `section` is null a new section is created with the row.
-* `add(row: RowProtocol, inSectionAt index: Int? = nil)` add row at specified section index. If `section` is `nil` a new section is created with the `row` and append at the end of the table.
-* `add(rows: [RowProtocol], in section: Section? = nil)` add rows into a section. If `section` is not specified a new section is created automatically with passed `rows`.
-* `add(rows: [RowProtocol], inSectionAt index: Int? = nil)` add `rows` in section at `index` (if valid). If `section` is `nil` a new section is created automatically with passed `rows`.
+**Add Rows**
+* `add(rows: [RowProtocol], in section: Section?)` Add rows to a section, if section is `nil` a new section is appened with rows at the end of table
+* `add(rows: [RowProtocol], inSectionAt index: Int?)` Add rows to a section specified at index (If `nil` is passed rows will be added to the last section of the table. If no sections are available, a new section with passed rows will be created automatically)
+* `add(row: RowProtocol, in section: Section? = nil)` Add a new row into a section; if section is `nil` a new section is created and added at the end of table (is `section` is `nil` a new section is created and added at the end of the table).
+* `add(row: RowProtocol, inSectionAt index: Int?)` Add a new row into specified section (If `nil` is passed the last section is used as destination. if no sections are present into the table a new section with given row is created automatically).
+
 
 **Move/Insert/Replace rows**
 * `move(row indexPath: IndexPath, to destIndexPath: IndexPath)` move a row in another position. This is a composed operation: first of all row is removed from source, then is added to the new path.
@@ -335,28 +351,53 @@ Note: all of these events can be used sequentially but you need to call `reloadD
 
 **Get section**
 * `section(atIndex idx: Int)` return setion at specified index.
+* `section(forID identifier: String)` Return the first section with given identifier inside the table
+* `sections(forIDs ids: [String])` Return all sections with given identifiers
+* `hasSection(withID identifier: String)` Return `true` if table contains passed section with given identifier, `false` otherwise
+
+**Others**
+* `isEmpty` return `true` if table does not contains sections or rows
+* `sections` return the list of `Sections` actually contained into the manager (read-only)
 
 <a name="api_sections" />
 
-### API: `Section`
+### `Section`
 
 **Initialize**
-* `init(_ rows:, header:,footer:)` Initialize a new section with a set of `rows`, optional simple header/footer strings.
-* `init(_ rows:,headerView:,footerView:` Initialzie a new section with a set of `rows`, optional custom view for header and/or footer. Header and footer must be `UITableViewHeaderFooterView` subclasses which responds to `SectionProtocol` protocol.
+* `init(id: String?, row: RowProtocol)` Initialize a new section with a single passed row
+* `init(id: String?, _ rows: [RowProtocol]?, header: String?, footer: String?)` Initialize a new section with a list of rows and optionally a standard header and/or footer string.
+* `init(id: String?, _ rows: [RowProtocol]?, headerView: SectionProtocol?, footerView: SectionProtocol?)` Initialize a new section with a list of rows and optionally an header/footer as a custom UITableViewHeaderFooterView subclass.
 
-**Other functions**
+**Reload Section**
+* `reload(_ anim: UITableViewRowAnimation?)` Reload current section with given animation (`nil` uses `automatic`)
+* `reload(rowsAtIndexes indexes: [IndexPath], animation: UITableViewRowAnimation?)` Reload rows at specified indexes with given animation (`nil` uses `automatic`)
+* `reload(rowWithID id: String, animation: UITableViewRowAnimation?)` Reload row with given identifier using passed animation type (`nil` uses `automatic`)
+* `reload(rowsWithIDs ids: [String], animation: UITableViewRowAnimation?)` Reload rows with given identifiers using passed animation type (`nil` uses `automatic`)
 
-Note: you must call `reloadData()` to reflect changes (or `update()` and add operations inside a block to perform animated reload).
+**Get Rows from Section**
+* `rows(withIDs ids: [String]) -> [RowProtocol]` Get rows with given identifiers
+* `row(withID id: String?) -> RowProtocol?` Get the first row with given identifier
+* `index(ofRowWithID identifier: String?) -> Int?` Return the index of the first row with given identifier
+* `indexes(ofRowsWithIDs identifiers: [String]) -> IndexSet?` Return the indexes of rows with given identifiers
 
-* `clearAll()` remove all rows of the section
+**Add/Replace Rows in Section**
 * `add(_ row: RowProtocol, at index: Int? = nil)` add a new row into the section optionally specifying the index.
 * `add(_ rows: [RowProtocol], at index: Int? = nil)` add rows into the section optionally specifying the index of the first item.
 * `replace(rowAt index: Int, with row: RowProtocol)` replace a row with another row.
+
+**Remove Rows from Section**
 * `remove(rowAt index: Int)` remove a row at specified index.
+* `remove(rowWithID identifier: String?) -> RowProtocol?` remove first row with given identifier
+* `remove(rowsWithIDs identifiers: [String]) -> [RowProtocol]` Remove rows with given identifiers
+
+**Other functions**
+* `clearAll()` remove all rows of the section
+
+Note: you must call `reloadData()` to reflect changes (or `update()` and add operations inside a block to perform animated reload).
 
 <a name="api_row" />
 
-### API: `Row`
+### `Row`
 
 **Initialize**
 * `init(_ item: Cell.T, _ configurator: TableRowConfigurator? = nil)` Initialize a new `Row` with a single model (`item`) and optional configuration block you can define to initialize your class.

@@ -312,8 +312,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///
 	/// - Parameters:
 	///   - rows: rows to add
-	///   - index: index of the destination section. If `nil` is passed rows will be added to the last section of the table.
-	///				If no sections are available, a new section with passed rows will be created automatically.
+	///   - index: index of the destination section. If `nil` is passed rows will be added to the last section of the table. If no sections are available, a new section with passed rows will be created automatically.
 	/// - Returns: self
 	@discardableResult
 	public func add(rows: [RowProtocol], inSectionAt index: Int?) -> Self {
@@ -529,7 +528,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	}
 	
 	
-	/// Get sections with identifiers
+	/// Return all sections with given identifiers
 	///
 	/// - Parameter ids: identifiers to search
 	/// - Returns: found sections
