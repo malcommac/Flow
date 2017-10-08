@@ -8,7 +8,7 @@
 [![Twitter](https://img.shields.io/badge/twitter-@danielemargutti-blue.svg?style=flat)](http://twitter.com/danielemargutti)
 
 ## Flow
-### A new way to populate and manage UITableView
+### A new declarative approach to UITableView
 
 <p align="center" >★★ <b>Star me to help the project! </b> ★★</p>
 
@@ -19,7 +19,7 @@
 Flow is a Swift lightweight library which help you to better manage content in UITableViews.
 It's easy and fast, perfectly fits the type-safe nature of Swift.
 
-**Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of all!
+**Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of the rest!
 
 ## WHAT YOU CAN DO
 
