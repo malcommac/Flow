@@ -157,6 +157,14 @@ open class Section: Equatable, Hashable {
 		return (type == .header ? self.headerTitle : self.footerTitle)
 	}
 	
+	/// Return the custom view which represent the section header/footer requested
+	///
+	/// - Parameter type: type of view
+	/// - Returns: instance, `nil` if not set
+	internal func view(forType type: SectionType) -> SectionProtocol? {
+		return (type == .header ? self.headerView : self.footerView)
+	}
+	
 	/// Add a new row into the section optionally specifying the index
 	///
 	/// - Parameters:

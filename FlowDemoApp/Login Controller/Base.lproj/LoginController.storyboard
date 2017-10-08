@@ -224,13 +224,13 @@ It's time to be the best debugger; signup for a new free account or login with y
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to see full profile" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZT3-1h-wes">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to see full profile " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZT3-1h-wes">
                                                     <rect key="frame" x="107" y="72" width="245" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="ld7-bV-O2S"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                    <color key="textColor" red="0.98570567369999995" green="0.1205678359" blue="0.45930284259999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -302,15 +302,15 @@ It's time to be the best debugger; signup for a new free account or login with y
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="jcO-dJ-bGj">
-                                                    <rect key="frame" x="15" y="4" width="53" height="52"/>
+                                                    <rect key="frame" x="30" y="10" width="40" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="52" id="UNv-IP-yXd"/>
-                                                        <constraint firstAttribute="width" constant="53" id="Ymo-l7-Dal"/>
+                                                        <constraint firstAttribute="height" constant="40" id="UNv-IP-yXd"/>
+                                                        <constraint firstAttribute="width" constant="40" id="Ymo-l7-Dal"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friend Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ap-7c-Dhr">
-                                                    <rect key="frame" x="83" y="19.5" width="244" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="85" y="21.5" width="242" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -318,7 +318,7 @@ It's time to be the best debugger; signup for a new free account or login with y
                                             <constraints>
                                                 <constraint firstItem="5Ap-7c-Dhr" firstAttribute="leading" secondItem="jcO-dJ-bGj" secondAttribute="trailing" constant="15" id="2c2-o8-Ytb"/>
                                                 <constraint firstItem="jcO-dJ-bGj" firstAttribute="centerY" secondItem="zOn-2f-OMB" secondAttribute="centerY" id="L0I-N0-e01"/>
-                                                <constraint firstItem="jcO-dJ-bGj" firstAttribute="leading" secondItem="zOn-2f-OMB" secondAttribute="leading" constant="15" id="cQo-7k-UBg"/>
+                                                <constraint firstItem="jcO-dJ-bGj" firstAttribute="leading" secondItem="zOn-2f-OMB" secondAttribute="leading" constant="30" id="cQo-7k-UBg"/>
                                                 <constraint firstAttribute="trailing" secondItem="5Ap-7c-Dhr" secondAttribute="trailing" constant="15" id="kLf-cG-Tfk"/>
                                                 <constraint firstItem="5Ap-7c-Dhr" firstAttribute="centerY" secondItem="zOn-2f-OMB" secondAttribute="centerY" id="u4a-Un-kAM"/>
                                             </constraints>

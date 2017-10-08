@@ -131,21 +131,25 @@ class LoginController: UIViewController {
 					return nil
 				}
 			})
+			// We want also create a custom profile's header, a custom view
+			// As like for cells we can set a model; in this case we are not interested
+			// so we assign a Void to ProfileHeader's class model.
+			let customProfileHeader = SectionView<ProfileHeader>(Void())
 			
 			// ROWs: List of friends
 			// This is a list of cells, one for each friend of the profile
 			let row_friends = Row<CellFriend>.create(self.userProfile!.friends, { row in
 				row.rowHeight = 60
 				row.onTap = { _ in
-					print("Tap on \(String(describing: row.cell?.friend?.firstName))")
+					self.didTapFriend(row.cell!.friend!)
 					return nil
 				}
 			})
 			
 			// Create section
-			return [ Section(rows: [logo]), // one for logo
-			         Section(id: SECTION_ID_PROFILE, row: profile), // one for profile's data
-					 Section(row_friends, header: "\(self.userProfile!.friends.count) Friends") // one with the list of friends and a regular header
+			return [Section(rows: [logo]), // one for logo
+					Section(id: SECTION_ID_PROFILE, [profile], headerView: customProfileHeader), // one for profile's data
+				    Section(row_friends, header: "\(self.userProfile!.friends.count) Friends") // one with the list of friends and a regular header
 			]
 		case .recoverLogin:
 			
@@ -187,6 +191,14 @@ class LoginController: UIViewController {
 		}
 	}
 	
+	private func didTapFriend(_ friend: FriendUser) {
+		let alert = UIAlertController(title: "Tap on friend", message: "Did you know \(friend.firstName)?", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Yup", style: .default, handler: { _ in
+			print("Okay!")
+		}))
+		self.present(alert, animated: true, completion: nil)
+	}
+	
 	private var isFullProfileDetailSectionVisible: Bool {
 		return self.tableManager?.hasSection(withID: self.SECTION_ID_PROFILE_DETAIL) ?? false
 	}
@@ -209,15 +221,15 @@ class LoginController: UIViewController {
 			self.tableManager?.update(animation: .automatic, {
 				self.tableManager?.insert(section: profileDetailSection, at: profileSection!.index! + 1)
 			})
-			profileSection?.reload(.automatic) // reload the profile's data to update the tap field
 		}
 		else { // HIDE FULL PROFILE SECTION
-			let profileSection = self.tableManager!.section(forID: SECTION_ID_PROFILE_DETAIL)!
+			let profileSectionDetail = self.tableManager!.section(forID: SECTION_ID_PROFILE_DETAIL)!
 			self.tableManager?.update(animation: .bottom, {
-				self.tableManager?.remove(section: profileSection)
+				self.tableManager?.remove(section: profileSectionDetail)
 			})
 		}
-
+		// In both cases we want to update the "Tap to show/hide details" label into the profile's cell
+		profileSection?.reload(.none)
 	}
 	
 	private func recoverAccount(byEmail email: String) {

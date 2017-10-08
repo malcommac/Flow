@@ -23,6 +23,8 @@
 		376DF4BD1F335DF200D48EAE /* Flow.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D61F37059C00D48EAE /* SectionView.swift */; };
 		52D6D9871BEFF229002C0205 /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
+		644236E51F8A401E009F9A2F /* ProfileHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 644236E41F8A401E009F9A2F /* ProfileHeader.xib */; };
+		644236E71F8A4076009F9A2F /* ProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644236E61F8A4076009F9A2F /* ProfileHeader.swift */; };
 		64E87D5F1F854FC40043C2A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64E87D5D1F854F0C0043C2A0 /* Localizable.strings */; };
 		64E87D611F8576040043C2A0 /* JTMaterialSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */; };
 		8933C7901EB5B82D000D00A4 /* FlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* FlowTests.swift */; };
@@ -77,6 +79,8 @@
 		376DF4D61F37059C00D48EAE /* SectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* Flow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Flow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* Flow-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flow-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		644236E41F8A401E009F9A2F /* ProfileHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProfileHeader.xib; path = "FlowDemoApp/Login Controller/Cell and Models/ProfileHeader.xib"; sourceTree = SOURCE_ROOT; };
+		644236E61F8A4076009F9A2F /* ProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeader.swift; sourceTree = "<group>"; };
 		64E87D5D1F854F0C0043C2A0 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTMaterialSpinner.swift; sourceTree = "<group>"; };
 		8933C7891EB5B82A000D00A4 /* FlowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTests.swift; sourceTree = "<group>"; };
@@ -197,6 +201,8 @@
 			children = (
 				37648F4A1F7D6C1C005425AA /* Models.swift */,
 				37648F4C1F7D6C2F005425AA /* Cells.swift */,
+				644236E41F8A401E009F9A2F /* ProfileHeader.xib */,
+				644236E61F8A4076009F9A2F /* ProfileHeader.swift */,
 			);
 			path = "Cell and Models";
 			sourceTree = "<group>";
@@ -359,6 +365,7 @@
 				376DF4B61F335DC900D48EAE /* LaunchScreen.storyboard in Resources */,
 				376DF4B31F335DC900D48EAE /* Assets.xcassets in Resources */,
 				376DF4B11F335DC900D48EAE /* LoginController.storyboard in Resources */,
+				644236E51F8A401E009F9A2F /* ProfileHeader.xib in Resources */,
 				64E87D5F1F854FC40043C2A0 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,6 +393,7 @@
 			files = (
 				37648F4F1F7D6C51005425AA /* Models.swift in Sources */,
 				64E87D611F8576040043C2A0 /* JTMaterialSpinner.swift in Sources */,
+				644236E71F8A4076009F9A2F /* ProfileHeader.swift in Sources */,
 				376DF4AE1F335DC900D48EAE /* LoginController.swift in Sources */,
 				376DF4AC1F335DC900D48EAE /* AppDelegate.swift in Sources */,
 				37648F4E1F7D6C4E005425AA /* Cells.swift in Sources */,

@@ -46,7 +46,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// from table and deallocated.
 	internal var removedRows: [Int: RowProtocol] = [:]
 	
-	
 	/// Default height of the header/footer with plain style
 	private static let HEADERFOOTER_HEIGHT: CGFloat = 44.0
 	
@@ -889,13 +888,16 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: height of the section
 	private func sectionHeight(at index: Int, estimated: Bool, _ type: SectionType) -> CGFloat {
 		let section = self.sections[index]
-		guard let sectionView = section.headerView else {
+		// get the view
+		guard let sectionView = section.view(forType: type) else {
+			// no custom view, check if it's the standard string header/footer
 			if section.sectionTitle(forType: type)?.isEmpty ?? true {
 				return 0 // no default title is set
 			}
-			return TableManager.HEADERFOOTER_HEIGHT
+			return TableManager.HEADERFOOTER_HEIGHT // default one, with default height
 		}
-		
+
+		// Custom header/footer view, evaluating height
 		// Has the user provided an evaluation function for view's height? If yes we can realy to it
 		if estimated == false {
 			if sectionView.evaluateViewHeight != nil {
@@ -934,11 +936,8 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	/// - Returns: defined header/footer instance
 	private func registerAndDequeueSection(at index: Int, _ type: SectionType) -> UIView? {
 		// Was the section's header customized with a view?
-		var sectionItem: SectionProtocol? = nil
-		if type == .header {	sectionItem = self.sections[index].headerView
-		} else {				sectionItem = self.sections[index].footerView }
-		
-		guard let sectionView = sectionItem else {
+		let section = self.sections[index]
+		guard let sectionView = section.view(forType: type) else {
 			return nil
 		}
 		

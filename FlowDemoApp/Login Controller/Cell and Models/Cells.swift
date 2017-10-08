@@ -153,7 +153,7 @@ public class CellLoader: UITableViewCell, DeclarativeCell {
     public override func awakeFromNib() {
         super.awakeFromNib()
         spinnerView.circleLayer.lineWidth = 2.0
-        spinnerView.circleLayer.strokeColor = UIColor(red:0.97, green:0.15, blue:0.46, alpha:1.0).cgColor
+        spinnerView.circleLayer.strokeColor = APP_TINT_COLOR.cgColor
         spinnerView.animationDuration = 2.5
     }
     

@@ -191,5 +191,5 @@ public extension DeclarativeView where Self: UITableViewHeaderFooterView {
 	static var defaultHeight: CGFloat? {
 		return nil
 	}
-	
+
 }

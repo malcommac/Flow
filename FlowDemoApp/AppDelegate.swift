@@ -24,6 +24,8 @@ public extension String {
     }
 }
 
+let APP_TINT_COLOR = UIColor(red:0.97, green:0.15, blue:0.46, alpha:1.0)
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -36,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = LoginController.create()
         self.window?.makeKeyAndVisible()
+		self.window?.tintColor = APP_TINT_COLOR
         
 		return true
 	}
