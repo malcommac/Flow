@@ -314,11 +314,14 @@ All other events are described in [Row Events](row_events) section.
 
 #### Functions
 
-| Function                                            | Description                                                                                                                                                                              |
-|-----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `init(table: UITableView, estimateRowHeight: Bool)` | Initialize a new manager for a specific `UITableView` instance                                                                                                                           |
-| `reloadData()`                                      | Reload the data displayed by the managed table. Call it at the end of your operations in order to reflect made changes. Reload is not animated.                                          |
-| `update(animation:block:)`                          | Allows to perform a batch of operations on table's sections and rows. At the end of the block animations are collected and executed to reflect into the UI changes applied to the model. |
+| **Signature**                                                                | **Description**                                                                                                                                                                          |
+|------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `init(table: UITableView, estimateRowHeight: Bool)`                          | Initialize a new manager for a specific `UITableView` instance                                                                                                                           |
+| `reloadData()`                                                               | Reload the data displayed by the managed table. Call it at the end of your operations in order to reflect made changes. Reload is not animated.                                          |
+| `update(animation:block:)`                                                   | Allows to perform a batch of operations on table's sections and rows. At the end of the block animations are collected and executed to reflect into the UI changes applied to the model. |
+| `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)`      | Reload data for section with given identifier                                                                                                                                            |
+| `reload(sectionsWithIDs ids: [String],,animation: UITableViewRowAnimation?)` | Reload data for sections with given identifiers. Non existing section are ignored.                                                                                                       |
+| `reload(sections: [Section], animation: UITableViewRowAnimation?)`           | Reload data for given sections.                                                                                                                                                          |
 
 **Initialize**
 * `public init(table: UITableView, estimateRowHeight: Bool)` Initialize a new manager for a specific `UITableView` instance.
@@ -326,7 +329,6 @@ All other events are described in [Row Events](row_events) section.
 **Reload Table/Sections**
 * `reloadData()` reload the data displayed by the managed table. Call it at the end of your operations in order to reflect made changes. Reload is not animated.
 * `update(animation:block:)` allows to perform a batch of operations on table's sections and rows. At the end of the block animations are collected and executed to reflect into the UI changes applied to the model.
-* `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)` Reload data for section with given identifier
 * `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)` Reload data for section with given identifier
 * `reload(sectionsWithIDs ids: [String],  animation: UITableViewRowAnimation?)` Reload data for sections with given identifiers. Non existing section are ignored.
 * `reload(sections: [Section], animation: UITableViewRowAnimation?)` Reload data for given sections.
