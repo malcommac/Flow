@@ -98,6 +98,12 @@ public protocol RowProtocol {
 	/// by creating it and getting the size of the `contentView`.
 	var evaluateRowHeight: (() -> (CGFloat?))? { get set }
 	
+	
+	var rowHeight: CGFloat? { get set }
+
+		var shouldHighlight: Bool? { get set }
+
+	
 	/// Allows the user to configure the cell instance
 	///
 	/// - Parameters:

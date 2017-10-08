@@ -21,20 +21,8 @@
 		376DF4B61F335DC900D48EAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4B41F335DC900D48EAE /* LaunchScreen.storyboard */; };
 		376DF4BB1F335DD200D48EAE /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
 		376DF4BD1F335DF200D48EAE /* Flow.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4C41F33669500D48EAE /* RealMadrid.plist */; };
-		376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */; };
-		376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D01F35F3D200D48EAE /* TeamModel.swift */; };
-		376DF4D31F35F4CF00D48EAE /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */; };
-		376DF4D51F3604D800D48EAE /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D41F3604D800D48EAE /* Shared.swift */; };
 		376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4D61F37059C00D48EAE /* SectionView.swift */; };
-		376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4D91F3726C700D48EAE /* TeamSectionView.xib */; };
-		376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */; };
-		376DF4E01F372FC100D48EAE /* TeamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4DF1F372FC100D48EAE /* TeamCell.swift */; };
-		376DF4E21F3730C600D48EAE /* TeamCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4E11F3730C600D48EAE /* TeamCell.xib */; };
-		376DF4E41F37418D00D48EAE /* Barcelona.plist in Resources */ = {isa = PBXBuildFile; fileRef = 376DF4E31F37418D00D48EAE /* Barcelona.plist */; };
-		376DF4E61F374FDB00D48EAE /* MultilineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */; };
 		52D6D9871BEFF229002C0205 /* Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* Flow.framework */; };
-		64E87D5C1F854BDE0043C2A0 /* ExamplesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E87D5B1F854BDE0043C2A0 /* ExamplesListController.swift */; };
 		64E87D5F1F854FC40043C2A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64E87D5D1F854F0C0043C2A0 /* Localizable.strings */; };
 		64E87D611F8576040043C2A0 /* JTMaterialSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */; };
 		8933C7901EB5B82D000D00A4 /* FlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* FlowTests.swift */; };
@@ -86,21 +74,9 @@
 		376DF4B21F335DC900D48EAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		376DF4B51F335DC900D48EAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		376DF4B71F335DC900D48EAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		376DF4C41F33669500D48EAE /* RealMadrid.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = RealMadrid.plist; sourceTree = "<group>"; };
-		376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
-		376DF4D01F35F3D200D48EAE /* TeamModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamModel.swift; sourceTree = "<group>"; };
-		376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
-		376DF4D41F3604D800D48EAE /* Shared.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		376DF4D61F37059C00D48EAE /* SectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
-		376DF4D91F3726C700D48EAE /* TeamSectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeamSectionView.xib; sourceTree = "<group>"; };
-		376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamSectionView.swift; sourceTree = "<group>"; };
-		376DF4DF1F372FC100D48EAE /* TeamCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCell.swift; sourceTree = "<group>"; };
-		376DF4E11F3730C600D48EAE /* TeamCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TeamCell.xib; sourceTree = "<group>"; };
-		376DF4E31F37418D00D48EAE /* Barcelona.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Barcelona.plist; sourceTree = "<group>"; };
-		376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineTextCell.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* Flow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Flow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* Flow-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flow-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		64E87D5B1F854BDE0043C2A0 /* ExamplesListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplesListController.swift; sourceTree = "<group>"; };
 		64E87D5D1F854F0C0043C2A0 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTMaterialSpinner.swift; sourceTree = "<group>"; };
 		8933C7891EB5B82A000D00A4 /* FlowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTests.swift; sourceTree = "<group>"; };
@@ -159,75 +135,12 @@
 			isa = PBXGroup;
 			children = (
 				376DF4AB1F335DC900D48EAE /* AppDelegate.swift */,
-				64E87D5B1F854BDE0043C2A0 /* ExamplesListController.swift */,
-				37648F4A1F7D6C1C005425AA /* Models.swift */,
-				37648F4C1F7D6C2F005425AA /* Cells.swift */,
-				376DF4AD1F335DC900D48EAE /* LoginController.swift */,
-				376DF4AF1F335DC900D48EAE /* LoginController.storyboard */,
-				376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */,
-				376DF4C91F33A1AF00D48EAE /* Models */,
-				376DF4E71F37591200D48EAE /* Data */,
-				376DF4E81F37591600D48EAE /* Utils */,
+				644236E21F8A366C009F9A2F /* Login Controller */,
 				375F11791F38BCD6005CEE1C /* Others */,
-				64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */,
+				644236E11F8A365F009F9A2F /* External */,
 			);
 			name = "Flow Demo Application";
 			path = FlowDemoApp;
-			sourceTree = "<group>";
-		};
-		376DF4C81F33A1AA00D48EAE /* Table's Cells */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4D21F35F4CF00D48EAE /* PlayerCell.swift */,
-				376DF4E11F3730C600D48EAE /* TeamCell.xib */,
-				376DF4DF1F372FC100D48EAE /* TeamCell.swift */,
-				376DF4E51F374FDB00D48EAE /* MultilineTextCell.swift */,
-			);
-			name = "Table's Cells";
-			sourceTree = "<group>";
-		};
-		376DF4C91F33A1AF00D48EAE /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4CE1F35F30F00D48EAE /* PlayerModel.swift */,
-				376DF4D01F35F3D200D48EAE /* TeamModel.swift */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
-		376DF4DD1F3726D300D48EAE /* Table's Headers */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4D91F3726C700D48EAE /* TeamSectionView.xib */,
-				376DF4DB1F3726D100D48EAE /* TeamSectionView.swift */,
-			);
-			name = "Table's Headers";
-			sourceTree = "<group>";
-		};
-		376DF4DE1F372D9800D48EAE /* Cells And Headers/Footers */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4DD1F3726D300D48EAE /* Table's Headers */,
-				376DF4C81F33A1AA00D48EAE /* Table's Cells */,
-			);
-			name = "Cells And Headers/Footers";
-			sourceTree = "<group>";
-		};
-		376DF4E71F37591200D48EAE /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4C41F33669500D48EAE /* RealMadrid.plist */,
-				376DF4E31F37418D00D48EAE /* Barcelona.plist */,
-			);
-			name = Data;
-			sourceTree = "<group>";
-		};
-		376DF4E81F37591600D48EAE /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				376DF4D41F3604D800D48EAE /* Shared.swift */,
-			);
-			name = Utils;
 			sourceTree = "<group>";
 		};
 		52D6D9721BEFF229002C0205 = {
@@ -259,6 +172,33 @@
 				DD7502731C68FC20006590AF /* Tests */,
 			);
 			path = Configs;
+			sourceTree = "<group>";
+		};
+		644236E11F8A365F009F9A2F /* External */ = {
+			isa = PBXGroup;
+			children = (
+				64E87D601F8576040043C2A0 /* JTMaterialSpinner.swift */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
+		644236E21F8A366C009F9A2F /* Login Controller */ = {
+			isa = PBXGroup;
+			children = (
+				376DF4AF1F335DC900D48EAE /* LoginController.storyboard */,
+				376DF4AD1F335DC900D48EAE /* LoginController.swift */,
+				644236E31F8A3675009F9A2F /* Cell and Models */,
+			);
+			path = "Login Controller";
+			sourceTree = "<group>";
+		};
+		644236E31F8A3675009F9A2F /* Cell and Models */ = {
+			isa = PBXGroup;
+			children = (
+				37648F4A1F7D6C1C005425AA /* Models.swift */,
+				37648F4C1F7D6C2F005425AA /* Cells.swift */,
+			);
+			path = "Cell and Models";
 			sourceTree = "<group>";
 		};
 		8933C7811EB5B7E0000D00A4 /* Flow Library Source */ = {
@@ -418,12 +358,8 @@
 			files = (
 				376DF4B61F335DC900D48EAE /* LaunchScreen.storyboard in Resources */,
 				376DF4B31F335DC900D48EAE /* Assets.xcassets in Resources */,
-				376DF4C51F33669500D48EAE /* RealMadrid.plist in Resources */,
 				376DF4B11F335DC900D48EAE /* LoginController.storyboard in Resources */,
-				376DF4E41F37418D00D48EAE /* Barcelona.plist in Resources */,
 				64E87D5F1F854FC40043C2A0 /* Localizable.strings in Resources */,
-				376DF4E21F3730C600D48EAE /* TeamCell.xib in Resources */,
-				376DF4DA1F3726C700D48EAE /* TeamSectionView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,16 +385,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				37648F4F1F7D6C51005425AA /* Models.swift in Sources */,
-				376DF4E01F372FC100D48EAE /* TeamCell.swift in Sources */,
-				376DF4DC1F3726D100D48EAE /* TeamSectionView.swift in Sources */,
 				64E87D611F8576040043C2A0 /* JTMaterialSpinner.swift in Sources */,
-				376DF4D51F3604D800D48EAE /* Shared.swift in Sources */,
-				376DF4E61F374FDB00D48EAE /* MultilineTextCell.swift in Sources */,
-				376DF4CF1F35F30F00D48EAE /* PlayerModel.swift in Sources */,
-				376DF4D11F35F3D200D48EAE /* TeamModel.swift in Sources */,
 				376DF4AE1F335DC900D48EAE /* LoginController.swift in Sources */,
 				376DF4AC1F335DC900D48EAE /* AppDelegate.swift in Sources */,
-				376DF4D31F35F4CF00D48EAE /* PlayerCell.swift in Sources */,
 				37648F4E1F7D6C4E005425AA /* Cells.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -469,7 +398,6 @@
 			files = (
 				376DF4A41F335D7600D48EAE /* TableManager.swift in Sources */,
 				376DF4A11F335D7600D48EAE /* Row.swift in Sources */,
-				64E87D5C1F854BDE0043C2A0 /* ExamplesListController.swift in Sources */,
 				376DF4A31F335D7600D48EAE /* Section.swift in Sources */,
 				376DF4A21F335D7600D48EAE /* RowProtocol.swift in Sources */,
 				376DF4D81F370D5B00D48EAE /* SectionView.swift in Sources */,

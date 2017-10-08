@@ -174,8 +174,8 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// - Parameters:
 	///   - item: item represented by the row
 	///   - maker: maker block to configure the object
-	public init(id: String? = nil, model: Cell.T, _ configurator: TableRowConfigurator? = nil) {
-		self.identifier = id
+	public init(id identifier: String? = nil, model: Cell.T, _ configurator: TableRowConfigurator? = nil) {
+		self.identifier = identifier
 		self.model = model
 		configurator?(self)
 	}
@@ -191,6 +191,8 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 		guard items.count > 0 else { return [] }
 		return items.map { Row(model: $0, configurator) }
 	}
+	
+
 }
 
 public protocol DeclarativeCell: class {

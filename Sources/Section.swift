@@ -41,8 +41,8 @@ public enum SectionType {
 }
 
 /// Section represent a single Table's section. It contains rows, may have an header or a footer.
-open class Section {
-		
+open class Section: Equatable, Hashable {
+	
 	/// The rows of this section
 	open internal(set) var rows: ObservableArray<RowProtocol> = []
 	
@@ -51,6 +51,12 @@ open class Section {
 	
 	/// Identifier string for this ection
 	open var identifier: String? = nil
+	
+	/// Index of the section in parent manager (if any).
+	/// Return `nil` if not found.
+	public var index: Int? {
+		get { return self.manager?.sections.index(of: self) }
+	}
 	
 	/// Number of rows
 	open var countRows: Int {
@@ -129,6 +135,14 @@ open class Section {
 		self.footerView = footerView
 	}
 	
+	/// Reload this section
+	///
+	/// - Parameter anim: animation to use; if nil `automatic` will be used
+	public func reload(_ anim: UITableViewRowAnimation? = nil) {
+		guard let index = self.index else { return }
+		self.manager?.tableView?.reloadSections(IndexSet(integer: index), with: (anim ?? .automatic))
+	}
+	
 	/// Remove all rows from the section
 	open func clearAll() {
 		self.manager?.keepRemovedRows(Array(self.rows))
@@ -188,4 +202,21 @@ open class Section {
 		return removed
 	}
 
+	/// Equatable protocol
+	///
+	/// - Parameters:
+	///   - lhs: left operand
+	///   - rhs: right operand
+	/// - Returns: `true` if both sections are equals, `false` otherwise
+	public static func ==(lhs: Section, rhs: Section) -> Bool {
+		return lhs.hashValue == rhs.hashValue
+	}
+	
+	/// Unique identifier for section
+	private var UUID: NSUUID = NSUUID()
+	
+	/// Hash value
+	public var hashValue: Int {
+		return UUID.uuidString.hashValue
+	}
 }

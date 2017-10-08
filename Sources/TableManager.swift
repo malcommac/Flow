@@ -234,6 +234,15 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		}
 	}
 	
+	/// Return `true` if table contains passed section with given identifier, `false` otherwise
+	///
+	/// - Parameter identifier: identifier to search
+	/// - Returns: `true` if section is in table, `false` otherwise
+	public func hasSection(withID identifier: String) -> Bool {
+		let exist = self.section(forID: identifier)
+		return exist != nil
+	}
+	
 	/// Return the first section with given identifier inside the table
 	///
 	/// - Parameter identifier: identifier to search
@@ -241,7 +250,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func section(forID identifier: String) -> Section? {
 		return self.sections.first(where: { $0.identifier == identifier })
 	}
-	
+		
 	/// Return the first row with given identifier inside all sections of the table
 	///
 	/// - Parameter identifier: identifier to search
@@ -279,6 +288,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func add(section: Section) -> Self {
 		self.sections.append(section)
+		section.manager = self
 		return self
 	}
 
@@ -290,6 +300,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func add(sectionsToAdd: [Section]) -> Self {
 		self.sections.append(contentsOf: sectionsToAdd)
+		sectionsToAdd.forEach { $0.manager = self }
 		return self
 	}
 	
@@ -325,6 +336,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			self.sections[index].rows.append(contentsOf: rows)
 		} else {
 			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			destSection.manager = self
 			destSection.rows.append(contentsOf: rows)
 		}
 		return self
@@ -364,6 +376,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			self.sections[index].rows.append(row)
 		} else {
 			let destSection = self.sections.last ?? Section() // destination is the last section or a new section
+			destSection.manager = self
 			destSection.rows.append(row)
 		}
 		return self
@@ -389,6 +402,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func insert(section: Section, at index: Int) -> Self {
 		self.sections.insert(section, at: index)
+		section.manager = self
 		return self
 	}
 	
@@ -402,7 +416,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func replace(sectionAt index: Int, with section: Section) -> Self {
 		guard index < self.sections.count else { return self }
 		self.keepRemovedRows(Array(self.sections[index].rows))
+		self.sections[index].manager = nil
 		self.sections[index] = section
+		section.manager = self
 		return self
 	}
 	
@@ -413,8 +429,21 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	@discardableResult
 	public func remove(sectionAt index: Int) -> Self {
 		guard index < self.sections.count else { return self }
-		self.keepRemovedRows(Array(self.sections[index].rows))
-		self.sections.remove(at: index)
+		let removedSection = self.sections.remove(at: index)
+		self.keepRemovedRows(Array(removedSection.rows))
+		removedSection.manager = nil
+		return self
+	}
+	
+	/// Remove section from table
+	///
+	/// - Parameter section: section to remove
+	/// - Returns: self
+	@discardableResult
+	public func remove(section: Section) -> Self {
+		if let idx = self.sections.index(of: section) {
+			self.remove(sectionAt: idx)
+		}
 		return self
 	}
 	
@@ -425,6 +454,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func removeAll() -> Self {
 		let removedRows = self.sections.flatMap { $0.rows }
 		self.keepRemovedRows(removedRows)
+		self.sections.forEach { $0.manager = nil }
 		self.sections.removeAll()
 		return self
 	}
@@ -770,6 +800,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		if let shouldHighlight = row._shouldHighlight {
 			return shouldHighlight
 		}
+		if let instanceHighlight = row.shouldHighlight {
+			return instanceHighlight
+		}
 		return row.onShouldHighlight?(row) ?? true
 	}
 	
@@ -1014,7 +1047,11 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	private func rowHeight(forRow row: RowProtocol, at indexPath: IndexPath, estimate: Bool = false) -> CGFloat {
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-        
+		
+		if let instanceHeight = row.rowHeight {
+			return instanceHeight
+		}
+		
 		/// User provided a function to evaluate the height of the table
 		if row.evaluateRowHeight != nil {
 			if let height = row.evaluateRowHeight!() {
