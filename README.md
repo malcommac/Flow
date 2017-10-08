@@ -329,45 +329,41 @@ All other events are described in [Row Events](row_events) section.
 | `reload(sections: [Section], animation: UITableViewRowAnimation?)`           | Reload data for given sections.                                                                                                                                                          |
 
 
-**Initialize**
-* `public init(table: UITableView, estimateRowHeight: Bool)` Initialize a new manager for a specific `UITableView` instance.
+#### Add Rows
 
-**Reload Table/Sections**
-* `reloadData()` reload the data displayed by the managed table. Call it at the end of your operations in order to reflect made changes. Reload is not animated.
-* `update(animation:block:)` allows to perform a batch of operations on table's sections and rows. At the end of the block animations are collected and executed to reflect into the UI changes applied to the model.
-* `reload(sectionWithID id: String, animation: UITableViewRowAnimation?)` Reload data for section with given identifier
-* `reload(sectionsWithIDs ids: [String],  animation: UITableViewRowAnimation?)` Reload data for sections with given identifiers. Non existing section are ignored.
-* `reload(sections: [Section], animation: UITableViewRowAnimation?)` Reload data for given sections.
-
-Note: all of these events can be used sequentially but you need to call `reloadData()` at the end. To perform animated editing use `update()` function instead (but take care of the order of your operations).
-
-**Add Sections**
-* `add(section: Section)` add a new section at the end of the table
-* `add(sections sectionsToAdd: [Section])` add new set of sections at the end of the table
-
-**Add Rows**
-* `add(rows: [RowProtocol], in section: Section?)` Add rows to a section, if section is `nil` a new section is appened with rows at the end of table
-* `add(rows: [RowProtocol], inSectionAt index: Int?)` Add rows to a section specified at index (If `nil` is passed rows will be added to the last section of the table. If no sections are available, a new section with passed rows will be created automatically)
-* `add(row: RowProtocol, in section: Section? = nil)` Add a new row into a section; if section is `nil` a new section is created and added at the end of table (is `section` is `nil` a new section is created and added at the end of the table).
-* `add(row: RowProtocol, inSectionAt index: Int?)` Add a new row into specified section (If `nil` is passed the last section is used as destination. if no sections are present into the table a new section with given row is created automatically).
+| **Signature**                                       | **Description**                                                                                                                                                                                               |
+|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `add(rows: [RowProtocol], in section: Section?)`    | Add rows to a section, if section is `nil` a new section is appened with rows at the end of table                                                                                                             |
+| `add(rows: [RowProtocol], inSectionAt index: Int?)` | Add rows to a section specified at index (If `nil` is passed rows will be added to the last section of the table. If no sections are available, a new section with passed rows will be created automatically) |
+| `add(row: RowProtocol, in section: Section? = nil)` | Add a new row into a section; if section is `nil` a new section is created and added at the end of table (is `section` is `nil` a new section is created and added at the end of the table).                  |
+| `add(row: RowProtocol, inSectionAt index: Int?)`    | Add a new row into specified section (If `nil` is passed the last section is used as destination. if no sections are present into the table a new section with given row is created automatically).           |
 
 
-**Move/Insert/Replace rows**
-* `move(row indexPath: IndexPath, to destIndexPath: IndexPath)` move a row in another position. This is a composed operation: first of all row is removed from source, then is added to the new path.
-* `insert(section: Section, at index: Int)` Insert a section at specified index of the table.
-* `replace(sectionAt index: Int, with section: Section)` Replace an existing section with the new passed.
-* `remove(sectionAt index: Int)` Remove an existing section at specified index.
-* `removeAll()` remove all the sections of the table.
+#### Move/Insert/Replace Rows
 
-**Get section**
-* `section(atIndex idx: Int)` return setion at specified index.
-* `section(forID identifier: String)` Return the first section with given identifier inside the table
-* `sections(forIDs ids: [String])` Return all sections with given identifiers
-* `hasSection(withID identifier: String)` Return `true` if table contains passed section with given identifier, `false` otherwise
+| **Signature**                                                 | **Description**                                                                                                                       |
+|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `move(row indexPath: IndexPath, to destIndexPath: IndexPath)` | Move a row in another position. This is a composed operation: first of all row is removed from source, then is added to the new path. |
+| `insert(section: Section, at index: Int)`                     | Insert a section at specified index of the table.                                                                                     |
+| `replace(sectionAt index: Int, with section: Section)`        | Replace an existing section with the new passed.                                                                                      |
+| `remove(sectionAt index: Int)`                                | Remove an existing section at specified index.                                                                                        |
+| `removeAll()`                                                 | Remove all the sections of the table.                                                                                                 |
 
-**Others**
-* `isEmpty` return `true` if table does not contains sections or rows
-* `sections` return the list of `Sections` actually contained into the manager (read-only)
+#### Get section
+
+| **Signature**                           | **Description**                                                                         |
+|-----------------------------------------|-----------------------------------------------------------------------------------------|
+| `section(atIndex idx: Int)`             | Return setion at specified index.                                                       |
+| `section(forID identifier: String)`     | Return the first section with given identifier inside the table                         |
+| `sections(forIDs ids: [String])`        | Return all sections with given identifiers                                              |
+| `hasSection(withID identifier: String)` | Return `true` if table contains passed section with given identifier, `false` otherwise |
+
+#### Properties
+
+| **Signature** | **Description**                                                               |
+|---------------|-------------------------------------------------------------------------------|
+| `isEmpty`     | Return `true` if table does not contains sections or rows                     |
+| `sections`    | Return the list of `Sections` actually contained into the manager (read-only) |
 
 <a name="api_sections" />
 
