@@ -100,6 +100,8 @@ Flow is composed by four different entities:
 * **`Row`**: represent a single row in a section; a row is linked to a pair of objects: the model (any class; if not applicable `Void` is valid) and the cell (a subclass of the `UITableViewCell` conforms to `DeclarativeCell` protocol).
 * **`SectionView`**: A section may show header/footer; these objects maybe simple `String` or custom views: `SectionView`. As for `Row`, `SectionView` is linked to a model and a view (subclass of `UITableViewHeaderFooterView`).
 
+![](https://raw.githubusercontent.com/malcommac/Flow/master/Assets/ARCHITECTURE.png)
+
 <a name="example" />
 
 ### Demo Application
