@@ -63,6 +63,7 @@ Take a look below:
 |-----------------|--------------------------------------------------|
 | [**SwiftDate**](https://github.com/malcommac/SwiftDate)       | The best way to manage date/timezones in Swift   |
 | [**Hydra**](https://github.com/malcommac/Hydra)           | Write better async code: async/await & promises  |
+| [**Flow**](https://github.com/malcommac/Flow) | A new declarative approach to table managment. Forget datasource & delegates. |
 | [**SwiftRichString**](https://github.com/malcommac/SwiftRichString) | Elegant & Painless NSAttributedString in Swift   |
 | [**SwiftLocation**](https://github.com/malcommac/SwiftLocation)   | Efficient location manager                       |
 | [**Flow**](https://github.com/malcommac/Flow)            | The great way to create and manage tables in iOS |
