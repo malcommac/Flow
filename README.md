@@ -22,15 +22,15 @@ It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 ## WHAT YOU CAN DO
 
-The following code is the only required to create a complete TableView which shows a list of some football players.
-Each player is represented by a class (the model) called `PlayerModel`; the instance is represented into the tableview by the `PlayerCell` UITableViewCell subclass.
+The following code is the only required to create a complete TableView which shows a list of some country flags.
+Each flag is represented by a class (the model) called `CountryModel`; the instance is represented into the tableview by the `CountryCell` UITableViewCell subclass.
 
 
 ```swift
-let players: [PlayerModel] = ... // your array of players
-let rows = Row<PlayerCell>.create(players, { row in // create rows
+let countries: [CountryModel] = ... // your array of countries
+let rows = Row<CountryCell>.create(countries, { row in // create rows
 row.onTap = { _, path in // reponds to tap on cells
-  print("Tap on '\(row.item.fullName)'")
+  print("Tap on '\(row.item.name)'")
   return nil
 }
 tableManager.add(rows: rows) // just add them to the table
@@ -100,6 +100,8 @@ Flow is composed by four different entities:
 * **`Row`**: represent a single row in a section; a row is linked to a pair of objects: the model (any class; if not applicable `Void` is valid) and the cell (a subclass of the `UITableViewCell` conforms to `DeclarativeCell` protocol).
 * **`SectionView`**: A section may show header/footer; these objects maybe simple `String` or custom views: `SectionView`. As for `Row`, `SectionView` is linked to a model and a view (subclass of `UITableViewHeaderFooterView`).
 
+![](https://raw.githubusercontent.com/malcommac/Flow/master/Assets/ARCHITECTURE.png)
+
 <a name="example" />
 
 ### Demo Application
@@ -132,24 +134,24 @@ This protocol defines at least two important properties:
 - the model assocated with the Cell (`public typealias T = MyClass`)
 - a method called right after the row's cell is dequeued (`public func configure(_: T, path: IndexPath)`)
 
-This is an example of a `PlayerCell` which is responsible to display data for a single football player (class `PlayerModel`):
+This is an example of a `CountryCell` which is responsible to display data for a single country (class `CountryModel`):
 
 ```swift
 import UIKit
 import Flow
 
-public class PlayerCell: UITableViewCell, DeclarativeCell {
+public class CountryCell: UITableViewCell, DeclarativeCell {
     // assign to the cell the model to be represented
-    public typealias T = PlayerModel
+    public typealias T = CountryModel
     // if your cell has a fixed height you can set it directly at class level as below
     public static var defaultHeight: CGFloat? = 157.0
 
     // this func is called when a new instance of the cell is dequeued
     // and you need to fill the data with a model instance.
-    public func configure(_ player: PlayerMode, path: IndexPath) {
-      self.playerName.text = player.firstName
-      self.playerLast.text = player.lastName
-      self.playerImage.setURL(player.avatarURL)
+    public func configure(_ country: CountryModel, path: IndexPath) {
+      self.countryNameLabel.text = country.name.capitalized()
+      self.continentLabel.image = country.continent
+      self.flagImageView.setURL(country.countryURL)
       // ... and so on
     }
 }
@@ -158,8 +160,8 @@ public class PlayerCell: UITableViewCell, DeclarativeCell {
 If your cell does not need of a model you can assign `public typealias T = Void`.
 
 User interface of the cell can be made in two ways:
-* **Prototype (only in Storyboards)**: create a new prototype cell, assign the class to your class (here `PlayerCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `PlayerCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
-* **External XIB File**: create a new xib file with the same name of your cell class (here `PlayerCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
+* **Prototype (only in Storyboards)**: create a new prototype cell, assign the class to your class (here `CountryCell`) and set the `reuseIdentifier` in IB to the same name of the class (again `CountryCell`). By default Flow uses as identifier of the cell the same name of the class itself (you can change it by overriding `reuseIdentifier` static property).
+* **External XIB File**: create a new xib file with the same name of your cell class (here `CountryCell.xib`) and drag an instance of `UITableViewCell` class as the only single top level object. Assign to it the name of your class and the `reuseIdentifier`.
 
 Height of a cell can be set in differen ways:
 * If cell has a fixed height you can set it at class level by adding `public static var defaultHeight: CGFloat? = ...` in your cell subclass.
@@ -173,9 +175,9 @@ Height of a cell can be set in differen ways:
 You can now create a new row to add into the table; a `Row` instance is created by passing the `DeclarativeCell` type and an instance of the model represented.
 
 ```swift
-let ronaldo = PlayerModel("Christiano","Ronaldo",.forward)
+let italy = CountryModel("Italy","Europe","http://...")
 ...
-let row_ronaldo = Row<PlayerCell>(model: ronaldo, { row in
+let rowItaly = Row<CountryCell>(model: italy, { row in
 	// ... configuration
 })
 ```
@@ -187,13 +189,13 @@ All standard UITableView events can be overriden; a common event is `onDequeue`,
 So, for example:
 
 ```swift
-let row_ronaldo = Row<PlayerCell>(model: ronaldo, { row in
+let rowItaly = Row<CountryCell>(model: italy, { row in
 	row.onDequeue = { _ in
-		row.cell?.fullNameLabel.text = ronaldo.fullName
+		self.countryNameLabel.text = country.name.capitalized()
 		return nil // when nil is returned cell will be deselected automatically
 	}
 	row.onTap = { _ in
-		print("Tapped cell")
+		print("Show detail for country \(row.model)")
 	}
 })
 ```
@@ -205,10 +207,10 @@ There are lots of other events you can set into the row configuration callback (
 #### Prepare Rows for an array of model
 
 When you have an array of model instances to represent, one for each Row, you can use `create` shortcut.
-The following code create an array of `Rows<PlayerCell>` where each row receive the relative item from `self.players` array.
+The following code create an array of `Rows<CountryCell>` where each row receive the relative item from `self.countries` array.
 
 ```swift
-let players_rows = Row<PlayerCell>.create(self.players)
+let rowAllCountries = Row<CountryCell>.create(self.countries)
 ```
 <a name="add_rows" />
 
@@ -217,7 +219,7 @@ let players_rows = Row<PlayerCell>.create(self.players)
 Adding rows to a table is easy as call a simple `add` function.
 
 ```swift
-self.tableManager.add(rows: players_rows) // add rows (by appending a new section)
+self.tableManager.add(rows: rowAllCountries) // add rows (by appending a new section)
 self.tableManager.reloadData() // apply changes
 ```
 
@@ -251,8 +253,8 @@ If not specified sections are created automatically when you add rows into a tab
 Creating a new section with rows is pretty simple:
 
 ```swift
-let rowPlayers: [RowProtocol] = ...
-let sectionPlayers = Section(id: SECTION_ID_PLAYERS, row: rowPlayers, headerTitle: "\(rowPlayers.count) PLAYERS")"
+let rowCountries: [RowProtocol] = ...
+let sectionCountries = Section(id: SECTION_ID_COUNTRIES row: rowCountries, headerTitle: "\(rowCountries.count) COUNTRIES")"
 ```
 
 As like for `Row` even `Section` may have custom view for header or footer; in this case your custom header/footer must be an `UITableViewHeaderFooterView` subclass defined in a separate XIB file (**with the same name of the class**) which is conform to `DeclarativeView` protocol.
@@ -279,8 +281,8 @@ Now you can create custom view as header for section:
 
 
 ```swift
-let realMadridSection = Section(teamPlayers, headerView: SectionView<TeamSectionView>(team))
-self.tableManager.add(section: realMadridSection)
+let europeSection = Section(europeRows, headerView: SectionView<ContinentSectionView>(team))
+self.tableManager.add(section: europeSection)
 self.tableManager.reloadData()
 ```
 
@@ -305,7 +307,7 @@ For example:
 ```swift
 self.tableManager?.update(animation: .automatic, {
 	self.tableManager?.remove(sectionAt: 1) // remove section 1
-	self.tableManager?.add(row: newPlayer, in: self.tableManager?.section(atIndex: 0)) // add a new row in section 0
+	self.tableManager?.add(row: newCountry, in: self.tableManager?.section(atIndex: 0)) // add a new row in section 0
 })
 ```
 <a name="row_events" />
@@ -318,10 +320,10 @@ All events are available and fully described into the `Row` class.
 In this example you will see how to respond to the tap:
 
 ```swift
-// Respond to tap on player's cells
-let rows = Row<PlayerCell>.create(players, { row in
+// Respond to tap on countrie's cells
+let rows = Row<CountryCell>.create(countries, { row in
   row.onTap = { _,path in
-  print("Tap on player at \(String(path.row)): '\(row.item.fullName)'")
+  print("Tap on country at \(String(path.row)): '\(row.item.name.capitalized())'")
     return nil
   }
 })
