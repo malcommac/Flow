@@ -126,8 +126,7 @@ open class Row<Cell: DeclarativeCell>: RowProtocol where Cell: UITableViewCell {
 	/// behaviour is `deselect` with animation.
 	public var onTap: ((RowProtocol) -> (RowTapBehaviour?))? = nil
 
-	/// Message received when a selection has been made. Selection still active only if
-	/// `onTap` returned `.keepSelection` option.
+	/// Message received when a cell at specified path is about to be removed.
 	public var onDelete: RowReference? = nil
 
 	/// Message received when a selection has been made. Selection still active only if
