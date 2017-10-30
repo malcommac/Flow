@@ -39,15 +39,38 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public weak var scrollViewDelegate: UIScrollViewDelegate? = nil
 	
 	/// This represent which table should be managed by this instance
-	private(set) weak var tableView: UITableView?
+	public private(set) weak var tableView: UITableView?
 	
 	/// This array contains all the removed row in an update sessions.
 	/// It's used to dispatch `onDidEndDisplay` messages before a cell is definitively removed
 	/// from table and deallocated.
 	internal var removedRows: [Int: RowProtocol] = [:]
 	
+	/// This array contains all the removed sections's header/footer which are subsribed to receive
+	/// `didEndDisplaying` messages. After dispatch value is removed and deallocated.
+	internal var removedHeaderFooterViews: [Int: SectionProtocol] = [:]
+	
 	/// Default height of the header/footer with plain style
 	private static let HEADERFOOTER_HEIGHT: CGFloat = 44.0
+	
+	/// Store removed sections temporary in order send didEndDisplay messages.
+	/// Data are stored only if needed.
+	///
+	/// - Parameter sections: sections
+	internal func keepRemovedSections(_ sections: [Section]) {
+		sections.forEach {
+			// For each section we want to see if there is an event for header or footer
+			// which needs to be tracked on remove.
+			
+			if $0.headerView?.didEndDisplaying != nil { // header
+				self.removedHeaderFooterViews[$0.headerView!.hashValue] = $0.headerView!
+			}
+			
+			if $0.footerView?.didEndDisplaying != nil { // footer
+				self.removedHeaderFooterViews[$0.footerView!.hashValue] = $0.footerView!
+			}
+		}
+	}
 	
 	/// Store removed rows temporary in order send didEndDisplay messages.
 	///
@@ -64,7 +87,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	}
 	
 	/// Number of sections in table
-	private(set) var sections: ObservableArray<Section> = [] { // [Section] = [] {
+	public private(set) var sections: ObservableArray<Section> = [] {
 		didSet {
 			let (indexes, titles) = self.regenerateSectionIndexes()
 			self.sectionsIndexes = indexes
@@ -81,7 +104,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	
 	/// Registered `UITableHeaderFooterView` identifiers
 	private var registeredViewsIDs: Set<String> = []
-
+	
 	/// Indexes of the table
 	private var sectionsIndexes: [Int]? = nil
 	
@@ -162,13 +185,13 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		self.tableView?.endUpdates()
 	}
 	
-
+	
 	/// This function generate operations to manipulate table using batch of animations
 	///
 	/// - Returns: session observer
 	private func generateSessionObservers() -> String {
 		let observerUUID = NSUUID().uuidString
-
+		
 		self.sections.observe(ArrayObserver(observerUUID)) // observe section changes
 		// observe changes in any section
 		self.sections.forEach {
@@ -226,7 +249,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 				self.tableView?.deleteRows(at: paths, with: animation)
 			case .inserted:
 				let paths: [IndexPath] = $0.indexes.map {
-				//	print("insert row=\($0) (section=\(section)")
+					//	print("insert row=\($0) (section=\(section)")
 					return IndexPath(row: $0, section: section)
 				}
 				self.tableView?.insertRows(at: paths, with: animation)
@@ -236,7 +259,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			}
 		}
 	}
-		
+	
 	/// Return the first row with given identifier inside all sections of the table
 	///
 	/// - Parameter identifier: identifier to search
@@ -277,7 +300,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		section.manager = self
 		return self
 	}
-
+	
 	
 	/// Add a list of sections to the table
 	///
@@ -326,7 +349,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		}
 		return self
 	}
-
+	
 	/// Add a new row into a section; if section is `nil` a new section is created and added at the end
 	/// of table.
 	///
@@ -427,6 +450,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func remove(sectionAt index: Int) -> Self {
 		guard index < self.sections.count else { return self }
 		let removedSection = self.sections.remove(at: index)
+		self.keepRemovedSections([removedSection])
 		self.keepRemovedRows(Array(removedSection.rows))
 		removedSection.manager = nil
 		return self
@@ -452,10 +476,12 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func removeAll() -> Self {
 		let removedRows = self.sections.flatMap { $0.rows }
 		self.keepRemovedRows(removedRows)
+		self.keepRemovedSections(Array(self.sections))
 		self.sections.forEach { $0.manager = nil }
 		self.sections.removeAll()
 		return self
 	}
+	
 	
 	
 	/// Reload data for section with given identifier
@@ -565,17 +591,17 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: target table
 	///   - cell: cell instance
 	///   - indexPath: index path of the cell
-    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let hashedRow = cell.hashValue
 		guard let row = self.removedRows[hashedRow] else {
 			return
 		}
-       // let cell = tableView.cellForRow(at: indexPath) // instance of the cell
-       // row.onDidEndDisplay?((cell,indexPath)) // send any message
+		// let cell = tableView.cellForRow(at: indexPath) // instance of the cell
+		// row.onDidEndDisplay?((cell,indexPath)) // send any message
 		row.onDidEndDisplay?(row)
 		// free removed rows instances
 		self.removedRows.removeValue(forKey: hashedRow)
-    }
+	}
 	
 	/// Cell for a particular `indexPath` in target table
 	///
@@ -592,7 +618,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		// Allocate the class
 		let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
 		self.adjustLayout(forCell: cell) // adjust width of the cell if necessary
-				
+		
 		// configure the cell
 		row.configure(cell, path: indexPath)
 		
@@ -623,10 +649,10 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - tableView: The table-view object requesting this information.
 	///   - indexPath: An index path that locates a row in tableView.
 	/// - Returns: A nonnegative floating-point value that estimates the height (in points) that row should be
-    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = self.sections[indexPath.section].rows[indexPath.row]
-        return self.rowHeight(forRow: row, at: indexPath, estimate: true)
-    }
+	public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+		let row = self.sections[indexPath.section].rows[indexPath.row]
+		return self.rowHeight(forRow: row, at: indexPath, estimate: true)
+	}
 	
 	/// Tells the delegate that a header view is about to be displayed for the specified section.
 	///
@@ -648,14 +674,36 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	///   - view: view of the header
 	///   - section: section
 	public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
-		guard let sectionView = self.sections[section].headerView else {
-			return
-		}
-		sectionView.didEndDisplaying?((view as? UITableViewHeaderFooterView,.header,section))
+		self.onRemoveHeaderFooterView(view, at: section)
 	}
 	
 	///MARK: Footer
 	
+	/// Tells the delegate that the specified footer view was removed from the table.
+	///
+	/// - Parameters:
+	///   - tableView: target tableview
+	///   - view: view of the footer
+	///   - section: section
+	public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
+		self.onRemoveHeaderFooterView(view, at: section)
+		
+	}
+	
+	/// This method is called when an header/footer is removed from the table.
+	/// It check if we have registered a callback for `didEndDisplaying` event.
+	///
+	/// - Parameters:
+	///   - view: view removed (header or footer)
+	///   - section: section
+	private func onRemoveHeaderFooterView(_ view: UIView, at section: Int) {
+		let key = view.hashValue
+		guard let sectionView = self.removedHeaderFooterViews[key] else {
+			return
+		}
+		self.removedHeaderFooterViews.removeValue(forKey: key)
+		sectionView.didEndDisplaying?((view as? UITableViewHeaderFooterView,.header,section))
+	}
 	
 	/// Simple header string
 	///
@@ -752,19 +800,6 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		sectionView.onWillDisplay?((view as? UITableViewHeaderFooterView,.footer,section))
 	}
 	
-	/// Tells the delegate that the specified footer view was removed from the table.
-	///
-	/// - Parameters:
-	///   - tableView: target tableview
-	///   - view: view of the footer
-	///   - section: section
-	public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
-		guard let sectionView = self.sections[section].headerView else {
-			return
-		}
-		sectionView.didEndDisplaying?((view as? UITableViewHeaderFooterView,.footer,section))
-	}
-	
 	/// Support to show right side index like in the address book
 	///
 	/// - Parameter tableView: target table
@@ -798,7 +833,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		//let cell = tableView.cellForRow(at: indexPath) // instance of the cell
 		let row = self.sections[indexPath.section].rows[indexPath.row]
-
+		
 		if let onWillSelect = row.onWillSelect {
 			//return onWillSelect((cell,indexPath))
 			return onWillSelect(row)
@@ -963,7 +998,7 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 			}
 			return TableManager.HEADERFOOTER_HEIGHT // default one, with default height
 		}
-
+		
 		// Custom header/footer view, evaluating height
 		// Has the user provided an evaluation function for view's height? If yes we can realy to it
 		if estimated == false {
@@ -1140,9 +1175,9 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		
 		/// Attempt to estimate the height of the row automatically
 		if self.estimateRowSizeAutomatically == true && estimate == true {
-            return self.estimatedHeight(forRow: row, at: indexPath)
+			return self.estimatedHeight(forRow: row, at: indexPath)
 		}
-
+		
 		// universal fallback to automatic dimension
 		return UITableViewAutomaticDimension
 	}
@@ -1204,13 +1239,13 @@ open class TableManager: NSObject, UITableViewDataSource, UITableViewDelegate {
 		
 		return self.tableView!.estimatedRowHeight
 	}
-
+	
 	/// Clear cache's height
 	private func clearHeightCache() {
 		self.cachedRowHeights.removeAll()
 		self.prototypesCells.removeAll()
 	}
-
+	
 }
 
 extension TableManager: UIScrollViewDelegate {
@@ -1268,3 +1303,5 @@ extension TableManager: UIScrollViewDelegate {
 	}
 	
 }
+
+
