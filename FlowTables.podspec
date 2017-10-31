@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "FlowTables"
-  s.version      = "0.8.1"
+  s.version      = "0.8.2"
   s.summary      = "The great way to create and manage UITableViews in iOS. Forget datasources & delegates"
   s.homepage     = "https://github.com/malcommac/Flow"
   s.license      = { :type => "MIT", :file => "LICENSE" }
