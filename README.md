@@ -138,7 +138,7 @@ This is an example of a `CountryCell` which is responsible to display data for a
 
 ```swift
 import UIKit
-import Flow
+import FlowTables
 
 public class CountryCell: UITableViewCell, DeclarativeCell {
     // assign to the cell the model to be represented
@@ -264,7 +264,7 @@ For example:
 
 ```swift
 import UIKit
-import Flow
+import FlowTables
 
 public class TeamSectionView: UITableViewHeaderFooterView, DeclarativeView {
  public typealias T = TeamModel // the model represented by the view, use `Void` if not applicable
