@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="4Y9-VV-zXW" customClass="UserHeaderView" customModule="FlowTestApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="88"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HEADER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUD-kE-Vnn">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="88"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.91764783859999999" green="0.25364840030000002" blue="0.091166160999999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="WUD-kE-Vnn" firstAttribute="leading" secondItem="4hJ-bE-0Ea" secondAttribute="leading" id="Als-kU-NCH"/>
+                <constraint firstItem="4hJ-bE-0Ea" firstAttribute="bottom" secondItem="WUD-kE-Vnn" secondAttribute="bottom" id="YX6-r8-A7k"/>
+                <constraint firstItem="4hJ-bE-0Ea" firstAttribute="trailing" secondItem="WUD-kE-Vnn" secondAttribute="trailing" id="jMT-Ff-Vbn"/>
+                <constraint firstItem="WUD-kE-Vnn" firstAttribute="top" secondItem="4hJ-bE-0Ea" secondAttribute="top" id="paC-h1-TvM"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="4hJ-bE-0Ea"/>
+            <connections>
+                <outlet property="label" destination="WUD-kE-Vnn" id="1fe-cR-Gmi"/>
+            </connections>
+            <point key="canvasLocation" x="-103.5" y="-220"/>
+        </view>
+    </objects>
+</document>

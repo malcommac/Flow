@@ -1,9 +1,0 @@
-/* 
-  Localizable.strings
-  Flow
-
-  Created by danielemargutti on 04/10/2017.
-  Copyright © 2017 Flow. All rights reserved.
-*/
-
-"Welcome_Text"  = "Welcome to The G00d Debugger, yet another social network you will forgot. This is a very cool welcome message rendered in an autosized cell; isn't pretty? Just pass the string model to your cell and that's all!\nI really like autosizing cell because I can remember the setFrame world ;-)";

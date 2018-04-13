@@ -1,9 +1,9 @@
 //
 //  FlowTests.swift
-//  Flow
+//  y
 //
-//  Created by Daniele Margutti on {TODAY}.
-//  Copyright © 2017 Flow. All rights reserved.
+//  Created by Daniele Margutti on 09/04/2018.
+//  Copyright © 2018 y. All rights reserved.
 //
 
 import Foundation
