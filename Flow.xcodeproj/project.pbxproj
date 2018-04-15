@@ -27,8 +27,6 @@
 		64A02753207F45CF00AFF771 /* CollectionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A02749207F45CF00AFF771 /* CollectionSectionView.swift */; };
 		64A02754207F45CF00AFF771 /* CollectionDirector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274A207F45CF00AFF771 /* CollectionDirector.swift */; };
 		64A02755207F45CF00AFF771 /* CollectionDirector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274A207F45CF00AFF771 /* CollectionDirector.swift */; };
-		64A02756207F45CF00AFF771 /* CollectionReusableRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274B207F45CF00AFF771 /* CollectionReusableRegister.swift */; };
-		64A02757207F45CF00AFF771 /* CollectionReusableRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274B207F45CF00AFF771 /* CollectionReusableRegister.swift */; };
 		64A02758207F45CF00AFF771 /* CollectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274C207F45CF00AFF771 /* CollectionSection.swift */; };
 		64A02759207F45CF00AFF771 /* CollectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274C207F45CF00AFF771 /* CollectionSection.swift */; };
 		64A0275A207F45CF00AFF771 /* Collection+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0274D207F45CF00AFF771 /* Collection+Support.swift */; };
@@ -75,7 +73,6 @@
 		64A02748207F45CF00AFF771 /* FlowCollectionDirector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowCollectionDirector.swift; sourceTree = "<group>"; };
 		64A02749207F45CF00AFF771 /* CollectionSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSectionView.swift; sourceTree = "<group>"; };
 		64A0274A207F45CF00AFF771 /* CollectionDirector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionDirector.swift; sourceTree = "<group>"; };
-		64A0274B207F45CF00AFF771 /* CollectionReusableRegister.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionReusableRegister.swift; sourceTree = "<group>"; };
 		64A0274C207F45CF00AFF771 /* CollectionSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSection.swift; sourceTree = "<group>"; };
 		64A0274D207F45CF00AFF771 /* Collection+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Support.swift"; sourceTree = "<group>"; };
 		64BF02EB207E11E100624B5B /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -180,7 +177,6 @@
 				64A0274A207F45CF00AFF771 /* CollectionDirector.swift */,
 				64A02748207F45CF00AFF771 /* FlowCollectionDirector.swift */,
 				647D255B207F6E2400C6720A /* CollectionDragDropManager.swift */,
-				64A0274B207F45CF00AFF771 /* CollectionReusableRegister.swift */,
 				64A02747207F45CF00AFF771 /* CollectionAdapter.swift */,
 				64A0274C207F45CF00AFF771 /* CollectionSection.swift */,
 				64A02749207F45CF00AFF771 /* CollectionSectionView.swift */,
@@ -392,7 +388,6 @@
 				64F9D9DD2083AE2500159686 /* TableSection.swift in Sources */,
 				64A02754207F45CF00AFF771 /* CollectionDirector.swift in Sources */,
 				647D256C207FAF3E00C6720A /* UIKit+Extras.swift in Sources */,
-				64A02756207F45CF00AFF771 /* CollectionReusableRegister.swift in Sources */,
 				647D255C207F6E2400C6720A /* CollectionDragDropManager.swift in Sources */,
 				64F9D9E02083B0C700159686 /* TableAdapter.swift in Sources */,
 				64F9D9D82083ACAC00159686 /* TableDirector.swift in Sources */,
@@ -419,7 +414,6 @@
 				647D256D207FAF3E00C6720A /* UIKit+Extras.swift in Sources */,
 				64A0274F207F45CF00AFF771 /* CollectionAdapter.swift in Sources */,
 				64A02755207F45CF00AFF771 /* CollectionDirector.swift in Sources */,
-				64A02757207F45CF00AFF771 /* CollectionReusableRegister.swift in Sources */,
 				64F9D9DE2083AE2500159686 /* TableSection.swift in Sources */,
 				64A02753207F45CF00AFF771 /* CollectionSectionView.swift in Sources */,
 				64F9D9D92083ACAC00159686 /* TableDirector.swift in Sources */,

@@ -19,7 +19,7 @@ internal protocol TableAdaterProtocolFunctions {
 	func _onDequeue(model: ModelProtocol, cell: CellProtocol, path: IndexPath, table: UITableView)
 	
 	/// Inserting or Deleting Table Rows (UITableViewDatasource)
-	func _canEdit(model: ModelProtocol, cell: CellProtocol, path: IndexPath, table: UITableView) -> Bool
+	func _canEdit(model: ModelProtocol, path: IndexPath, table: UITableView) -> Bool
 	func _commitEdit(model: ModelProtocol, commit: UITableViewCellEditingStyle, path: IndexPath, table: UITableView)
 	
 	/// Reordering Table Rows (UITableViewDatasource)
@@ -42,9 +42,9 @@ internal protocol TableAdaterProtocolFunctions {
 	func _accessoryTapped(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
 
 	// Managing Selections (UITableViewDelegate)
-	func _willSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
+	func _willSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> IndexPath?
 	func _didSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
-	func _willDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
+	func _willDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> IndexPath?
 	func _didDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
 
 	// Editing Table Rows (UITableViewDelegate)
@@ -58,7 +58,7 @@ internal protocol TableAdaterProtocolFunctions {
 	func _adjustMoveDestination(model: ModelProtocol, from fromPath: IndexPath, to destPath: IndexPath, table: UITableView) -> IndexPath?
 
 	// Tracking the Removal of Views (UITableViewDelegate)
-	func _didEndDisplay(model: ModelProtocol, indexPath: IndexPath, table: UITableView)
+	func _didEndDisplay(cell: UITableViewCell, indexPath: IndexPath, table: UITableView)
 
 	// Copying and Pasting Row Content
 	func _shouldShowMenu(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> Bool
@@ -137,9 +137,9 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 	public var onAccessoryTapped: EventContextToVoid? = nil
 	
 	//MARK: Events: Managing Selections
-	public var onWillSelect: EventContextToVoid? = nil
+	public var onWillSelect: ((Context<M,C>) -> IndexPath?)? = nil
 	public var onDidSelect: EventContextToVoid? = nil
-	public var onWillDeselect: EventContextToVoid? = nil
+	public var onWillDeselect: ((Context<M,C>) -> IndexPath?)? = nil
 	public var onDidDeselect: EventContextToVoid? = nil
 	
 	//MARK: Events: Editing Table Rows
@@ -153,7 +153,7 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 	public var onAdjustMoveDestination: ((_ context: Context<M,C>, _ proposed: IndexPath) -> IndexPath?)? = nil
 
 	//MARK: Events: Tracking the Removal of Views
-	public var onDidEndDisplay: EventContextToVoid? = nil
+	public var onEndDisplay: ((_ cell: C, _ path: IndexPath) -> (Void))? = nil
 
 	//MARK: Events: Copying and Pasting Row Content
 	public var onShouldShowMenu: EventContextToBool? = nil
@@ -189,9 +189,9 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		event(ctx)
 	}
 	
-	func _canEdit(model: ModelProtocol, cell: CellProtocol, path: IndexPath, table: UITableView) -> Bool {
+	func _canEdit(model: ModelProtocol, path: IndexPath, table: UITableView) -> Bool {
 		guard let event = self.onCanEdit else { return false }
-		let ctx = Context<M,C>(model: model, cell: cell, path: path, table: table)
+		let ctx = Context<M,C>(model: model, cell: nil, path: path, table: table)
 		return event(ctx)
 	}
 	
@@ -265,10 +265,10 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		event(ctx)
 	}
 	
-	func _willSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) {
-		guard let event = self.onWillSelect else { return }
+	func _willSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> IndexPath? {
+		guard let event = self.onWillSelect else { return indexPath }
 		let ctx = Context<M,C>(model: model, cell: nil, path: indexPath, table: table)
-		event(ctx)
+		return event(ctx)
 	}
 	
 	func _didSelect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) {
@@ -277,10 +277,10 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		event(ctx)
 	}
 	
-	func _willDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) {
-		guard let event = self.onWillDeselect else { return }
+	func _willDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> IndexPath? {
+		guard let event = self.onWillDeselect else { return indexPath }
 		let ctx = Context<M,C>(model: model, cell: nil, path: indexPath, table: table)
-		event(ctx)
+		return event(ctx)
 	}
 	
 	func _didDeselect(model: ModelProtocol, indexPath: IndexPath, table: UITableView) {
@@ -325,10 +325,9 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		return event(ctx,destPath)
 	}
 	
-	func _didEndDisplay(model: ModelProtocol, indexPath: IndexPath, table: UITableView) {
-		guard let event = self.onDidEndDisplay else { return }
-		let ctx = Context<M,C>(model: model, cell: nil, path: indexPath, table: table)
-		return event(ctx)
+	func _didEndDisplay(cell: UITableViewCell, indexPath: IndexPath, table: UITableView) {
+		guard let event = self.onEndDisplay, let c = cell as? C else { return }
+		return event(c,indexPath)
 	}
 	
 	func _shouldShowMenu(model: ModelProtocol, indexPath: IndexPath, table: UITableView) -> Bool {

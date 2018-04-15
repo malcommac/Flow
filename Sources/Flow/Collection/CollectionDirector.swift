@@ -55,7 +55,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	public private(set) var adapters: [String: AbstractAdapterProtocol] = [:]
 	
 	/// Registered cell, header/footer identifiers for given collection view.
-	public private(set) var reusableRegister: CollectionReusableRegister
+	public private(set) var reusableRegister: ReusableRegister
 	
 	/// Drag & Drop Event Manager
 	/// Its valid only if `dragDropEnabled` is `true`.
@@ -160,7 +160,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	///
 	/// - Parameter collection: instance of the collection to manage.
 	public init(_ collection: UICollectionView) {
-		self.reusableRegister = CollectionReusableRegister(collection)
+		self.reusableRegister = ReusableRegister(collection)
 		super.init()
 		self.collection = collection
 		self.collection?.dataSource = self
@@ -543,3 +543,79 @@ public extension CollectionDirector {
 	}
 	
 }
+
+
+public extension CollectionDirector {
+	
+	/// It keeps the status of the registration of both cell and header/footer reusable identifiers
+	public class ReusableRegister {
+		
+		/// Managed collection
+		public private(set) weak var collection: UICollectionView?
+		
+		/// Registered cell identifiers
+		public private(set) var cellIDs: Set<String> = []
+		
+		/// Registered header identifiers
+		public private(set) var headerIDs: Set<String> = []
+		
+		/// Registered footer identifiers
+		public private(set) var footerIDs: Set<String> = []
+		
+		/// Initialize a new register manager for given collection.
+		///
+		/// - Parameter collection: collection instance
+		internal init(_ collection: UICollectionView) {
+			self.collection = collection
+		}
+		
+		/// Register cell defined inside given adapter.
+		/// If cell is already registered this operation does nothing.
+		///
+		/// - Parameter adapter: adapter to register
+		@discardableResult
+		internal func registerCell(forAdapter adapter: AbstractAdapterProtocol) -> Bool {
+			let identifier = adapter.cellReuseIdentifier
+			guard !cellIDs.contains(identifier) else {
+				return false
+			}
+			let bundle = Bundle.init(for: adapter.cellClass)
+			if let _ = bundle.path(forResource: identifier, ofType: "nib") {
+				let nib = UINib(nibName: identifier, bundle: bundle)
+				collection?.register(nib, forCellWithReuseIdentifier: identifier)
+			} else if adapter.registerAsClass {
+				collection?.register(adapter.cellClass, forCellWithReuseIdentifier: identifier)
+			}
+			cellIDs.insert(identifier)
+			return true
+		}
+		
+		/// Register header/footer identifier as needed.
+		/// If already registered this operation does nothing.
+		///
+		/// - Parameters:
+		///   - headerFooter: header/footer item to register
+		///   - type: is it header or footer
+		/// - Returns: registered identifier
+		@discardableResult
+		internal func registerHeaderFooter(_ headerFooter: AbstractCollectionHeaderFooterItem, type: String) -> String {
+			let identifier = headerFooter.reuseIdentifier
+			if 	(type == UICollectionElementKindSectionHeader && self.headerIDs.contains(identifier)) ||
+				(type == UICollectionElementKindSectionFooter && self.footerIDs.contains(identifier)) {
+				return identifier
+			}
+			
+			let bundle = Bundle(for: headerFooter.viewClass)
+			if let _ = bundle.path(forResource: identifier, ofType: "nib") {
+				let nib = UINib(nibName: identifier, bundle: bundle)
+				collection?.register(nib, forSupplementaryViewOfKind: type, withReuseIdentifier: identifier)
+			} else if headerFooter.registerAsClass {
+				collection?.register(headerFooter.viewClass, forSupplementaryViewOfKind: type, withReuseIdentifier: identifier)
+			}
+			return identifier
+		}
+		
+	}
+	
+}
+
