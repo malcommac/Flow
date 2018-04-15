@@ -67,7 +67,7 @@ public class CollectionSection: Equatable, Hashable {
 	private var temporaryRemovedModels: [IndexPath : ModelProtocol] = [:]
 	
 	/// Managed manager
-	private weak var manager: CollectionManager?
+	private weak var manager: CollectionDirector?
 	
 	/// Index of the section in manager.
 	/// If section is not part of a manager it returns `nil`.

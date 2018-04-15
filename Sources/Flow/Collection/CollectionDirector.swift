@@ -30,19 +30,18 @@
 import Foundation
 import UIKit
 
-open class CollectionManager: NSObject,
+open class CollectionDirector: NSObject,
 UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
 	
 	/// Define the cell size.
 	///
 	/// - `default`: standard behaviour (no auto sizing, needs to implement `onGetItemSize` on adapters).
-	/// - automatic: set the estimatedSize of the layout to `UICollectionViewFlowLayoutAutomaticSize` for using autolayout to determine the size
-	/// - estimated: provide an estimated cell size which can improve the performance of the collection view when the cells adjust their size dynamically.
-	///				 causes the collection view to query each cell for its actual size using the cell’s preferredLayoutAttributesFitting(_:) method.
+	/// - estimated: uses autolayout to calculate the size of the cell. You can provide an
+	///				 estimated size of the cell to speed up the calculation.
+	///				 Implement preferredLayoutAttributesFitting(_:) method in your cell to evaluate the size.
 	/// - fixed: fixed size where each item has the same size
-	public enum CellSize {
+	public enum ItemSize {
 		case `default`
-		case automatic
 		case estimated(_: CGSize)
 		case fixed(_: CGSize)
 	}
@@ -131,19 +130,16 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	public var onDidUpdateFocus: ((_ context: UICollectionViewFocusUpdateContext, _ coordinator: UIFocusAnimationCoordinator) -> Void)? = nil
 	
 	/// Internal representation of the cell size
-	private var _cellSize: CellSize = .default
+	private var _itemSize: ItemSize = .default
 
 	/// Define the size of the items into the cell (valid with `UICollectionViewFlowLayout` layout).
-	public var cellSize: CellSize {
+	public var itemSize: ItemSize {
 		set {
 			guard let layout = self.collection?.collectionViewLayout as? UICollectionViewFlowLayout else {
 				return
 			}
-			self._cellSize = newValue
-			switch _cellSize {
-			case .automatic:
-				layout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize
-				layout.itemSize = CGSize(width: 50.0, height: 50.0) // default
+			self._itemSize = newValue
+			switch _itemSize {
 			case .estimated(let estimateSize):
 				layout.estimatedItemSize = estimateSize
 				layout.itemSize = CGSize(width: 50.0, height: 50.0) // default
@@ -156,7 +152,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 			}
 		}
 		get {
-			return _cellSize
+			return _itemSize
 		}
 	}
 	
@@ -263,7 +259,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	///   - section: section to insert.
 	///   - index: destination index; if `nil` it will be append at the end of the list.
 	public func add(_ section: CollectionSection, at index: Int? = nil) {
-		guard let i = index else {
+		guard let i = index, i < self.sections.count else {
 			self.sections.append(section)
 			return
 		}
@@ -276,7 +272,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	///   - sections: sections to append
 	///   - index: destination index; if `nil` it will be append at the end of the list.
 	public func add(_ sections: [CollectionSection], at index: Int? = nil) {
-		guard let i = index else {
+		guard let i = index, i < self.sections.count else {
 			self.sections.append(contentsOf: sections)
 			return
 		}
@@ -287,9 +283,9 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	///
 	/// - Returns: number of removed sections.
 	@discardableResult
-	public func removeAll() -> Int {
+	public func removeAll(keepingCapacity kp: Bool = false) -> Int {
 		let count = self.sections.count
-		self.sections.removeAll()
+		self.sections.removeAll(keepingCapacity: kp)
 		return count
 	}
 	
@@ -331,7 +327,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 		let item: ModelProtocol = self.sections[index.section].items[index.row]
 		let modelID = String(describing: type(of: item.self))
 		guard let adapter = self.adapters[modelID] else {
-			fatalError("Failed to found an dap")
+			fatalError("Failed to found an adapter for \(modelID)")
 		}
 		return (item,adapter as! AbstractAdapterProtocolFunctions)
 	}
@@ -339,7 +335,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	internal func context(forModel model: ModelProtocol) -> AbstractAdapterProtocolFunctions {
 		let modelID = String(describing: type(of: item.self))
 		guard let adapter = self.adapters[modelID] else {
-			fatalError("Failed to found an dap")
+			fatalError("Failed to found an adapter for \(modelID)")
 		}
 		return (adapter as! AbstractAdapterProtocolFunctions)
 	}
@@ -365,7 +361,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 
 //MARK: CollectionManager UICollectionViewDataSource Protocol Implementation
 
-public extension CollectionManager {
+public extension CollectionDirector {
 	
 	public func numberOfSections(in collectionView: UICollectionView) -> Int {
 		return self.sections.count

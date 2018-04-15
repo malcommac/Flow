@@ -193,12 +193,17 @@ public class CollectionAdapter<M: ModelProtocol, C: CellProtocol>: CollectionAda
 	/// Two adapters are equal if it manages the same pair of data.
 	public static func == (lhs: CollectionAdapter, rhs: CollectionAdapter) -> Bool {
 		return 	(String(describing: lhs.modelType) == String(describing: rhs.modelType)) &&
-			(String(describing: lhs.cellType) == String(describing: rhs.cellType))
+				(String(describing: lhs.cellType) == String(describing: rhs.cellType))
 	}
 	
 	// MARK: Internal Protocol Methods
 	
-	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
+	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath?) -> UICollectionViewCell {
+		guard let indexPath = indexPath else {
+			let castedCell = self.cellClass as! UICollectionViewCell.Type
+			let cellInstance = castedCell.init()
+			return cellInstance
+		}
 		return collection.dequeueReusableCell(withReuseIdentifier: C.reuseIdentifier, for: indexPath)
 	}
 	
@@ -208,12 +213,9 @@ public class CollectionAdapter<M: ModelProtocol, C: CellProtocol>: CollectionAda
 		event(ctx)
 	}
 	
-	func _itemSize(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> CGSize {
+	func _itemSize(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> CGSize? {
 		let ctx = Context<M,C>(model: model, cell: nil, path: path, collection: collection)
-		guard let size = self.onGetItemSize?(ctx) else {
-			fatalError("Missing itemSize implementation for: \(self)")
-		}
-		return size
+		return self.onGetItemSize?(ctx)
 	}
 	
 	func _willDisplay(model: ModelProtocol, cell: CellProtocol, path: IndexPath, collection: UICollectionView) {

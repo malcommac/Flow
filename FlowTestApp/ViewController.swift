@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 	
 	@IBOutlet public var collectionView: UICollectionView?
 	
-	private var manager: CollectionManager?
+	private var manager: FlowCollectionDirector?
 	
 	public lazy var usersList: [UserModel] = {
 		let number: Int = 150
@@ -63,10 +63,34 @@ class ViewController: UIViewController {
 		print("Now loading \(l.count) models")
 		
 		
-		self.manager = FlowCollectionManager(self.collectionView!)
+		self.manager = FlowCollectionDirector(self.collectionView!)
 		self.manager?.prefetchEnabled = true
 		
-		let adUser = CollectionAdapter<UserModel,CellUser> {
+		let adapterArticle = CollectionAdapter<Article,CellArticle> {
+//			$0.onGetItemSize = { context in
+//				return CGSize(width: context.collectionSize!.width, height: 50)
+//			}
+			$0.onConfigure = { context in
+				context.cell?.articleTitle?.text = context.model.title
+				context.cell?.articleSubtitle?.text = context.model.subtitle
+				context.cell?.backgroundColor = (context.indexPath.item % 2 == 0 ? UIColor.gray : UIColor.lightGray)
+			}
+//			$0.onGetItemSize = { _ in
+//				return UICollectionViewFlowLayoutAutomaticSize
+//			}
+		}
+		self.manager?.register(adapter: adapterArticle)
+		self.manager?.sectionsInsets = .zero
+		self.manager?.itemSize = .estimated(CGSize(width: 1, height: 1))
+		
+		let section = self.manager?.add(items: [
+			Article("titolo","sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo sottotitolo "),
+			Article("titolo1","sottotitolo1"),
+			Article("titolo2","sottotitolo2"),
+			])
+		self.manager?.reloadData()
+
+		/*let adUser = CollectionAdapter<UserModel,CellUser> {
 			$0.onConfigure = { context in
 				context.cell?.nameLabel?.text = context.model.name
 				context.cell?.backgroundColor = (context.indexPath.item % 2 == 0 ? UIColor.gray : UIColor.lightGray)
@@ -90,10 +114,58 @@ class ViewController: UIViewController {
 		}
 		self.manager?.reloadData()
 		
-		print("Done")
+		print("Done")*/
+		
 	}
 
 }
+
+public class CellArticle: UICollectionViewCell {
+	@IBOutlet public var articleTitle: UILabel?
+	@IBOutlet public var articleSubtitle: UILabel?
+	@IBOutlet public var viewWidth: NSLayoutConstraint?
+
+//	public override func awakeFromNib() {
+//		super.awakeFromNib()
+//		self.contentView.translatesAutoresizingMaskIntoConstraints = false
+//		let screenWidth = UIScreen.main.bounds.size.width
+//		viewWidth?.constant = screenWidth - (2 * 12)
+//	}
+	
+	public override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+
+		// Specify you want _full width_
+		let targetSize = CGSize(width: UIScreen.main.bounds.size.width, height: 0)
+
+		// Calculate the size (height) using Auto Layout
+		let autoLayoutSize = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: UILayoutPriority.required, verticalFittingPriority: UILayoutPriority.defaultLow)
+		let autoLayoutFrame = CGRect(origin: layoutAttributes.frame.origin, size: autoLayoutSize)
+
+		// Assign the new size to the layout attributes
+		layoutAttributes.frame = autoLayoutFrame
+		return layoutAttributes
+
+	}
+}
+
+public class Article: ModelProtocol, Hashable {
+
+	
+	public var title: String
+	public var subtitle: String
+	public var identifier: Int
+	
+	public init(_ title: String, _ subtitle: String) {
+		self.title = title
+		self.subtitle = subtitle
+		self.identifier = (title + subtitle).hashValue
+	}
+	
+	public static func == (lhs: Article, rhs: Article) -> Bool {
+		return lhs.identifier == rhs.identifier
+	}
+}
+
 
 public class CellUser: UICollectionViewCell {
 	@IBOutlet public var nameLabel: UILabel?

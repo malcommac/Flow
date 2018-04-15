@@ -30,7 +30,7 @@
 import Foundation
 import UIKit
 
-public extension CollectionManager {
+public extension CollectionDirector {
 	
 	/// It keeps the status of the registration of both cell and header/footer reusable identifiers
 	public class CollectionReusableRegister {

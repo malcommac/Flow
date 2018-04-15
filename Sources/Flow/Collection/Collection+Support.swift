@@ -152,8 +152,8 @@ internal protocol AbstractAdapterProtocolFunctions {
 	func _onDequeue(model: ModelProtocol, cell: CellProtocol, path: IndexPath, collection: UICollectionView)
 	func _willDisplay(model: ModelProtocol, cell: CellProtocol, path: IndexPath, collection: UICollectionView)
 	func _didEndDisplay(cell: CellProtocol, path: IndexPath, collection: UICollectionView)
-	func _itemSize(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> CGSize
-	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell
+	func _itemSize(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> CGSize?
+	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath?) -> UICollectionViewCell
 	
 	func _didPrefetchItems(models: [ModelProtocol], indexPaths: [IndexPath], collection: UICollectionView)
 	func _didCancelPrefetchItems(models: [ModelProtocol], indexPaths: [IndexPath], collection: UICollectionView)

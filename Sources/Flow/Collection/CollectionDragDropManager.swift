@@ -30,7 +30,7 @@
 import Foundation
 import UIKit
 
-public extension CollectionManager {
+public extension CollectionDirector {
 	
 	public final class DragAndDropManager: NSObject, UICollectionViewDragDelegate, UICollectionViewDropDelegate {
 		
@@ -57,7 +57,7 @@ public extension CollectionManager {
 		//MARK: DRAG EVENTS: PROVIDING ITEMS TO DRAG
 		
 		/// Managed collection manager
-		public internal(set) weak var manager: CollectionManager?
+		public internal(set) weak var manager: CollectionDirector?
 		
 		/// Provides the initial set of items (if any) to drag.
 		///
@@ -182,7 +182,7 @@ public extension CollectionManager {
 		//MARK: INIT
 		
 		/// Internal init
-		internal init(manager: CollectionManager) {
+		internal init(manager: CollectionDirector) {
 			super.init()
 			self.manager = manager
 		}

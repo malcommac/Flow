@@ -30,7 +30,7 @@
 import Foundation
 import UIKit
 
-open class FlowCollectionManager: CollectionManager, UICollectionViewDelegateFlowLayout {
+open class FlowCollectionDirector: CollectionDirector, UICollectionViewDelegateFlowLayout {
 	
 	/// Margins to apply to content.
 	/// This is a global value, you can customize a per-section behaviour by implementing `sectionInsets` property into a section.
@@ -116,7 +116,17 @@ open class FlowCollectionManager: CollectionManager, UICollectionViewDelegateFlo
 	
 	open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._itemSize(model: model, path: indexPath, collection: collectionView)
+		switch self.itemSize {
+		case .default:
+			guard let size = adapter._itemSize(model: model, path: indexPath, collection: collectionView) else {
+				return self.layout!.itemSize
+			}
+			return size
+		case .estimated(let est):
+			return est
+		case .fixed(let size):
+			return size
+		}
 	}
 	
 	open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
