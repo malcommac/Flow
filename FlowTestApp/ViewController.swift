@@ -62,6 +62,8 @@ class ViewController: UIViewController {
 		let l = self.usersList
 		print("Now loading \(l.count) models")
 		
+	
+		
 		
 		self.manager = FlowCollectionDirector(self.collectionView!)
 		self.manager?.prefetchEnabled = true
@@ -79,6 +81,9 @@ class ViewController: UIViewController {
 //				return UICollectionViewFlowLayoutAutomaticSize
 //			}
 		}
+		
+	
+		
 		self.manager?.register(adapter: adapterArticle)
 		self.manager?.sectionsInsets = .zero
 		self.manager?.itemSize = .estimated(CGSize(width: 1, height: 1))

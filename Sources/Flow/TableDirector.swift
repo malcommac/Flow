@@ -18,6 +18,12 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	public private(set) var adapters: [String: AbstractAdapterProtocol] = [:]
 
 	public private(set) var reusableRegister: TableDirector.ReusableRegister
+	
+	public var headerHeight: CGFloat? = nil
+	
+	public var footerHeight: CGFloat? = nil
+
+	public var onGetSectionForSectionIndex: ((_ title: String, _ index: Int) -> (Int))? = nil
 
 	public var prefetchEnabled: Bool {
 		set {
@@ -50,6 +56,7 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 			self.tableView?.reloadData()
 			return
 		}
+		self.tableView?.reloadData()
 	}
 	
 	@discardableResult
@@ -149,169 +156,246 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let (model,adapter) = self.context(forItemAt: indexPath)
 		let cell = adapter._instanceCell(in: tableView, at: indexPath)
-		adapter._onDequeue(model: model, cell: cell, path: indexPath, table: tableView)
+		adapter._invoke(event: .dequeue, model, cell, indexPath, tableView, nil)
 		return cell
+	}
+	
+	// Header & Footer
+	
+	public func tableView(_ tableView: UITableView, viewForHeaderInSection sectionIdx: Int) -> UIView? {
+		guard let header = sections[sectionIdx].headerView else { return nil }
+		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.reusableRegister.registerView(header))
+	}
+	
+	public func tableView(_ tableView: UITableView, viewForFooterInSection sectionIdx: Int) -> UIView? {
+		guard let footer = sections[sectionIdx].footerView else { return nil }
+		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.reusableRegister.registerView(footer))
+	}
+	
+	public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return self.sections[section].headerTitle
+	}
+	
+	public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		return self.sections[section].footerTitle
+	}
+	
+	public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+		return self.sections[section].headerHeight ?? (self.headerHeight ?? UITableViewAutomaticDimension)
+	}
+	
+	public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+		guard let estHeight = self.sections[section].onGetHeaderHeight?() else {
+			let height = self.sections[section].footerHeight ?? (self.footerHeight ?? UITableViewAutomaticDimension)
+			return height
+		}
+		return estHeight
+	}
+	
+	public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+		guard let estHeight = self.sections[section].onGetHeaderHeight?() else {
+			let height = self.sections[section].headerHeight ?? (self.headerHeight ?? UITableViewAutomaticDimension)
+			return height
+		}
+		return estHeight
+	}
+	
+	public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		self.sections[section].onWillDisplayHeader?(view)
+	}
+	
+	public func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+		self.sections[section].onWillDisplayFooter?(view)
+	}
+	
+	public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
+		guard section < self.sections.count else { return }
+		self.sections[section].onDidEndDisplayFooter?(view)
+	}
+	
+	public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
+		guard section < self.sections.count else { return }
+		self.sections[section].onDidEndDisplayHeader?(view)
 	}
 	
 	// Inserting or Deleting Table Rows
 	
 	public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._commitEdit(model: model, commit: editingStyle, path: indexPath, table: tableView)
+		adapter._invoke(event: .commitEdit, model, nil, indexPath, tableView, [.param1 : editingStyle])
 	}
 	
 	public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._canEdit(model: model, path: indexPath, table: tableView)
+		return ((adapter._invoke(event: .canEdit, model, nil, indexPath, tableView, nil) as? Bool) ?? false)
 	}
 	
 	// Reordering Table Rows
 
 	public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._canMoveRow(model: model, path: indexPath, table: tableView)
+		return ((adapter._invoke(event: .canMoveRow, model, nil, indexPath, tableView, nil) as? Bool) ?? false)
 	}
 
 	public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: sourceIndexPath)
-		adapter._moveRow(model: model, fromPath: sourceIndexPath, toPath: destinationIndexPath, table: tableView)
+		adapter._invoke(event: .moveRow, model, nil, sourceIndexPath, tableView, [.param1 : destinationIndexPath])
 	}
 	
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._heightForRow(model: model, indexPath: indexPath, table: tableView) ?? UITableViewAutomaticDimension)
+		return ((adapter._invoke(event: .rowHeight, model, nil, indexPath, tableView, nil) as? CGFloat) ?? UITableViewAutomaticDimension)
 	}
 	
 	public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._estimatedHeightForRow(model: model, indexPath: indexPath, table: tableView) ?? UITableViewAutomaticDimension)
+		return ((adapter._invoke(event: .rowHeightEstimated, model, nil, indexPath, tableView, nil) as? CGFloat) ?? UITableViewAutomaticDimension)
 	}
 	
 	public func tableView(_ tableView: UITableView, indentationLevelForRowAt indexPath: IndexPath) -> Int {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._indentationLevel(model: model, indexPath: indexPath, table: tableView) ?? 1)
+		return ((adapter._invoke(event: .indentLevel, model, nil, indexPath, tableView, nil) as? Int) ?? 1)
 	}
 	
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._willDisplay(model: model, cell: cell, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .willDisplay, model, cell, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, shouldSpringLoadRowAt indexPath: IndexPath, with context: UISpringLoadedInteractionContext) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._shouldSpringLoad(model: model, indexPath: indexPath, table: tableView) ?? true)
+		return ((adapter._invoke(event: .shouldSpringLoad, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._editActions(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .editActions, model, nil, indexPath, tableView, nil) as? [UITableViewRowAction])
 	}
 	
 	public func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._accessoryTapped(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .tapOnAccessory, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._willSelect(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .willSelect, model, nil, indexPath, tableView, nil) as? IndexPath)
 	}
 	
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._didDeselect(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .didSelect, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._willDeselect(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .willDeselect, model, nil, indexPath, tableView, nil) as? IndexPath)
 	}
 	
 	public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._didDeselect(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .didDeselect, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._willBeginEditing(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .willBeginEdit, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
 		guard let index = indexPath else { return }
 		let (model,adapter) = self.context(forItemAt: index)
-		adapter._didEndEditing(model: model, indexPath: index, table: tableView)
+		adapter._invoke(event: .didEndEdit, model, nil, indexPath!, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._editingStyle(model: model, indexPath: indexPath, table: tableView) ?? .none)
+		return ((adapter._invoke(event: .editStyle, model, nil, indexPath, tableView, nil) as? UITableViewCellEditingStyle) ?? .none)
 	}
 	
 	public func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._deleteConfirmationTitle(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .deleteConfirmTitle, model, nil, indexPath, tableView, nil) as? String)
 	}
 	
 	public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._shouldIdentWhileEditing(model: model, indexPath: indexPath, table: tableView) ?? true)
+		return ((adapter._invoke(event: .editShouldIndent, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
 		let (model,adapter) = self.context(forItemAt: sourceIndexPath)
-		return (adapter._adjustMoveDestination(model: model, from: sourceIndexPath, to: proposedDestinationIndexPath, table: tableView) ?? proposedDestinationIndexPath)
+		return ((adapter._invoke(event: .moveAdjustDestination, model, nil, sourceIndexPath, tableView, [.param1 : proposedDestinationIndexPath]) as? IndexPath) ?? proposedDestinationIndexPath)
 	}
 	
 	public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		self.adapters.forEach { data in
-			(data.value as! TableAdaterProtocolFunctions)._didEndDisplay(cell: cell, indexPath: indexPath, table: tableView)
+			(data.value as! TableAdaterProtocolFunctions)._invoke(event: .endDisplay, cell: cell, indexPath, tableView, nil)
 		}
 	}
 	
 	public func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._shouldShowMenu(model: model, indexPath: indexPath, table: tableView)
+		return ((adapter._invoke(event: .shouldShowMenu, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._canPerformAction(model: model, indexPath: indexPath, selector: action, sender: sender, table: tableView)
+		return ((adapter._invoke(event: .canPerformMenuAction, model, nil, indexPath, tableView, [.param1 : action, .param2 : sender]) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._performAction(model: model, indexPath: indexPath, selector: action, sender: sender, table: tableView)
+		adapter._invoke(event: .performMenuAction, model, nil, indexPath, tableView, [.param1 : action, .param2: sender])
 	}
 	
 	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._shouldHighlight(model: model, indexPath: indexPath, table: tableView)
+		return ((adapter._invoke(event: .shouldHighlight, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._didHighlight(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .didHighlight, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._didUnhighlight(model: model, indexPath: indexPath, table: tableView)
+		adapter._invoke(event: .didUnhighlight, model, nil, indexPath, tableView, nil)
 	}
 	
 	public func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._canFocus(model: model, indexPath: indexPath, table: tableView)
+		return ((adapter._invoke(event: .canFocus, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
 	}
 	
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._configureLeadingSwipe(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .leadingSwipeActions, model, nil, indexPath, tableView, nil) as? UISwipeActionsConfiguration)
 	}
 	
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return adapter._configureTrailingSwipe(model: model, indexPath: indexPath, table: tableView)
+		return (adapter._invoke(event: .trailingSwipeActions, model, nil, indexPath, tableView, nil) as? UISwipeActionsConfiguration)
+	}
+	
+	public func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+		return self.tableIndexes()
+	}
+	
+	public func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+		let indexes = (self.tableIndexes() ?? [])
+		guard indexes.count != self.sections.count else { return index } // same items
+		guard let mapFunction = self.onGetSectionForSectionIndex else {
+			fatalError("Must implement onGetSectionForSectionIndex() on table director")
+		}
+		return mapFunction(title,index)
+	}
+	
+	private func tableIndexes() -> [String]? {
+		let indexes = self.sections.compactMap({ $0.indexTitle })
+		guard indexes.count > 0 else { return nil }
+		return indexes
 	}
 	
 	// Prefetch
@@ -328,13 +412,13 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	
 	public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
 		self.adapters(forIndexPath: indexPaths).forEach { adapterGroup in
-			adapterGroup.adapter._didPrefetchItems(models: adapterGroup.models, indexPaths: adapterGroup.indexPaths, table: tableView)
+			adapterGroup.adapter._invoke(event: .prefetch, adapterGroup.models, adapterGroup.indexPaths, tableView, nil)
 		}
 	}
 	
 	public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
 		self.adapters(forIndexPath: indexPaths).forEach { adapterGroup in
-			adapterGroup.adapter._didCancelPrefetchItems(models: adapterGroup.models, indexPaths: adapterGroup.indexPaths, table: tableView)
+			adapterGroup.adapter._invoke(event: .cancelPrefetch, adapterGroup.models, adapterGroup.indexPaths, tableView, nil)
 		}
 	}
 	
@@ -372,6 +456,19 @@ public extension TableDirector {
 			return true
 		}
 		
+		internal func registerView(_ view: AbstractTableHeaderFooterItem) -> String {
+			let identifier = view.reuseIdentifier
+			guard !self.headersFootersIDs.contains(identifier) else { return identifier}
+			
+			let bundle = Bundle(for: view.viewClass)
+			if let _ = bundle.path(forResource: identifier, ofType: "nib") {
+				let nib = UINib(nibName: identifier, bundle: bundle)
+				self.table?.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
+			} else if view.registerAsClass {
+				self.table?.register(view.viewClass, forCellReuseIdentifier: identifier)
+			}
+			return identifier
+		}
 		
 	}
 	

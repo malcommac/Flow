@@ -19,13 +19,28 @@ public class TableExampleController: UIViewController {
 		super.viewDidLoad()
 		self.tableDirector = TableDirector(self.tableView!)
 		
-		let adapterC = TableAdapter<Article, TableAdaptiveCell> {
-			$0.onConfigure = { context in
-				context.cell?.labelTitle?.text = context.model.title
-				context.cell?.labelSubtitle?.text = context.model.subtitle
-			}
-		}
+		let adapterC = TableAdapter<Article, TableAdaptiveCell>()
+		adapterC.on(.dequeue { context in
+			context.cell?.labelTitle?.text = context.model.title
+			context.cell?.labelSubtitle?.text = context.model.subtitle
+		})
+		
+	
+		
 		self.tableDirector?.register(adapter: adapterC)
+		
+		adapterC.on(.dequeue { context in
+			print("ciao")
+		})
+		
+		
+		var l: [Article] = []
+		for i in 0..<100 {
+			l.append(Article("Titolo #\(i)", "sottotitolo \(i)"))
+		}
+		self.tableDirector?.add(items: l)
+		
+		self.tableDirector?.reload()
 	}
 }
 
