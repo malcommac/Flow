@@ -34,7 +34,7 @@ import UIKit
 public class CollectionSection: Equatable, Hashable {
 	
 	/// Identifier of the section
-	internal var UUID: String = NSUUID().uuidString
+	public var UUID: String = NSUUID().uuidString
 	
 	/// Items inside the collection
 	public private(set) var items: [ModelProtocol]

@@ -131,32 +131,15 @@ public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableV
 
 internal protocol AbstractAdapterProtocolFunctions {
 
-	func _shouldSelect(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
-	func _shouldDeSelect(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
-	func _shouldHighlight(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
+	@discardableResult
+	func _invoke(event: CollectionAdapterEventKey,_ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any?
 	
-	func _shouldShowEditMenu(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
-	func _canPerformEditMenuAction(model: ModelProtocol, path: IndexPath, collection: UICollectionView, selector: Selector, sender: Any?) -> Bool
-	func _performEditMenuAction(model: ModelProtocol, path: IndexPath, collection: UICollectionView, selector: Selector, sender: Any?) -> Void
-
-	func _canFocusItem(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
-
-	func _shouldSpringLoadItem(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> Bool
-
-	func _generateDragPreview(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> UIDragPreviewParameters?
-
-	func _didHighlight(model: ModelProtocol, cell: CellProtocol?, path: IndexPath, collection: UICollectionView)
-	func _didUnHighlight(model: ModelProtocol, cell: CellProtocol?, path: IndexPath, collection: UICollectionView)
-	func _didSelect(model: ModelProtocol, cell: CellProtocol?, path: IndexPath, collection: UICollectionView)
-	func _didDeselect(model: ModelProtocol, cell: CellProtocol?, path: IndexPath, collection: UICollectionView)
-	func _onDequeue(model: ModelProtocol, cell: CellProtocol, path: IndexPath, collection: UICollectionView)
-	func _willDisplay(model: ModelProtocol, cell: CellProtocol, path: IndexPath, collection: UICollectionView)
-	func _didEndDisplay(cell: CellProtocol, path: IndexPath, collection: UICollectionView)
-	func _itemSize(model: ModelProtocol, path: IndexPath, collection: UICollectionView) -> CGSize?
+	@discardableResult
+	func _invoke(event: CollectionAdapterEventKey,_ models: [ModelProtocol], _ paths: [IndexPath], _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any?
+	
+	func _invoke(event: CollectionAdapterEventKey, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?)
+	
 	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath?) -> UICollectionViewCell
-	
-	func _didPrefetchItems(models: [ModelProtocol], indexPaths: [IndexPath], collection: UICollectionView)
-	func _didCancelPrefetchItems(models: [ModelProtocol], indexPaths: [IndexPath], collection: UICollectionView)
 }
 
 public protocol CollectionAdapterProtocol : AbstractAdapterProtocol, Equatable {

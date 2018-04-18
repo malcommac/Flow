@@ -1,63 +1,81 @@
 //
-//  TableEvent.swift
-//  Flow
+//	Flow
+//	A declarative approach to UICollectionView & UITableView management
+//	--------------------------------------------------------------------
+//	Created by:	Daniele Margutti
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
 //
-//  Created by Daniele Margutti on 18/04/2018.
-//  Copyright © 2018 y. All rights reserved.
+//	Twitter:	@danielemargutti
 //
+//
+//	Permission is hereby granted, free of charge, to any person obtaining a copy
+//	of this software and associated documentation files (the "Software"), to deal
+//	in the Software without restriction, including without limitation the rights
+//	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//	copies of the Software, and to permit persons to whom the Software is
+//	furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//	THE SOFTWARE.
 
 import Foundation
 import UIKit
 
-public protocol Eventable {
-	var name: TableEventName { get }
-}
-
-public enum EventArgument: String, Hashable {
-	case param1
-	case param2
-}
-
-public enum TableEventName: String {
-	case dequeue
-	case canEdit
-	case commitEdit
-	case canMoveRow
-	case moveRow
-	case prefetch
-	case cancelPrefetch
-	case rowHeight
-	case rowHeightEstimated
-	case indentLevel
-	case willDisplay
-	case shouldSpringLoad
-	case editActions
-	case tapOnAccessory
-	case willSelect
-	case didSelect
-	case willDeselect
-	case didDeselect
-	case willBeginEdit
-	case didEndEdit
-	case editStyle
-	case deleteConfirmTitle
-	case editShouldIndent
-	case moveAdjustDestination
-	case endDisplay
-	case shouldShowMenu
-	case canPerformMenuAction
-	case shouldHighlight
-	case didHighlight
-	case didUnhighlight
-	case canFocus
-	case performMenuAction
-	case leadingSwipeActions
-	case trailingSwipeActions
+public enum TableSelectionState {
+	case none
+	case deselect
+	case deselectAnimated
 }
 
 public extension TableAdapter {
 	
-	public enum Event<M,C>: Eventable {
+	/// Available events for table's adapter.
+	///
+	/// - dequeue->Void: Used to configure cell's content just after the creation (`tableView(:,cellForRowAt:)`)
+	/// - canEdit->Bool: Asks to verify that the given row is editable (`tableView(_:canEditRowAt:)`)
+	/// - commitEdit->Void: Asks to commit the insertion or deletion of a specified row in the receiver (`tableView(:,commit:,forRowAt:)`)
+	/// - canMoveRow->Bool: Asks whether a given row can be moved to another location in the table view (`tableView(:,canMoveRowAt:)`)
+	/// - moveRow->Void: Tells the data source to move a row at a specific location in the table view to another location. (`tableView(:, moveRowAt:,to:`)
+	/// - prefetch->Void:
+	/// - cancelPrefetch->Void:
+	/// - rowHeight->CGFloat: Asks for the height to use for a row in a specified location (`tableView(_:heightForRowAt:)`)
+	/// - rowHeightEstimated->CGFloat: Asks for the estimated height of the header of a particular section. (`tableView(_:estimatedHeightForHeaderInSection:)`)
+	/// - indentLevel->Int: Asks to return the level of indentation for a row in a given section (`tableView(_:indentationLevelForRowAt:)`)
+	/// - willDisplay->Void: Tells the table view is about to draw a cell for a particular row (`tableView(_:willDisplay:forRowAt:)`)
+	/// - shouldSpringLoad->Bool: Called to let you fine tune the spring-loading behavior of the rows in a table (`tableView(_:shouldSpringLoadRowAt:with:)`)
+	/// - editActions->: Asks for the actions to display in response to a swipe in the specified row (`tableView(_:editActionsForRowAt:)`)
+	/// - tapOnAccessory->Void: Tells that the user tapped the accessory (disclosure) view associated with a given row (`tableView(_:accessoryButtonTappedForRowWith:)`)
+	/// - willSelect->IndexPath?: Tells that a specified row is about to be selected (`tableView(_:willSelectRowAt:)`)
+	/// - didSelect->TableSelectionState: Tells that the specified row is now selected (`tableView(_:didSelectRowAt:)`)
+	/// - willDeselect->IndexPath?: Tells that a specified row is about to be deselected (`tableView(_:willDeselectRowAt:)`)
+	/// - didDeselect->Void: Tells that the specified row is now deselected (`tableView(_:didDeselectRowAt:)`)
+	/// - willBeginEdit->Void: Tells that the table view is about to go into editing mode (`tableView(_:willBeginEditingRowAt:)`)
+	/// - didEndEdit->Void: Tells that the table view has left editing mode (`tableView(_:didEndEditingRowAt:)`)
+	/// - editStyle->UITableViewCellEditingStyle: Asks for the editing style of a row at a particular location in a table view (`tableView(_:editingStyleForRowAt:)`)
+	/// - deleteConfirmTitle->String?: Changes the default title of the delete-confirmation button (`tableView(_:titleForDeleteConfirmationButtonForRowAt:)`)
+	/// - editShouldIndent->Bool: Asks whether the background of the specified row should be indented while the table view is in editing mode (`tableView(_:shouldIndentWhileEditingRowAt:)`)
+	/// - moveAdjustDestination->IndexPath?: Tells to move a row at a specific location in the table view to another location (`tableView(_:moveRowAt:to:)`)
+	/// - endDisplay->Void: Tells that the specified cell was removed from the table (`tableView(_:didEndDisplaying:forRowAt:)`)
+	/// - shouldShowMenu->Bool: Asks if an action menu should be displayed for the specified row (`tableView(_:shouldShowMenuForRowAt:)`)
+	/// - canPerformMenuAction->Bool: Asks if the editing menu should omit the Copy or Paste command for a given row (`tableView(_:canPerformAction:forRowAt:withSender:)`)
+	/// - performMenuAction->Void: Tells to perform a copy or paste operation on the content of a given row (`tableView(_:performAction:forRowAt:withSender:)`)
+	/// - shouldHighlight->Bool: Asks if the specified row should be highlighted (`tableView(_:shouldHighlightRowAt:)`)
+	/// - didHighlight->Void: Tells that the specified row was highlighted (`tableView(_:didHighlightRowAt:)`)
+	/// - didUnhighlight->Void: Tells that the highlight was removed from the row at the specified index path (`tableView(_:didUnhighlightRowAt:)`)
+	/// - canFocus->Bool: Asks whether the cell at the specified index path is itself focusable (`tableView(_:canFocusRowAt:)`)
+	/// - leadingSwipeActions->UISwipeActionsConfiguration?: Returns the swipe actions to display on the leading edge of the row (`tableView(_:leadingSwipeActionsConfigurationForRowAt:)`)
+	/// - trailingSwipeActions->UISwipeActionsConfiguration?: Returns the swipe actions to display on the trailing edge of the row (`tableView(_:trailingSwipeActionsConfigurationForRowAt:)`)
+	public enum Event<M,C>: TableEventable {
+		
 		// Configuring a Table View
 		case dequeue(_: ((_ ctx: Context<M,C>) -> Void))
 		
@@ -86,7 +104,7 @@ public extension TableAdapter {
 		
 		// Managing Selections
 		case willSelect(_: ((_ ctx: Context<M,C>) -> IndexPath?))
-		case didSelect(_: ((_ ctx: Context<M,C>) -> Void))
+		case didSelect(_: ((_ ctx: Context<M,C>) -> TableSelectionState))
 		case willDeselect(_: ((_ ctx: Context<M,C>) -> IndexPath?))
 		case didDeselect(_: ((_ ctx: Context<M,C>) -> Void))
 		
@@ -120,7 +138,7 @@ public extension TableAdapter {
 		case leadingSwipeActions(_: ((_ ctx: Context<M,C>) -> UISwipeActionsConfiguration?))
 		case trailingSwipeActions(_: ((_ ctx: Context<M,C>) -> UISwipeActionsConfiguration?))
 		
-		public var name: TableEventName {
+		var name: TableAdapterEventKey {
 			switch self {
 			case .dequeue:				return .dequeue
 			case .canEdit:				return .canEdit
@@ -160,4 +178,52 @@ public extension TableAdapter {
 		}
 	}
 	
+}
+
+/// Internal Event Register Hooks
+
+internal protocol TableEventable {
+	var name: TableAdapterEventKey { get }
+}
+
+internal enum EventArgument: String, Hashable {
+	case param1
+	case param2
+}
+
+internal enum TableAdapterEventKey: String {
+	case dequeue
+	case canEdit
+	case commitEdit
+	case canMoveRow
+	case moveRow
+	case prefetch
+	case cancelPrefetch
+	case rowHeight
+	case rowHeightEstimated
+	case indentLevel
+	case willDisplay
+	case shouldSpringLoad
+	case editActions
+	case tapOnAccessory
+	case willSelect
+	case didSelect
+	case willDeselect
+	case didDeselect
+	case willBeginEdit
+	case didEndEdit
+	case editStyle
+	case deleteConfirmTitle
+	case editShouldIndent
+	case moveAdjustDestination
+	case endDisplay
+	case shouldShowMenu
+	case canPerformMenuAction
+	case shouldHighlight
+	case didHighlight
+	case didUnhighlight
+	case canFocus
+	case performMenuAction
+	case leadingSwipeActions
+	case trailingSwipeActions
 }

@@ -17,29 +17,30 @@ public class TableExampleController: UIViewController {
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		self.tableDirector = TableDirector(self.tableView!)
 		
-		let adapterC = TableAdapter<Article, TableAdaptiveCell>()
-		adapterC.on(.dequeue { context in
+		var articlesList: [Article] = []
+		for i in 0..<3000 {
+			articlesList.append(Article("\(i) A set of cool animated page controls written in Swift to replace boring UIPageControl.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+		}
+		
+		
+		self.tableDirector = TableDirector(self.tableView!)
+		self.tableDirector?.rowHeight = .autoLayout(estimated: 80)
+		
+		let articleAdapter = TableAdapter<Article, TableAdaptiveCell>()
+		self.tableDirector?.register(adapter: articleAdapter)
+		articleAdapter.on(.dequeue { context in
 			context.cell?.labelTitle?.text = context.model.title
 			context.cell?.labelSubtitle?.text = context.model.subtitle
 		})
-		
-	
-		
-		self.tableDirector?.register(adapter: adapterC)
-		
-		adapterC.on(.dequeue { context in
-			print("ciao")
+			
+		articleAdapter.on(.didSelect { context in
+			print("Tap on \(context.model.title)")
+			return .deselectAnimated
 		})
 		
 		
-		var l: [Article] = []
-		for i in 0..<100 {
-			l.append(Article("Titolo #\(i)", "sottotitolo \(i)"))
-		}
-		self.tableDirector?.add(items: l)
-		
+		self.tableDirector?.add(items: articlesList)
 		self.tableDirector?.reload()
 	}
 }

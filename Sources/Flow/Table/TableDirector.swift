@@ -1,34 +1,97 @@
 //
-//  TableDirector.swift
-//  Flow
+//	Flow
+//	A declarative approach to UICollectionView & UITableView management
+//	--------------------------------------------------------------------
+//	Created by:	Daniele Margutti
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
 //
-//  Created by Daniele Margutti on 15/04/2018.
-//  Copyright © 2018 y. All rights reserved.
+//	Twitter:	@danielemargutti
 //
+//
+//	Permission is hereby granted, free of charge, to any person obtaining a copy
+//	of this software and associated documentation files (the "Software"), to deal
+//	in the Software without restriction, including without limitation the rights
+//	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//	copies of the Software, and to permit persons to whom the Software is
+//	furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//	THE SOFTWARE.
 
 import Foundation
 import UIKit
 
 public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching {
 	
-	public private(set) weak var tableView: UITableView?
+	/// Height of the row
+	///
+	/// - `default`: both `rowHeight`,`estimatedRowHeight` are set to `UITableViewAutomaticDimension`
+	/// - automatic: automatic using autolayout. You can provide a valid estimated value.
+	/// - fixed: fixed value. If all of your cells are the same height set it to fixed in order to improve the performance of the table.
+	public enum RowHeight {
+		case `default`
+		case autoLayout(estimated: CGFloat)
+		case fixed(height: CGFloat)
+	}
 	
-	public private(set) var sections: [TableSection] = []
+	/// Managed table view
+	public private(set) weak var tableView: UITableView?
 
+	/// Registered adapters for managed tables
 	public private(set) var adapters: [String: AbstractAdapterProtocol] = [:]
 
-	public private(set) var reusableRegister: TableDirector.ReusableRegister
+	/// Registered cell reusable identifiers
+	private var cellIDs: Set<String> = []
 	
+	/// Visible sections of the table
+	public private(set) var sections: [TableSection] = []
+	
+	/// Registered header/footer's view reusable identifiers
+	private var headersFootersIDs: Set<String> = []
+	
+	/// Height of headers into the table.
+	/// This parameter maybe overriden by single TableSection's `headerHeight` event.
 	public var headerHeight: CGFloat? = nil
 	
+	/// Height of footers into the table.
+	/// This parameter maybe overriden by single TableSection's `footerHeight` event.
 	public var footerHeight: CGFloat? = nil
-
-	public var onGetSectionForSectionIndex: ((_ title: String, _ index: Int) -> (Int))? = nil
-
+	
+	/// Registered events for director
+	private var events = [TableDirectorEventKey: TableDirectorEventable]()
+	
+	/// Set the height of the row.
+	public var rowHeight: RowHeight = .`default` {
+		didSet {
+			switch rowHeight {
+			case .fixed(let h):
+				self.tableView?.rowHeight = h
+				self.tableView?.estimatedRowHeight = h
+			case .autoLayout(let estimate):
+				self.tableView?.rowHeight = UITableViewAutomaticDimension
+				self.tableView?.estimatedRowHeight = estimate
+			case .default:
+				self.tableView?.rowHeight = UITableViewAutomaticDimension
+				self.tableView?.estimatedRowHeight = UITableViewAutomaticDimension
+			}
+		}
+	}
+	
+	/// Set it `true` to enable cell's prefetch. You must register `prefetch` and `cancelPrefetch`
+	/// events inside enabled sections.
 	public var prefetchEnabled: Bool {
 		set {
 			switch newValue {
-			case true: self.tableView!.prefetchDataSource = self
+			case true: 	self.tableView!.prefetchDataSource = self
 			case false: self.tableView!.prefetchDataSource = nil
 			}
 		}
@@ -37,28 +100,81 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		}
 	}
 	
+	/// Initialize a new director for given table.
+	///
+	/// - Parameter table: table manager
 	public init(_ table: UITableView) {
-		self.reusableRegister = TableDirector.ReusableRegister(table)
 		super.init()
 		self.tableView = table
-		self.tableView?.delegate = self
-		self.tableView?.dataSource = self
+		self.rowHeight = .default
+		table.delegate = self
+		table.dataSource = self
 	}
 	
+	/// Register a new adapter's for table.
+	/// Adapter manage a single model type and associate it to a visual representation (a cell).
+	///
+	/// - Parameter adapter: adapter to register
 	public func register(adapter: AbstractAdapterProtocol) {
 		let modelID = String(describing: adapter.modelType)
 		self.adapters[modelID] = adapter // register adapter
-		self.reusableRegister.registerCell(forAdapter: adapter) // register associated cell types into the collection
+		self.registerCell(forAdapter: adapter)
 	}
 	
-	public func reload(after task: (() -> (Void))? = nil, onEnd: (() -> (Void))? = nil) {
+	/// Register a new event for table.
+	///
+	/// - Parameter event: event to register.
+	/// - Returns: self instance to optionally chain another call.
+	@discardableResult
+	public func on(_ event: TableDirector.Event) -> Self {
+		self.events[event.name] = event
+		return self
+	}
+	
+	/// Reload contents of table.
+	///
+	/// - Parameters:
+	///   - task: specify a callback where you can modify the structure of the table (sections & items). At the end of the block automatic
+	///			  diffing is performed and a reload is made with using table's animation configuration (`TableReloadAnimations`). If `nil` is
+	///			  returned the `TableReloadAnimations.default()` automatic animation is made.
+	///   - onEnd: optional callback called at the end of the reload.
+	public func reload(after task: (() -> (TableReloadAnimations?))? = nil, onEnd: (() -> (Void))? = nil) {
 		guard let t = task else {
 			self.tableView?.reloadData()
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { onEnd?() })
 			return
 		}
-		self.tableView?.reloadData()
+		
+		// Keep a reference to removed items in order to perform diff and animation
+		let oldSections: [TableSection] = Array.init(self.sections)
+		var oldItemsInSections: [String: [ModelProtocol]] = [:]
+		self.sections.forEach { oldItemsInSections[$0.UUID] = Array($0.items) }
+
+		// Execute callback and return animations to perform
+		let animationsToPerform = (t() ?? TableReloadAnimations.default())
+
+		// Execute reload for sections
+		let changesInSection = SectionChanges.fromTableSections(old: oldSections, new: self.sections)
+		changesInSection.applyChanges(toTable: self.tableView, withAnimations: animationsToPerform)
+		
+		// Execute reload for items in remaining sections
+		self.tableView?.beginUpdates()
+		self.sections.enumerated().forEach { (idx,newSection) in
+			if let oldSectionItems = oldItemsInSections[newSection.UUID] {
+				let diffData = diff(old: (oldSectionItems as! [AnyHashable]), new: (newSection.items as! [AnyHashable]))
+				let itemChanges = SectionItemsChanges.create(fromChanges: diffData, section: idx)
+				itemChanges.applyChangesToSectionItems(ofTable: self.tableView, withAnimations: animationsToPerform)
+			}
+		}
+		
+		self.tableView?.endUpdates()
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { onEnd?() })
 	}
 	
+	/// Append a new section a the end of the table with passed items.
+	///
+	/// - Parameter items: items to add into the section.
+	/// - Returns: created section
 	@discardableResult
 	public func add(items: [ModelProtocol]) -> TableSection {
 		let section = TableSection(items)
@@ -66,6 +182,11 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		return section
 	}
 	
+	/// Insert a new section at given index.
+	///
+	/// - Parameters:
+	///   - section: section to insert.
+	///   - index: destination index; if index is invalid or `nil` section is append to the list.
 	public func add(_ section: TableSection, at index: Int? = nil) {
 		guard let i = index, i < self.sections.count else {
 			self.sections.append(section)
@@ -74,6 +195,11 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		self.sections.insert(section, at: i)
 	}
 	
+	/// Insert sections starting at given index.
+	///
+	/// - Parameters:
+	///   - sections: sections to insert.
+	///   - index: destination starting index; if index is invalid or `nil` sections are append to the list.
 	public func add(_ sections: [TableSection], at index: Int? = nil) {
 		guard let i = index, i < self.sections.count else {
 			self.sections.append(contentsOf: sections)
@@ -82,6 +208,10 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		self.sections.insert(contentsOf: sections, at: i)
 	}
 	
+	/// Remove all sections from the table.
+	///
+	/// - Parameter kp: `true` to keep the capacity and optimize operations.
+	/// - Returns: removed sections.
 	@discardableResult
 	public func removeAll(keepingCapacity kp: Bool = false) -> Int {
 		let count = self.sections.count
@@ -89,12 +219,20 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		return count
 	}
 	
+	/// Remove section at given index.
+	///
+	/// - Parameter index: index of the section to remove
+	/// - Returns: removed section, if index is valid, `nil` otherwise.
 	@discardableResult
 	public func remove(at index: Int) -> TableSection? {
 		guard index < self.sections.count else { return nil }
 		return self.sections.remove(at: index)
 	}
 	
+	/// Remove sections at given indexes.
+	///
+	/// - Parameter indexes: indexes of the sections to remove.
+	/// - Returns: removed sections in order.
 	@discardableResult
 	public func remove(at indexes: IndexSet) -> [TableSection] {
 		var removed: [TableSection] = []
@@ -108,6 +246,10 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	
 	//MARK: Internal Functions
 	
+	/// Return the context of operation which includes model instance and associated adapter.
+	///
+	/// - Parameter index: index of target item.
+	/// - Returns: model and adapter
 	internal func context(forItemAt index: IndexPath) -> (ModelProtocol, TableAdaterProtocolFunctions) {
 		let item: ModelProtocol = self.sections[index.section].items[index.row]
 		let modelID = String(describing: type(of: item.self))
@@ -117,6 +259,11 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		return (item,adapter as! TableAdaterProtocolFunctions)
 	}
 	
+	/// Return the adapter associated with type of model.
+	/// Throw a fatal error if no adapter is created to manage passed model's type.
+	///
+	/// - Parameter model: model to read.
+	/// - Returns: adapter.
 	internal func context(forModel model: ModelProtocol) -> TableAdaterProtocolFunctions {
 		let modelID = String(describing: type(of: model.self))
 		guard let adapter = self.adapters[modelID] else {
@@ -125,7 +272,13 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		return (adapter as! TableAdaterProtocolFunctions)
 	}
 	
-	internal func adapters(forIndexPath paths: [IndexPath]) -> [PrefetchModelsGroup] {
+	/// Return the list of adapters used to manage objects at given paths.
+	/// Returned list is composed by `PrefetchModelsGroup` objects per each model's type
+	/// and includes paths, models instances and associated adapter instance.
+	///
+	/// - Parameter paths: paths of (optionally eterogeneous) paths to objects.
+	/// - Returns: `PrefetchModelsGroup` instance for each involved adapter.
+	internal func adapters(forIndexPaths paths: [IndexPath]) -> [PrefetchModelsGroup] {
 		var list: [String: PrefetchModelsGroup] = [:]
 		paths.forEach { indexPath in
 			let model = self.sections[indexPath.section].items[indexPath.item]
@@ -142,6 +295,23 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		
 		return Array(list.values)
 	}
+	
+	/// PrefetchModelsGroup groups models instances with given adapters.
+	/// Instances of these objects are returned by `adapters(forIndexPaths)` function.
+	internal class PrefetchModelsGroup {
+		let adapter: 	TableAdaterProtocolFunctions
+		var models: 	[ModelProtocol] = []
+		var indexPaths: [IndexPath] = []
+		
+		public init(adapter: TableAdaterProtocolFunctions) {
+			self.adapter = adapter
+		}
+	}
+}
+
+
+// MARK: - TableDirector UITableViewDataSource/UITableViewDelegate
+public extension TableDirector {
 	
 	//MARK: UITableViewDataSource
 	
@@ -164,12 +334,12 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	
 	public func tableView(_ tableView: UITableView, viewForHeaderInSection sectionIdx: Int) -> UIView? {
 		guard let header = sections[sectionIdx].headerView else { return nil }
-		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.reusableRegister.registerView(header))
+		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.registerView(header))
 	}
 	
 	public func tableView(_ tableView: UITableView, viewForFooterInSection sectionIdx: Int) -> UIView? {
 		guard let footer = sections[sectionIdx].footerView else { return nil }
-		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.reusableRegister.registerView(footer))
+		return tableView.dequeueReusableHeaderFooterView(withIdentifier: self.registerView(footer))
 	}
 	
 	public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -181,41 +351,42 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	}
 	
 	public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-		return self.sections[section].headerHeight ?? (self.headerHeight ?? UITableViewAutomaticDimension)
-	}
-	
-	public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-		guard let estHeight = self.sections[section].onGetHeaderHeight?() else {
-			let height = self.sections[section].footerHeight ?? (self.footerHeight ?? UITableViewAutomaticDimension)
-			return height
+		guard let h = self.sections[section]._invoke(.footerHeight, view: nil) as? CGFloat else {
+			return (self.headerHeight ?? UITableViewAutomaticDimension)
 		}
-		return estHeight
+		return h
 	}
 	
 	public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-		guard let estHeight = self.sections[section].onGetHeaderHeight?() else {
-			let height = self.sections[section].headerHeight ?? (self.headerHeight ?? UITableViewAutomaticDimension)
-			return height
+		guard let h = self.sections[section]._invoke(.estimatedHeaderHeight, view: nil) as? CGFloat else {
+			return (self.footerHeight ?? UITableViewAutomaticDimension)
 		}
-		return estHeight
+		return h
+	}
+	
+	public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+		guard let h = self.sections[section]._invoke(.estimatedFooterHeight, view: nil) as? CGFloat else {
+			return (self.footerHeight ?? UITableViewAutomaticDimension)
+		}
+		return h
 	}
 	
 	public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-		self.sections[section].onWillDisplayHeader?(view)
+		self.sections[section]._invoke(.willDisplayHeader, view: view)
 	}
 	
 	public func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-		self.sections[section].onWillDisplayFooter?(view)
+		self.sections[section]._invoke(.willDisplayFooter, view: view)
 	}
 	
 	public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
 		guard section < self.sections.count else { return }
-		self.sections[section].onDidEndDisplayFooter?(view)
+		self.sections[section]._invoke(.didEndDisplayFooter, view: view)
 	}
 	
 	public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
 		guard section < self.sections.count else { return }
-		self.sections[section].onDidEndDisplayHeader?(view)
+		self.sections[section]._invoke(.didEndDisplayHeader, view: view)
 	}
 	
 	// Inserting or Deleting Table Rows
@@ -243,8 +414,19 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	}
 	
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .rowHeight, model, nil, indexPath, tableView, nil) as? CGFloat) ?? UITableViewAutomaticDimension)
+		if case .fixed(let h) = self.rowHeight {
+			return h
+		}
+		
+		switch self.rowHeight {
+		case .default:
+			let (model,adapter) = self.context(forItemAt: indexPath)
+			return ((adapter._invoke(event: .rowHeight, model, nil, indexPath, tableView, nil) as? CGFloat) ?? UITableViewAutomaticDimension)
+		case .autoLayout(_):
+			return UITableViewAutomaticDimension
+		default:
+			return self.tableView!.rowHeight
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -279,14 +461,19 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return (adapter._invoke(event: .willSelect, model, nil, indexPath, tableView, nil) as? IndexPath)
+		return ((adapter._invoke(event: .willSelect, model, nil, indexPath, tableView, nil) as? IndexPath) ?? indexPath)
 	}
 	
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .didSelect, model, nil, indexPath, tableView, nil)
+		let action = ((adapter._invoke(event: .didSelect, model, nil, indexPath, tableView, nil) as? TableSelectionState) ?? .none)
+		switch action {
+		case .deselect:			tableView.deselectRow(at: indexPath, animated: false)
+		case .deselectAnimated:	tableView.deselectRow(at: indexPath, animated: true)
+		default:				break
+		}
 	}
-	
+
 	public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
 		let (model,adapter) = self.context(forItemAt: indexPath)
 		return (adapter._invoke(event: .willDeselect, model, nil, indexPath, tableView, nil) as? IndexPath)
@@ -336,7 +523,7 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	
 	public func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldShowMenu, model, nil, indexPath, tableView, nil) as? Bool) ?? true)
+		return ((adapter._invoke(event: .shouldShowMenu, model, nil, indexPath, tableView, nil) as? Bool) ?? false)
 	}
 	
 	public func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
@@ -379,6 +566,8 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 		return (adapter._invoke(event: .trailingSwipeActions, model, nil, indexPath, tableView, nil) as? UISwipeActionsConfiguration)
 	}
 	
+	/// Indexes
+	
 	public func sectionIndexTitles(for tableView: UITableView) -> [String]? {
 		return self.tableIndexes()
 	}
@@ -386,90 +575,78 @@ public class TableDirector: NSObject, UITableViewDelegate, UITableViewDataSource
 	public func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
 		let indexes = (self.tableIndexes() ?? [])
 		guard indexes.count != self.sections.count else { return index } // same items
-		guard let mapFunction = self.onGetSectionForSectionIndex else {
-			fatalError("Must implement onGetSectionForSectionIndex() on table director")
+		
+		guard case .sectionForSectionIndex(let c)? = self.events[.sectionForSectionIndex] as? TableDirector.Event else {
+			fatalError("You must implement TableDirector's `sectionForSectionIndex` event if you use `indexTitle` from sections.")
 		}
-		return mapFunction(title,index)
+		return c(title,index)
 	}
-	
+		
 	private func tableIndexes() -> [String]? {
 		let indexes = self.sections.compactMap({ $0.indexTitle })
 		guard indexes.count > 0 else { return nil }
 		return indexes
 	}
 	
-	// Prefetch
-	
-	internal class PrefetchModelsGroup {
-		let adapter: 	TableAdaterProtocolFunctions
-		var models: 	[ModelProtocol] = []
-		var indexPaths: [IndexPath] = []
-		
-		public init(adapter: TableAdaterProtocolFunctions) {
-			self.adapter = adapter
-		}
-	}
+	/// Prefetch Support
 	
 	public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-		self.adapters(forIndexPath: indexPaths).forEach { adapterGroup in
-			adapterGroup.adapter._invoke(event: .prefetch, adapterGroup.models, adapterGroup.indexPaths, tableView, nil)
+		self.adapters(forIndexPaths: indexPaths).forEach {
+			$0.adapter._invoke(event: .prefetch, $0.models, $0.indexPaths, tableView, nil)
 		}
 	}
 	
 	public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-		self.adapters(forIndexPath: indexPaths).forEach { adapterGroup in
-			adapterGroup.adapter._invoke(event: .cancelPrefetch, adapterGroup.models, adapterGroup.indexPaths, tableView, nil)
+		self.adapters(forIndexPaths: indexPaths).forEach {
+			$0.adapter._invoke(event: .cancelPrefetch, $0.models, $0.indexPaths, tableView, nil)
 		}
 	}
 	
 }
 
 
+// MARK: - TableDirector Cell/ReusableView Registration Support
+
 public extension TableDirector {
 	
-	public class ReusableRegister {
-		
-		public private(set) weak var table: UITableView?
-		
-		public private(set) var cellIDs: Set<String> = []
-		
-		public private(set) var headersFootersIDs: Set<String> = []
-		
-		internal init(_ table: UITableView) {
-			self.table = table
+	/// Register a new cell for given adapter.
+	///
+	/// - Parameter adapter: adapter
+	/// - Returns: `true` if cell is registered, `false` otherwise. If cell is already registered it returns `false`.
+	@discardableResult
+	internal func registerCell(forAdapter adapter: AbstractAdapterProtocol) -> Bool {
+		let identifier = adapter.cellReuseIdentifier
+		guard !cellIDs.contains(identifier) else {
+			return false
 		}
-		
-		@discardableResult
-		internal func registerCell(forAdapter adapter: AbstractAdapterProtocol) -> Bool {
-			let identifier = adapter.cellReuseIdentifier
-			guard !cellIDs.contains(identifier) else {
-				return false
-			}
-			let bundle = Bundle.init(for: adapter.cellClass)
-			if let _ = bundle.path(forResource: identifier, ofType: "nib") {
-				let nib = UINib(nibName: identifier, bundle: bundle)
-				table?.register(nib, forCellReuseIdentifier: identifier)
-			} else if adapter.registerAsClass {
-				table?.register(adapter.cellClass, forCellReuseIdentifier: identifier)
-			}
-			cellIDs.insert(identifier)
-			return true
+		let bundle = Bundle.init(for: adapter.cellClass)
+		if let _ = bundle.path(forResource: identifier, ofType: "nib") {
+			let nib = UINib(nibName: identifier, bundle: bundle)
+			self.tableView?.register(nib, forCellReuseIdentifier: identifier)
+		} else if adapter.registerAsClass {
+			self.tableView?.register(adapter.cellClass, forCellReuseIdentifier: identifier)
 		}
-		
-		internal func registerView(_ view: AbstractTableHeaderFooterItem) -> String {
-			let identifier = view.reuseIdentifier
-			guard !self.headersFootersIDs.contains(identifier) else { return identifier}
-			
-			let bundle = Bundle(for: view.viewClass)
-			if let _ = bundle.path(forResource: identifier, ofType: "nib") {
-				let nib = UINib(nibName: identifier, bundle: bundle)
-				self.table?.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
-			} else if view.registerAsClass {
-				self.table?.register(view.viewClass, forCellReuseIdentifier: identifier)
-			}
-			return identifier
-		}
-		
+		cellIDs.insert(identifier)
+		return true
 	}
+	
+	/// Register a new reusable view for header/footer.
+	///
+	/// - Parameter view: abstract view to register.
+	/// - Returns: `true` if view is registered, `false` otherwise. If view is already registered it returns `false`.
+	internal func registerView(_ view: AbstractTableHeaderFooterItem) -> String {
+		let identifier = view.reuseIdentifier
+		guard !self.headersFootersIDs.contains(identifier) else { return identifier}
+		
+		let bundle = Bundle(for: view.viewClass)
+		if let _ = bundle.path(forResource: identifier, ofType: "nib") {
+			let nib = UINib(nibName: identifier, bundle: bundle)
+			self.tableView?.register(nib, forHeaderFooterViewReuseIdentifier: identifier)
+		} else if view.registerAsClass {
+			self.tableView?.register(view.viewClass, forCellReuseIdentifier: identifier)
+		}
+		return identifier
+	}
+	
 	
 }

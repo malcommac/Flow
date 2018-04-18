@@ -118,7 +118,7 @@ open class FlowCollectionDirector: CollectionDirector, UICollectionViewDelegateF
 		let (model,adapter) = self.context(forItemAt: indexPath)
 		switch self.itemSize {
 		case .default:
-			guard let size = adapter._itemSize(model: model, path: indexPath, collection: collectionView) else {
+			guard let size = adapter._invoke(event: .itemSize, model, nil, indexPath, collectionView, nil) as? CGSize else {
 				return self.layout!.itemSize
 			}
 			return size

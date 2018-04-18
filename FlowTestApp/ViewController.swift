@@ -68,19 +68,18 @@ class ViewController: UIViewController {
 		self.manager = FlowCollectionDirector(self.collectionView!)
 		self.manager?.prefetchEnabled = true
 		
-		let adapterArticle = CollectionAdapter<Article,CellArticle> {
+		let adapterArticle = CollectionAdapter<Article,CellArticle>()
 //			$0.onGetItemSize = { context in
 //				return CGSize(width: context.collectionSize!.width, height: 50)
 //			}
-			$0.onConfigure = { context in
-				context.cell?.articleTitle?.text = context.model.title
-				context.cell?.articleSubtitle?.text = context.model.subtitle
-				context.cell?.backgroundColor = (context.indexPath.item % 2 == 0 ? UIColor.gray : UIColor.lightGray)
-			}
+		adapterArticle.on(.dequeue { context in
+			context.cell?.articleTitle?.text = context.model.title
+			context.cell?.articleSubtitle?.text = context.model.subtitle
+			context.cell?.backgroundColor = (context.indexPath.item % 2 == 0 ? UIColor.gray : UIColor.lightGray)
+		})
 //			$0.onGetItemSize = { _ in
 //				return UICollectionViewFlowLayoutAutomaticSize
 //			}
-		}
 		
 	
 		

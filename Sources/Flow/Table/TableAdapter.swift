@@ -1,59 +1,56 @@
 //
-//  TableAdapter.swift
-//  Flow
+//	Flow
+//	A declarative approach to UICollectionView & UITableView management
+//	--------------------------------------------------------------------
+//	Created by:	Daniele Margutti
+//				hello@danielemargutti.com
+//				http://www.danielemargutti.com
 //
-//  Created by Daniele Margutti on 15/04/2018.
-//  Copyright © 2018 y. All rights reserved.
+//	Twitter:	@danielemargutti
 //
+//
+//	Permission is hereby granted, free of charge, to any person obtaining a copy
+//	of this software and associated documentation files (the "Software"), to deal
+//	in the Software without restriction, including without limitation the rights
+//	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//	copies of the Software, and to permit persons to whom the Software is
+//	furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//	THE SOFTWARE.
 
 import Foundation
 import UIKit
 
-public protocol TableAdapterProtocol : AbstractAdapterProtocol, Equatable {
-	
-}
-
-internal protocol TableAdaterProtocolFunctions {
-	
-	@discardableResult
-	func _invoke(event: TableEventName,_ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-	
-	@discardableResult
-	func _invoke(event: TableEventName,_ models: [ModelProtocol], _ paths: [IndexPath], _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-
-	@discardableResult
-	func _invoke(event: TableEventName, cell: CellProtocol, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-
-
-	// Dequeue (UITableViewDatasource)
-	func _instanceCell(in table: UITableView, at indexPath: IndexPath?) -> UITableViewCell
-}
-
+/// Adapter manages a model type with its associated view representation (a particular cell type).
 public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtocol,TableAdaterProtocolFunctions {
-	
-	
 
+	/// TableAdapterProtocol conformances
 	public var modelType: Any.Type = M.self
-	
 	public var cellType: Any.Type = C.self
-	
-	public var cellReuseIdentifier: String {
-		return C.reuseIdentifier
-	}
-	
-	public var cellClass: AnyClass {
-		return C.self
-	}
-	
-	public var registerAsClass: Bool {
-		return C.registerAsClass
-	}
+	public var cellReuseIdentifier: String { return C.reuseIdentifier }
+	public var cellClass: AnyClass { return C.self }
+	public var registerAsClass: Bool { return C.registerAsClass }
 	
 	public static func == (lhs: TableAdapter<M, C>, rhs: TableAdapter<M, C>) -> Bool {
 		return 	(String(describing: lhs.modelType) == String(describing: rhs.modelType)) &&
 				(String(describing: lhs.cellType) == String(describing: rhs.cellType))
 	}
 	
+	/// Registered events for table
+	internal var events = [TableAdapterEventKey: TableEventable]()
+
+	/// Initialize a new adapter with optional configuration callback.
+	///
+	/// - Parameter configuration: configuration callback
 	init(_ configuration: ((TableAdapter) -> (Void))? = nil) {
 		configuration?(self)
 	}
@@ -69,15 +66,19 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		return table.dequeueReusableCell(withIdentifier: C.reuseIdentifier, for: indexPath)
 	}
 	
-	internal var events = [TableEventName: Eventable]()
-	
+	/// Register a new event for table.
+	///
+	/// - Parameter event: event to register.
+	/// - Returns: self instance to optionally chain another call.
 	@discardableResult
 	public func on(_ event: Event<M,C>) -> Self {
 		self.events[event.name] = event
 		return self
 	}
 
-	func _invoke(event: TableEventName, _ models: [ModelProtocol], _ paths: [IndexPath], _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any? {
+	///MARK: Internal Methods
+	
+	func _invoke(event: TableAdapterEventKey, _ models: [ModelProtocol], _ paths: [IndexPath], _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any? {
 		switch event {
 		case .prefetch:
 			guard case .prefetch(let c)? = self.events[.prefetch] as? Event<M,C> else { return nil }
@@ -91,7 +92,7 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 		return nil
 	}
 	
-	func _invoke(event: TableEventName, cell: CellProtocol, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any? {
+	func _invoke(event: TableAdapterEventKey, cell: CellProtocol, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any? {
 		switch event {
 		case .endDisplay:
 			guard case .endDisplay(let c)? = self.events[.endDisplay] as? Event<M,C> else { return nil }
@@ -103,7 +104,7 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 	}
 	
 	
-	func _invoke(event: TableEventName,
+	func _invoke(event: TableAdapterEventKey,
 				 _ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any? {
 		guard let _ = self.events[event] else { return nil }
 		let ctx = Context<M,C>(model: model, cell: cell, path: path, table: table)
@@ -156,7 +157,7 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 			return c(ctx)
 		case .didSelect:
 			guard case .didSelect(let c)? = self.events[.didSelect] as? Event<M,C> else { return nil }
-			c(ctx)
+			return c(ctx)
 		case .willDeselect:
 			guard case .willDeselect(let c)? = self.events[.willDeselect] as? Event<M,C> else { return nil }
 			return c(ctx)
@@ -219,19 +220,33 @@ public class TableAdapter<M: ModelProtocol, C: CellProtocol>: TableAdapterProtoc
 
 public extension TableAdapter {
 	
+	/// Context of the adapter.
+	/// A context is sent when an event is fired and includes type-safe informations (context)
+	/// related to triggered event.
 	public struct Context<M,C> {
-		
-		public let indexPath: IndexPath
-		public let model: M
+
+		/// Parent table
 		public private(set) weak var table: UITableView?
-		private let _cell: C?
+
+		/// Index path
+		public let indexPath: IndexPath
 		
+		/// Model instance
+		public let model: M
+		
+		
+		/// Cell instance
+		/// NOTE: For some events cell instance is not reachable and may return `nil`.
 		public var cell: C? {
 			guard let c = _cell else {
 				return table?.cellForRow(at: self.indexPath) as? C
 			}
 			return c
 		}
+		private let _cell: C?
+
+		/// Instance a new context with given data.
+		/// Init of these objects are reserved.
 		internal init(model: ModelProtocol, cell: CellProtocol?, path: IndexPath, table: UITableView) {
 			self.model = model as! M
 			self._cell = cell as? C
