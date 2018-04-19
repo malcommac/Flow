@@ -30,12 +30,31 @@
 import Foundation
 import UIKit
 
+public extension TableSection {
+	
+	public struct Events {
+		public var headerHeigth: (() -> CGFloat)? = nil
+		public var footerHeight: (() -> CGFloat)? = nil
+		public var estimatedHeaderHeight: (() -> CGFloat)? = nil
+		public var estimatedFooterHeight: (() -> CGFloat)? = nil
+		public var willDisplayHeader: ((UIView) -> Void)? = nil
+		public var willDisplayFooter: ((UIView) -> Void)? = nil
+		public var didEndDisplayHeader: ((UIView) -> Void)? = nil
+		public var didEndDisplayFooter: ((UIView) -> Void)? = nil
+		
+		public init() {}
+	}
+	
+}
+
+
 /// Represent a single section of the table
 public class TableSection: Hashable {
 	
 	/// Registered events for this section.
-	internal var events: [TableSectionEventKey : TableSectionEvents] = [:]
-
+	//internal var events: [TableSectionEventKey : TableSectionEvents] = [:]
+	public var on = TableSection.Events()
+	
 	/// Items inside the section.
 	public private(set) var items: [ModelProtocol] = []
 	
@@ -88,48 +107,6 @@ public class TableSection: Hashable {
 		self.init(items)
 		self.headerView = headerView
 		self.footerView = footerView
-	}
-	
-	/// Register a new event for section.
-	///
-	/// - Parameter event: event to register.
-	/// - Returns: instance of self to enable chaining of observers.
-	public func on(_ event: TableSectionEvents) -> Self {
-		self.events[event.name] = event
-		return self
-	}
-	
-	///MARK: Internal Methods
-	
-	@discardableResult
-	internal func _invoke(_ event: TableSectionEventKey, view: UIView?) -> Any? {
-		guard let _ = self.events[event] else { return nil }
-		switch event {
-		case .headerHeight:
-			guard case .headerHeight(let c)? = self.events[.headerHeight] else { return nil }
-			return c()
-		case .footerHeight:
-			guard case .footerHeight(let c)? = self.events[.footerHeight] else { return nil }
-			return c()
-		case .willDisplayHeader:
-			guard case .willDisplayHeader(let c)? = self.events[.willDisplayHeader] else { return nil }
-			return c(view!)
-		case .willDisplayFooter:
-			guard case .willDisplayFooter(let c)? = self.events[.willDisplayFooter] else { return nil }
-			return c(view!)
-		case .didEndDisplayHeader:
-			guard case .didEndDisplayHeader(let c)? = self.events[.didEndDisplayHeader] else { return nil }
-			return c(view!)
-		case .didEndDisplayFooter:
-			guard case .didEndDisplayFooter(let c)? = self.events[.didEndDisplayFooter] else { return nil }
-			return c(view!)
-		case .estimatedHeaderHeight:
-			guard case .estimatedHeaderHeight(let c)? = self.events[.estimatedHeaderHeight] else { return nil }
-			return c()
-		case .estimatedFooterHeight:
-			guard case .estimatedFooterHeight(let c)? = self.events[.estimatedFooterHeight] else { return nil }
-			return c()
-		}
 	}
 	
 	public var hashValue: Int {

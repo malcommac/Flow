@@ -29,15 +29,16 @@ public class TableExampleController: UIViewController {
 		
 		let articleAdapter = TableAdapter<Article, TableAdaptiveCell>()
 		self.tableDirector?.register(adapter: articleAdapter)
-		articleAdapter.on(.dequeue { context in
+		
+		articleAdapter.on.dequeue = { context in
 			context.cell?.labelTitle?.text = context.model.title
 			context.cell?.labelSubtitle?.text = context.model.subtitle
-		})
-			
-		articleAdapter.on(.didSelect { context in
+		}
+		
+		articleAdapter.on.didSelect = { context in
 			print("Tap on \(context.model.title)")
 			return .deselectAnimated
-		})
+		}
 		
 		
 		self.tableDirector?.add(items: articlesList)

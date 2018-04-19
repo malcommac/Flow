@@ -40,7 +40,7 @@ import UIKit
 /// - willDisplayFooter->Void: Tells that a footer view is about to be displayed for the specified section (`tableView(_:willDisplayFooterView:forSection:)`)
 /// - didEndDisplayHeader->Void: Tells that the specified header view was removed from the table (`tableView(_:didEndDisplayingHeaderView:forSection:)`)
 /// - didEndDisplayFooter->Void: Tells that the specified footer view was removed from the table (`tableView(_:didEndDisplayingFooterView:forSection:)tableView(_:didEndDisplayingFooterView:forSection:`)
-public enum TableSectionEvents: TableSectionEventable {
+/*public enum TableSectionEvents: TableSectionEventable {
 	case headerHeight(_: (() -> CGFloat))
 	case footerHeight(_: (() -> CGFloat))
 	case estimatedHeaderHeight(_: (() -> CGFloat))
@@ -81,3 +81,4 @@ internal enum TableSectionEventKey: String {
 	case didEndDisplayHeader
 	case didEndDisplayFooter
 }
+*/

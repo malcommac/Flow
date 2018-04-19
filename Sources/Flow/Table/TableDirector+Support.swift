@@ -86,14 +86,7 @@ public protocol TableAdapterProtocol : AbstractAdapterProtocol, Equatable { }
 internal protocol TableAdaterProtocolFunctions {
 	
 	@discardableResult
-	func _invoke(event: TableAdapterEventKey,_ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-	
-	@discardableResult
-	func _invoke(event: TableAdapterEventKey,_ models: [ModelProtocol], _ paths: [IndexPath], _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-	
-	@discardableResult
-	func _invoke(event: TableAdapterEventKey, cell: CellProtocol, _ path: IndexPath, _ table: UITableView, _ data: [EventArgument : Any?]?) -> Any?
-	
+	func dispatch(_ event: TableAdapterEventsKey, context: InternalContext) -> Any?
 	
 	// Dequeue (UITableViewDatasource)
 	func _instanceCell(in table: UITableView, at indexPath: IndexPath?) -> UITableViewCell
