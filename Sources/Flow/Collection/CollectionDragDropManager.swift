@@ -217,7 +217,7 @@ public extension CollectionDirector {
 		
 		public func collectionView(_ collectionView: UICollectionView, dragPreviewParametersForItemAt indexPath: IndexPath) -> UIDragPreviewParameters? {
 			let (model,adapter) = self.manager!.context(forItemAt: indexPath)
-			return (adapter._invoke(event: .generateDragPreview, model, nil, indexPath, collectionView, nil) as? UIDragPreviewParameters)
+			return (adapter.dispatch(.generateDragPreview, context: InternalContext(model, indexPath, nil, collectionView)) as? UIDragPreviewParameters)
 		}
 		
 		public func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool {

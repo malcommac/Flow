@@ -132,12 +132,7 @@ public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableV
 internal protocol AbstractAdapterProtocolFunctions {
 
 	@discardableResult
-	func _invoke(event: CollectionAdapterEventKey,_ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any?
-	
-	@discardableResult
-	func _invoke(event: CollectionAdapterEventKey,_ models: [ModelProtocol], _ paths: [IndexPath], _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any?
-	
-	func _invoke(event: CollectionAdapterEventKey, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?)
+	func dispatch(_ event: CollectionAdapterEventKey, context: InternalContext) -> Any?
 	
 	func _instanceCell(in collection: UICollectionView, at indexPath: IndexPath?) -> UICollectionViewCell
 }

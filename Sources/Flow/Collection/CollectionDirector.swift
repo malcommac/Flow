@@ -89,17 +89,7 @@ UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource
 	/// Sections of the collection
 	public private(set) var sections: [CollectionSection] = []
 	
-	internal var events = [CollectionSectionAdapterEventKey: CollectionSectionAdapterEventable]()
-
-	/// Register a new event for table.
-	///
-	/// - Parameter event: event to register.
-	/// - Returns: self instance to optionally chain another call.
-	@discardableResult
-	public func on(_ event: CollectionDirector.Event) -> Self {
-		self.events[event.name] = event
-		return self
-	}
+	public var on = CollectionDirector.Events()
 	
 	/// Internal representation of the cell size
 	private var _itemSize: ItemSize = .default
@@ -346,112 +336,111 @@ public extension CollectionDirector {
 	public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let (model,adapter) = self.context(forItemAt: indexPath)
 		let cell = adapter._instanceCell(in: collectionView, at: indexPath)
-		adapter._invoke(event: .dequeue, model, cell, indexPath, collectionView, nil)
+		adapter.dispatch(.dequeue, context: InternalContext.init(model, indexPath, cell, collectionView))
 		return cell
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .willDisplay, model, cell, indexPath, collectionView, nil)
+		adapter.dispatch(.willDisplay, context: InternalContext.init(model, indexPath, cell, collectionView))
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		self.adapters.forEach {
-			($0.value as! AbstractAdapterProtocolFunctions)._invoke(event: .endDisplay, cell, indexPath, collectionView, nil)
+			($0.value as! AbstractAdapterProtocolFunctions).dispatch(.endDisplay, context: InternalContext.init(nil, indexPath, cell, collectionView))
 		}
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .didSelect, model, nil, indexPath, collectionView, nil)
+		adapter.dispatch(.didSelect, context: InternalContext.init(model, indexPath, nil, collectionView))
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .didDeselect, model, nil, indexPath, collectionView, nil)
+		adapter.dispatch(.didDeselect, context: InternalContext.init(model, indexPath, nil, collectionView))
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldSelect, model, nil, indexPath, collectionView, nil) as? Bool) ?? true)
+		return ((adapter.dispatch(.shouldSelect, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? true)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldDeselect, model, nil, indexPath, collectionView, nil) as? Bool) ?? true)
+		return ((adapter.dispatch(.shouldDeselect, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? true)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldHighlight, model, nil, indexPath, collectionView, nil) as? Bool) ?? true)
+		return ((adapter.dispatch(.shouldHighlight, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? true)
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .didHighlight, model, nil, indexPath, collectionView, nil)
+		adapter.dispatch(.didHighlight, context: InternalContext.init(model, indexPath, nil, collectionView))
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .didUnhighlight, model, nil, indexPath, collectionView, nil)
+		adapter.dispatch(.didUnhighlight, context: InternalContext.init(model, indexPath, nil, collectionView))
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, transitionLayoutForOldLayout fromLayout: UICollectionViewLayout, newLayout toLayout: UICollectionViewLayout) -> UICollectionViewTransitionLayout {
-		guard case .layoutDidChange(let c)? = self.events[.layoutDidChange] as? CollectionDirector.Event else {
+		guard let layout = self.on.layoutDidChange?(fromLayout,toLayout) else {
 			return UICollectionViewTransitionLayout.init(currentLayout: fromLayout, nextLayout: toLayout)
 		}
-		return c(fromLayout,toLayout)
+		return layout
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
-		guard case .moveItemPath(let c)? = self.events[.moveItemPath] as? CollectionDirector.Event else {
+		guard let path = self.on.moveItemPath?(originalIndexPath,proposedIndexPath) else {
 			return proposedIndexPath
 		}
-		return c(originalIndexPath, proposedIndexPath)
+		return path
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-		guard case .targetOffset(let c)? = self.events[.targetOffset] as? CollectionDirector.Event else {
+		guard let offset = self.on.targetOffset?(proposedContentOffset) else {
 			return proposedContentOffset
 		}
-		return c(proposedContentOffset)
+		return offset
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldShowEditMenu, model, nil, indexPath, collectionView, nil) as? Bool) ?? false)
+		return ((adapter.dispatch(.shouldShowEditMenu, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? false)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .canPerformEditAction, model, nil, indexPath, collectionView, [.param1 : action, .param2: sender]) as? Bool) ?? true)
+		return ((adapter.dispatch(.canPerformEditAction, context: InternalContext.init(model, indexPath, nil, collectionView, param1: action, param2: sender)) as? Bool) ?? true)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		adapter._invoke(event: .performEditAction, model, nil, indexPath, collectionView, [.param1 : action, .param2: sender])
+		adapter.dispatch(.performEditAction, context: InternalContext.init(model, indexPath, nil, collectionView, param1: action, param2: sender))
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .canFocus, model, nil, indexPath, collectionView, nil) as? Bool) ?? true)
+		return ((adapter.dispatch(.canFocus, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? true)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldSpringLoadItemAt indexPath: IndexPath, with context: UISpringLoadedInteractionContext) -> Bool {
 		let (model,adapter) = self.context(forItemAt: indexPath)
-		return ((adapter._invoke(event: .shouldSpringLoad, model, nil, indexPath, collectionView, nil) as? Bool) ?? true)
+		return ((adapter.dispatch(.shouldSpringLoad, context: InternalContext.init(model, indexPath, nil, collectionView)) as? Bool) ?? true)
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, shouldUpdateFocusIn context: UICollectionViewFocusUpdateContext) -> Bool {
-		guard case .shouldUpdateFocus(let c)? = self.events[.shouldUpdateFocus] as? CollectionDirector.Event else {
+		guard let update = self.on.shouldUpdateFocus?(context) else {
 			return true
 		}
-		return c(context)
+		return update
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-		guard case .didUpdateFocus(let c)? = self.events[.didUpdateFocus] as? CollectionDirector.Event else { return }
-		c(context,coordinator)
+		self.on.didUpdateFocus?(context,coordinator)
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -505,13 +494,13 @@ public extension CollectionDirector {
 	
 	public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 		self.adapters(forIndexPath: indexPaths).forEach {
-			$0.adapter._invoke(event: .prefetch, $0.models, $0.indexPaths, collectionView, nil)
+			$0.adapter.dispatch(.prefetch, context: InternalContext.init($0.models, $0.indexPaths, collectionView))
 		}
 	}
 	
 	public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
 		self.adapters(forIndexPath: indexPaths).forEach {
-			$0.adapter._invoke(event: .cancelPrefetch, $0.models, $0.indexPaths, collectionView, nil)
+			$0.adapter.dispatch(.cancelPrefetch, context: InternalContext.init($0.models, $0.indexPaths, collectionView))
 		}
 	}
 	

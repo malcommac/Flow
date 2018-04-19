@@ -30,24 +30,6 @@
 import Foundation
 import UIKit
 
-public extension TableSection {
-	
-	public struct Events {
-		public var headerHeigth: (() -> CGFloat)? = nil
-		public var footerHeight: (() -> CGFloat)? = nil
-		public var estimatedHeaderHeight: (() -> CGFloat)? = nil
-		public var estimatedFooterHeight: (() -> CGFloat)? = nil
-		public var willDisplayHeader: ((UIView) -> Void)? = nil
-		public var willDisplayFooter: ((UIView) -> Void)? = nil
-		public var didEndDisplayHeader: ((UIView) -> Void)? = nil
-		public var didEndDisplayFooter: ((UIView) -> Void)? = nil
-		
-		public init() {}
-	}
-	
-}
-
-
 /// Represent a single section of the table
 public class TableSection: Hashable {
 	

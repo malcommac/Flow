@@ -32,6 +32,7 @@ import UIKit
 
 /// The adapter identify a pair of model and cell used to represent the data.
 public class CollectionAdapter<M: ModelProtocol, C: CellProtocol>: CollectionAdapterProtocol, CustomStringConvertible, AbstractAdapterProtocolFunctions {
+	
 	/// Type alias for events
 	public typealias EventContextToVoid = ((Context<M,C>) -> Void)
 	public typealias EventContextToSize = ((Context<M,C>) -> CGSize)
@@ -52,24 +53,13 @@ public class CollectionAdapter<M: ModelProtocol, C: CellProtocol>: CollectionAda
 		return C.self
 	}
 	
-	/// Registered events for table
-	internal var events = [CollectionAdapterEventKey: CollectionAdapterEventable]()
+	public var on = CollectionAdapter.Events<M,C>()
 
 	/// Initialize a new adapter and allows its configuration via builder callback.
 	///
 	/// - Parameter configuration: configuration callback
 	init(_ configuration: ((CollectionAdapter) -> (Void))? = nil) {
 		configuration?(self)
-	}
-	
-	/// Register a new event for table.
-	///
-	/// - Parameter event: event to register.
-	/// - Returns: self instance to optionally chain another call.
-	@discardableResult
-	public func on(_ event: CollectionAdapter.Event<M,C>) -> Self {
-		self.events[event.name] = event
-		return self
 	}
 	
 	//MARK: Standard Protocol Implementations
@@ -86,94 +76,90 @@ public class CollectionAdapter<M: ModelProtocol, C: CellProtocol>: CollectionAda
 				(String(describing: lhs.cellType) == String(describing: rhs.cellType))
 	}
 	
-	func _invoke(event: CollectionAdapterEventKey, _ models: [ModelProtocol], _ paths: [IndexPath], _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any? {
+	func dispatch(_ event: CollectionAdapterEventKey, context: InternalContext) -> Any? {
 		switch event {
-		case .prefetch:
-			guard case .prefetch(let c)? = self.events[.prefetch] as? Event<M,C> else { return nil }
-			c(models as! [M],paths,collection)
-		case .cancelPrefetch:
-			guard case .cancelPrefetch(let c)? = self.events[.cancelPrefetch] as? Event<M,C> else { return nil }
-			c(models as! [M],paths,collection)
-		default:
-			break
-		}
-		return nil
-	}
-	
-	func _invoke(event: CollectionAdapterEventKey, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?) {
-		switch event {
-		case .endDisplay:
-			guard case .endDisplay(let c)? = self.events[.endDisplay] as? Event<M,C> else { return }
-			c( (cell as! C),path)
-		default:
-			break
-		}
-	}
-	
-	func _invoke(event: CollectionAdapterEventKey, _ model: ModelProtocol, _ cell: CellProtocol?, _ path: IndexPath, _ collection: UICollectionView, _ data: [EventArgument : Any?]?) -> Any? {
-		
-		guard let _ = self.events[event] else { return nil }
-		let ctx = Context<M,C>(model: model, cell: cell, path: path, collection: collection)
-		
-		switch event {
+			
 		case .dequeue:
-			guard case .dequeue(let c)? = self.events[.dequeue] as? Event<M,C> else { return nil }
-			c(ctx)
+			guard let callback = self.on.dequeue else { return nil }
+			callback(Context<M,C>(generic: context))
+			
 		case .shouldSelect:
-			guard case .shouldSelect(let c)? = self.events[.shouldSelect] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .shouldDeselect:
-			guard case .shouldDeselect(let c)? = self.events[.shouldDeselect] as? Event<M,C> else { return nil }
-			return c(ctx)
+			guard let callback = self.on.shouldSelect else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
 		case .didSelect:
-			guard case .didSelect(let c)? = self.events[.didSelect] as? Event<M,C> else { return nil }
-			c(ctx)
+			guard let callback = self.on.didSelect else { return nil }
+			callback(Context<M,C>(generic: context))
+			
 		case .didDeselect:
-			guard case .didDeselect(let c)? = self.events[.didDeselect] as? Event<M,C> else { return nil }
-			c(ctx)
-		case .shouldHighlight:
-			guard case .shouldHighlight(let c)? = self.events[.shouldHighlight] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .willDisplay:
-			guard case .willDisplay(let c)? = self.events[.willDisplay] as? Event<M,C> else { return nil }
-			c(ctx)
-		case .endDisplay:
-			guard case .endDisplay(let c)? = self.events[.endDisplay] as? Event<M,C> else { return nil }
-			c( (cell as! C), path)
-		case .shouldShowEditMenu:
-			guard case .shouldShowEditMenu(let c)? = self.events[.shouldShowEditMenu] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .performEditAction:
-			guard case .performEditAction(let c)? = self.events[.performEditAction] as? Event<M,C> else { return nil }
-			c(ctx, (data![.param1] as! Selector), data![.param2])
-		case .canPerformEditAction:
-			guard case .canPerformEditAction(let c)? = self.events[.canPerformEditAction] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .canFocus:
-			guard case .canFocus(let c)? = self.events[.canFocus] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .itemSize:
-			guard case .itemSize(let c)? = self.events[.itemSize] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .generateDragPreview:
-			guard case .generateDragPreview(let c)? = self.events[.generateDragPreview] as? Event<M,C> else { return nil }
-			return c(ctx)
-		case .generateDropPreview:
-			guard case .generateDropPreview(let c)? = self.events[.generateDropPreview] as? Event<M,C> else { return nil }
-			return c(ctx)
+			guard let callback = self.on.didDeselect else { return nil }
+			callback(Context<M,C>(generic: context))
+			
 		case .didHighlight:
-			guard case .didHighlight(let c)? = self.events[.didHighlight] as? Event<M,C> else { return nil }
-			c(ctx)
+			guard let callback = self.on.didHighlight else { return nil }
+			callback(Context<M,C>(generic: context))
+			
 		case .didUnhighlight:
-			guard case .didUnhighlight(let c)? = self.events[.didUnhighlight] as? Event<M,C> else { return nil }
-			c(ctx)
+			guard let callback = self.on.didUnhighlight else { return nil }
+			callback(Context<M,C>(generic: context))
+			
+		case .shouldHighlight:
+			guard let callback = self.on.shouldHighlight else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .willDisplay:
+			guard let callback = self.on.willDisplay else { return nil }
+			callback((context.cell as! C), context.path!)
+			
+		case .endDisplay:
+			guard let callback = self.on.endDisplay else { return nil }
+			callback((context.cell as! C), context.path!)
+			
+		case .shouldShowEditMenu:
+			guard let callback = self.on.shouldShowEditMenu else { return nil }
+			return callback(Context<M,C>(generic: context))
+
+		case .canPerformEditAction:
+			guard let callback = self.on.canPerformEditAction else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .performEditAction:
+			guard let callback = self.on.performEditAction else { return nil }
+			return callback(Context<M,C>(generic: context), (context.param1 as! Selector), context.param2)
+			
+		case .canFocus:
+			guard let callback = self.on.canFocus else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .itemSize:
+			guard let callback = self.on.itemSize else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .generateDragPreview:
+			guard let callback = self.on.generateDragPreview else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .generateDropPreview:
+			guard let callback = self.on.generateDropPreview else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .prefetch:
+			guard let callback = self.on.prefetch else { return nil }
+			callback((context.models as! [M]), context.paths!, (context.container as! UICollectionView))
+			
+		case .cancelPrefetch:
+			guard let callback = self.on.cancelPrefetch else { return nil }
+			callback((context.models as! [M]), context.paths!, (context.container as! UICollectionView))
+			
 		case .shouldSpringLoad:
-			guard case .shouldSpringLoad(let c)? = self.events[.shouldSpringLoad] as? Event<M,C> else { return nil }
-			return c(ctx)
-		default:
-			break
+			guard let callback = self.on.shouldSpringLoad else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
+		case .shouldDeselect:
+			guard let callback = self.on.shouldDeselect else { return nil }
+			return callback(Context<M,C>(generic: context))
+			
 		}
-		
 		return nil
 	}
 	
@@ -238,6 +224,13 @@ public extension CollectionAdapter {
 			self._cell = cell as? C
 			self.indexPath = path
 			self.collection = collection
+		}
+		
+		internal init(generic: InternalContext) {
+			self.model = (generic.model as! M)
+			self._cell = (generic.cell as? C)
+			self.indexPath = generic.path!
+			self.collection = (generic.container as! UICollectionView)
 		}
 	}
 	
