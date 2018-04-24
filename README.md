@@ -20,6 +20,9 @@ It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 **Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of the rest!
 
+## THE PROJECT WAS MIGRATED TO FLOWKIT AND INCLUDE A NEW APPROACH AND FULL SUPPORT FOR BOTH TABLE AND COLLECTION VIEWS.
+## >> [GO TO FLOTKIT GITHUB PAGE](https://github.com/malcommac/FlowKit)
+
 ## WHAT YOU CAN DO
 
 The following code is the only required to create a complete TableView which shows a list of some country flags.
