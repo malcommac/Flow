@@ -4,6 +4,12 @@
   <img src="https://raw.githubusercontent.com/malcommac/Flow/master/Assets/logo.png" width=300px height=230px alt="Flow" title="Flow">
 </p>
 
+<p align="center" >
+<h1>THE ENTIRE PROJECT WAS MOVED TO THE NEW HOME AND IT'S NOW CALLED OWL.</h1>
+<h2><a href="https://github.com/malcommac/Owl">https://github.com/malcommac/Owl</a></br>
+This repository will be removed in few months.
+</p>
+
 [![Version](https://img.shields.io/cocoapods/v/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![License](https://img.shields.io/cocoapods/l/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables) [![Platform](https://img.shields.io/cocoapods/p/FlowTables.svg?style=flat)](http://cocoadocs.org/docsets/FlowTables)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/FlowTables.svg)](https://img.shields.io/cocoapods/v/FlowTables.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
@@ -19,9 +25,6 @@ Flow is a Swift lightweight library which help you to better manage content in U
 It's easy and fast, perfectly fits the type-safe nature of Swift.
 
 **Say goodbye to `UITableViewDataSource` and `UITableViewDelegate`** : just declare and set your data, let Flow take care of the rest!
-
-## THE PROJECT WAS MIGRATED TO FLOWKIT AND INCLUDE A NEW APPROACH AND FULL SUPPORT FOR BOTH TABLE AND COLLECTION VIEWS.
-## >> [GO TO FLOTKIT GITHUB PAGE](https://github.com/malcommac/FlowKit)
 
 ## WHAT YOU CAN DO
 
