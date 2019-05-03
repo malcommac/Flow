@@ -35,7 +35,7 @@ Each flag is represented by a class (the model) called `CountryModel`; the insta
 ```swift
 let countries: [CountryModel] = ... // your array of countries
 let rows = Row<CountryCell>.create(countries, { row in // create rows
-row.onTap = { _, path in // reponds to tap on cells
+row.onTap = { _, path in // responds to tap on cells
   print("Tap on '\(row.item.name)'")
   return nil
 }
